@@ -20,7 +20,7 @@ function Navigation(props) {
                         <Nav.Link as={Link} to="/Calendar">Calendar</Nav.Link>
                         <Nav.Link as={Link} to="/Add_Form">Add Form</Nav.Link>
                         <Nav.Link as={Link} to="/Search_Form">Search Forms</Nav.Link>
-                        <Nav.Link as={Link}k to="/Analytics">Analytics</Nav.Link>
+                        <Nav.Link as={Link} to="/Analytics">Analytics</Nav.Link>
                     </Nav>
                 </Navbar>
                 <Switch>
