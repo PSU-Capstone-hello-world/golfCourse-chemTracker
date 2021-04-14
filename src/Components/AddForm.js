@@ -18,11 +18,20 @@ class AddForm extends React.Component {
       // Product
       productName: "",
       supplier: "",
-      formulation: "",
-      signalWord: "",
+      formulationFlow: false,
+      formulationGran: false,
+      formulationWet: false,
+      formulationEmul: false,
+      formulationOther: false,
+      sigWordCaution: false,
+      sigWordWarning: false,
+      sigWordDanger: false,
       epaRegNum: "",
       epaEstNum: "",
-      location: "",
+      locGreens: false,
+      locTees: false,
+      locFairways: false,
+      locOther: false,
       target: "",
 
       // Equipment and Rates
@@ -50,7 +59,13 @@ class AddForm extends React.Component {
       purs: "",
       timeStart: "",
       timeEnd: "",
-      protectiveEq: "",
+      protectiveLong: false,
+      protectiveShoes: false,
+      protectiveBoots: false,
+      protectiveGloves: false,
+      protectiveHat: false,
+      protectiveEye: false,
+      protectiveOther: false,
       disposed: "",
       cleaned: "",
       msds: "",
@@ -67,7 +82,7 @@ class AddForm extends React.Component {
 
   handleInputChange(event) {
     const target = event.target;
-    const value = target.value;
+    const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
@@ -83,6 +98,7 @@ class AddForm extends React.Component {
   render() {
     return (
       <Form className="new-form" onSubmit={this.handleSubmit}>
+        <h1>Add Form</h1>
         <Row>
           <Col>
             <Form.Group controlId="productName">
@@ -109,28 +125,150 @@ class AddForm extends React.Component {
           </Col>
         </Row>
 
-        {/* TODO Formulation */}
+        <Form.Group controlId="formulation">
+          <Form.Label>Formulation</Form.Label>
 
-        {/* TODO Signal Word */}
-
-        <Form.Group controlId="epaRegNum">
-          <Form.Label>EPA Registration #</Form.Label>
-          <Form.Control
-            type="text"
-            name="epaRegNum"
-            placeholder="EPA Registration #"
+          <Form.Check
+            inline
+            name="formulationFlow"
+            label="Flowable"
+            type="checkbox"
+            checked={this.state.formulationFlow}
             onChange={this.handleInputChange}
-          />
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="formulationGran"
+            label="Granular"
+            type="checkbox"
+            checked={this.state.formulationGran}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="formulationWet"
+            label="Wettable Powder"
+            type="checkbox"
+            checked={this.state.formulationWet}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="formulationEmul"
+            label="Emulsified Concrete"
+            type="checkbox"
+            checked={this.state.formulationEmul}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="formulationOther"
+            label="Other"
+            type="checkbox"
+            checked={this.state.formulationOther}
+            onChange={this.handleInputChange}
+          ></Form.Check>
         </Form.Group>
 
-        <Form.Group controlId="epaEstNum">
-          <Form.Label>EPA Est. #</Form.Label>
-          <Form.Control
-            type="text"
-            name="epaEstNum"
-            placeholder="EPA Est. #"
+        <Form.Group controlId="signalWord">
+          <Form.Label>Signal Word</Form.Label>
+
+          <Form.Check
+            inline
+            name="sigWordCaution"
+            label="Caution"
+            type="checkbox"
+            checked={this.state.sigWordCaution}
             onChange={this.handleInputChange}
-          />
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="sigWordWarning"
+            label="Warning"
+            type="checkbox"
+            checked={this.state.sigWordWarning}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="sigWordDanger"
+            label="Danger"
+            type="checkbox"
+            checked={this.state.sigWordDanger}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+        </Form.Group>
+
+        <Row>
+          <Col>
+            <Form.Group controlId="epaRegNum">
+              <Form.Label>EPA Registration #</Form.Label>
+              <Form.Control
+                type="text"
+                name="epaRegNum"
+                placeholder="EPA Registration #"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col>
+            <Form.Group controlId="epaEstNum">
+              <Form.Label>EPA Est. #</Form.Label>
+              <Form.Control
+                type="text"
+                name="epaEstNum"
+                placeholder="EPA Est. #"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+
+        <Form.Group controlId="location">
+          <Form.Label>Location</Form.Label>
+
+          <Form.Check
+            inline
+            name="locGreens"
+            label="Greens"
+            type="checkbox"
+            checked={this.state.locGreens}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="locTees"
+            label="Tees"
+            type="checkbox"
+            checked={this.state.locTees}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="locFairways"
+            label="Fairways"
+            type="checkbox"
+            checked={this.state.locFairways}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="locOther"
+            label="Other"
+            type="checkbox"
+            checked={this.state.locOther}
+            onChange={this.handleInputChange}
+          ></Form.Check>
         </Form.Group>
 
         <Form.Group controlId="target">
@@ -145,96 +283,119 @@ class AddForm extends React.Component {
 
         {/* TODO Add a seperator that says "APPLICATION EQUIPMENT AND RATES" */}
 
-        <Form.Group controlId="vehicle">
-          <Form.Label>Vehicle</Form.Label>
-          <Form.Control
-            type="text"
-            name="vehicle"
-            placeholder="Vehicle"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group controlId="vehicle">
+              <Form.Label>Vehicle</Form.Label>
+              <Form.Control
+                type="text"
+                name="vehicle"
+                placeholder="Vehicle"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        <Form.Group controlId="gear">
-          <Form.Label>Gear</Form.Label>
-          <Form.Control
-            type="text"
-            name="gear"
-            placeholder="Gear"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+          <Col>
+            <Form.Group controlId="gear">
+              <Form.Label>Gear</Form.Label>
+              <Form.Control
+                type="text"
+                name="gear"
+                placeholder="Gear"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        <Form.Group controlId="rpm">
-          <Form.Label>RPM</Form.Label>
-          <Form.Control
-            type="text"
-            name="rpm"
-            placeholder="RPM"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+          <Col>
+            <Form.Group controlId="rpm">
+              <Form.Label>RPM</Form.Label>
+              <Form.Control
+                type="text"
+                name="rpm"
+                placeholder="RPM"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        <Form.Group controlId="mph">
-          <Form.Label>MPH</Form.Label>
-          <Form.Control
-            type="text"
-            name="mph"
-            placeholder="MPH"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+          <Col>
+            <Form.Group controlId="mph">
+              <Form.Label>MPH</Form.Label>
+              <Form.Control
+                type="text"
+                name="mph"
+                placeholder="MPH"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
-        <Form.Group controlId="sprayer">
-          <Form.Label>Sprayer/Spreader</Form.Label>
-          <Form.Control
-            type="text"
-            name="sprayer"
-            placeholder="Sprayer/Spreader"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group controlId="sprayer">
+              <Form.Label>Sprayer/Spreader</Form.Label>
+              <Form.Control
+                type="text"
+                name="sprayer"
+                placeholder="Sprayer/Spreader"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        <Form.Group controlId="nozzle">
-          <Form.Label>Nozzles/Setting</Form.Label>
-          <Form.Control
-            type="text"
-            name="nozzle"
-            placeholder="Nozzles/Setting"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+          <Col>
+            <Form.Group controlId="nozzle">
+              <Form.Label>Nozzles/Setting</Form.Label>
+              <Form.Control
+                type="text"
+                name="nozzle"
+                placeholder="Nozzles/Setting"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        <Form.Group controlId="pressure">
-          <Form.Label>Pressure Number</Form.Label>
-          <Form.Control
-            type="text"
-            name="pressure"
-            placeholder="Pressure Number"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+          <Col>
+            <Form.Group controlId="pressure">
+              <Form.Label>Pressure Number</Form.Label>
+              <Form.Control
+                type="text"
+                name="pressure"
+                placeholder="Pressure Number"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         {/* TODO Make a tank mix section & format it like the form */}
-        <Form.Group controlId="tankAmt">
-          <Form.Label>Tank Mix</Form.Label>
-          <Form.Control
-            type="text"
-            name="tankAmt"
-            placeholder="Amount of Product"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
-
-        <Form.Group controlId="tankWater">
-          <Form.Label>Tank Mix</Form.Label>
-          <Form.Control
-            type="text"
-            name="tankWater"
-            placeholder="Gallons of Water"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group controlId="tankAmt">
+              <Form.Label>Tank Mix</Form.Label>
+              <Form.Control
+                type="text"
+                name="tankAmt"
+                placeholder="Amount of Product"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group controlId="tankWater">
+              <Form.Label></Form.Label>
+              <Form.Control
+                type="text"
+                name="tankWater"
+                placeholder="Gallons of Water"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Form.Group controlId="adjuvant">
           <Form.Label>Adjuvant/Dye</Form.Label>
@@ -257,27 +418,55 @@ class AddForm extends React.Component {
         </Form.Group>
 
         {/* TODO Combine these application rates and make them look better */}
-        <Form.Group controlId="appRateOz">
-          <Form.Label>Application Rate (oz. lbs.)</Form.Label>
-          <Form.Control
-            type="text"
-            name="appRateOz"
-            placeholder="Application Rate (oz. lbs.)"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group controlId="appRateOz">
+              <Form.Label>Application Rate (oz. / lbs.)</Form.Label>
+              <Form.Control
+                type="text"
+                name="appRateOz"
+                placeholder="Application Rate (oz. / lbs.)"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        <Form.Group controlId="appRateLbs">
-          <Form.Label>Application Rate (gal. / lbs.) </Form.Label>
-          <Form.Control
-            type="text"
-            name="appRateLbs"
-            placeholder="Application Rate (gal. / lbs.)"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+          <Col>
+            <Form.Group controlId="appRateLbs">
+              <Form.Label>Application Rate (gal. / lbs.) </Form.Label>
+              <Form.Control
+                type="text"
+                name="appRateLbs"
+                placeholder="Application Rate (gal. / lbs.)"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
-        {/*TODO wateredIn: "", */}
+        <Form.Group controlId="wateredIn">
+          <Form.Label>Was Product Watered In?</Form.Label>
+
+          <Form.Check
+            inline
+            name="wateredIn"
+            label="Yes"
+            type="radio"
+            value="Yes"
+            checked={this.state.wateredIn === "Yes"}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="wateredIn"
+            label="No"
+            type="radio"
+            value="No"
+            checked={this.state.wateredIn === "No"}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+        </Form.Group>
 
         <Form.Group controlId="wateredMin">
           <Form.Label>Minutes Watered</Form.Label>
@@ -291,35 +480,43 @@ class AddForm extends React.Component {
 
         {/* // Weather and Precautions */}
 
-        <Form.Group controlId="temp">
-          <Form.Label>Temperature</Form.Label>
-          <Form.Control
-            type="text"
-            name="temp"
-            placeholder="Temperature"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group controlId="temp">
+              <Form.Label>Temperature</Form.Label>
+              <Form.Control
+                type="text"
+                name="temp"
+                placeholder="Temperature"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        <Form.Group controlId="humidity">
-          <Form.Label>Humidity</Form.Label>
-          <Form.Control
-            type="text"
-            name="humidity"
-            placeholder="Humidity"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+          <Col>
+            <Form.Group controlId="humidity">
+              <Form.Label>Humidity</Form.Label>
+              <Form.Control
+                type="text"
+                name="humidity"
+                placeholder="Humidity"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        <Form.Group controlId="wind">
-          <Form.Label>Wind</Form.Label>
-          <Form.Control
-            type="text"
-            name="wind"
-            placeholder="Wind"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+          <Col>
+            <Form.Group controlId="wind">
+              <Form.Label>Wind</Form.Label>
+              <Form.Control
+                type="text"
+                name="wind"
+                placeholder="Wind"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         {/* date: "", */}
 
@@ -335,7 +532,71 @@ class AddForm extends React.Component {
 
         {/* timeStart: "", */}
         {/* timeEnd: "", */}
-        {/* protectiveEq: "", */}
+
+        <Form.Group controlId="protective">
+          <Form.Check
+            inline
+            name="protectiveLong"
+            label="Long Pants & Shirt"
+            type="checkbox"
+            checked={this.state.protectiveLong}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="protectiveShoes"
+            label="Shoes & Socks"
+            type="checkbox"
+            checked={this.state.protectiveShoes}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="protectiveBoots"
+            label="Rubber Boots"
+            type="checkbox"
+            checked={this.state.protectiveBoots}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="protectiveGloves"
+            label="5 mil. Nitrile Gloves"
+            type="checkbox"
+            checked={this.state.protectiveGloves}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="protectiveHat"
+            label="Hard Hat"
+            type="checkbox"
+            checked={this.state.protectiveHat}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="protectiveEye"
+            label="Protective Eye Wear"
+            type="checkbox"
+            checked={this.state.protectiveEye}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="protectiveOther"
+            label="Other"
+            type="checkbox"
+            checked={this.state.protectiveOther}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+        </Form.Group>
 
         <Form.Group controlId="disposed">
           <Form.Label>How Was Container Disposed?</Form.Label>
@@ -357,7 +618,29 @@ class AddForm extends React.Component {
           />
         </Form.Group>
 
-        {/* msds: "", */}
+        <Form.Group controlId="msds">
+          <Form.Label>Did you read the MSDS?</Form.Label>
+
+          <Form.Check
+            inline
+            name="msds"
+            label="Yes"
+            type="radio"
+            value="Yes"
+            checked={this.state.msds === "Yes"}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="msds"
+            label="No"
+            type="radio"
+            value="No"
+            checked={this.state.msds === "No"}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+        </Form.Group>
 
         <Form.Group controlId="lbsN">
           <Form.Label>Actual lbs of N applied per 1000 sqft.</Form.Label>
@@ -401,108 +684,10 @@ class AddForm extends React.Component {
 
         {/* sigDate: "", */}
 
-        {/* </Form>{ <label htmlFor="productName">Product Name</label>
-      <input
-        id="productName"
-        placeholder="Product Name"
-        type="text"
-        onChange={formik.handleChange}
-        value={formik.values.productName}
-      /> } */}
-
         <Button type="submit">Submit</Button>
       </Form>
     );
   }
 }
-
-// import Form from "react-bootstrap/Form";
-// import Button from "react-bootstrap/Button";
-// import Col from "react-bootstrap/Col";
-
-// function AddForm(){
-//     return(
-//         <div className={"Form"}>
-//             <Form>
-//                 <Form.Row>
-//                     <Col>
-//                         <Form.Control placeholder="Product Name" />
-//                     </Col>
-//                 </Form.Row>
-//                 <Form.Row>
-//                     <Col>
-//                         <Form.Control placeholder="Supplier" />
-//                     </Col>
-//                 </Form.Row>
-//                 <Form.Row>
-//                     <Col xs={2}>Formulation: </Col>
-//                     <Col>
-//                         {['checkbox'].map((type) => (
-//                             <div key={`inline-${type}`} className="mb-3">
-//                                 <Form.Check inline label="Flowable" type={type} id={`inline-${type}-1`} />
-//                                 <Form.Check inline label="Granular" type={type} id={`inline-${type}-2`} />
-//                                 <Form.Check inline label="Wettable Powder" type={type} id={`inline-${type}-3`}/>
-//                             </div>
-
-//                         ))}
-//                     </Col>
-//                 </Form.Row>
-//                 <Form.Row>
-//                     <Col>
-//                         {['checkbox'].map((type) => (
-//                             <div key={`inline-${type}`} className="mb-3">
-//                                 <Form.Check inline label="Emulsified Concentrate" type={type} id={`inline-${type}-1`}/>
-//                             </div>
-
-//                         ))}
-//                     </Col>
-//                     <Col>
-//                         <Form.Control placeholder="Other"/>
-//                     </Col>
-//                 </Form.Row>
-//                 <Form.Row>
-//                     <Col xs={4}>Signal Word: </Col>
-//                     <Col>
-//                         {['checkbox'].map((type) => (
-//                             <div key={`inline-${type}`} className="mb-3">
-//                                 <Form.Check inline label="Caution" type={type} id={`inline-${type}-1`} />
-//                                 <Form.Check inline label="Warning" type={type} id={`inline-${type}-2`} />
-//                                 <Form.Check inline label="Danger" type={type} id={`inline-${type}-3`}/>
-//                             </div>
-
-//                         ))}
-//                     </Col>
-//                 </Form.Row>
-//                 <Form.Row>
-//                     <Col>
-//                         <Form.Control placeholder="EPA Registration" />
-//                     </Col>
-//                     <Col>
-//                         <Form.Control placeholder="EPA Est. #" />
-//                     </Col>
-//                 </Form.Row>
-//                 <Form.Row>
-//                     <Col xs={2}>Location: </Col>
-//                     <Col>
-//                         {['checkbox'].map((type) => (
-//                             <div key={`inline-${type}`} className="mb-3">
-//                                 <Form.Check inline label="Greens" type={type} id={`inline-${type}-1`} />
-//                                 <Form.Check inline label="Tees" type={type} id={`inline-${type}-2`} />
-//                                 <Form.Check inline label="Fairways" type={type} id={`inline-${type}-3`}/>
-//                             </div>
-
-//                         ))}
-//                     </Col>
-//                     <Col>
-//                         <Form.Control placeholder="Other" />
-//                     </Col>
-//                 </Form.Row>
-//                 <Button variant="primary" type="submit">
-//                     Submit
-//                 </Button>
-//             </Form>
-//         </div>
-//     );
-// }
 
 export default AddForm;
