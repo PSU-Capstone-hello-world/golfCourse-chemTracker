@@ -11,6 +11,10 @@ app.use(cors());
 
 app.use('/login', (req, res) => {
     console.log(`${req.body.username} - ${req.body.password}`);
+    res.send({
+        userName: req.body.userName,
+        password: req.body.password
+    })
 });
 
 app.listen(8080, () => console.log('API is running on http://localhost:8080/login'));
