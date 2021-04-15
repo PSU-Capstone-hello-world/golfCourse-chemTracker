@@ -1,5 +1,5 @@
 {
-  "name": "testproject2",
+  "name": "Golf Course Chemical Tracker",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -44,5 +44,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
   }
 }
