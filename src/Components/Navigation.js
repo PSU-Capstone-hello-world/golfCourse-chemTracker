@@ -1,14 +1,12 @@
-import React from 'react';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import {Route, Switch, Link, BrowserRouter as Router} from "react-router-dom";
-import Home from './Home';
-import CalendarView from './Calendar';
-import AddForm from './AddForm';
-import SearchForm from './SearchForm';
+import React from "react";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import { Route, Switch, Link, BrowserRouter as Router } from "react-router-dom";
+import Home from "./Home";
+import CalendarView from "./Calendar";
+import AddForm from "./AddForm";
+import SearchForm from "./SearchForm";
 import Analytics from "./Analytics";
-
-
 
 function Navigation(props) {
     return (
