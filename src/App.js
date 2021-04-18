@@ -1,4 +1,5 @@
 import Navigation from './Components/Navigation';
+import Home from './Components/Home';
 import React, { useState } from "react";
 // import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Login from './Components/Login';
@@ -16,7 +17,9 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <Navigation></Navigation>
+                <Navigation>
+                    <Home />
+                </Navigation>
             </header>
         </div>
     );
