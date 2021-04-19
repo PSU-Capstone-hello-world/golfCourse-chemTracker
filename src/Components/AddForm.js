@@ -4,6 +4,8 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import "./AddForm.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 // Resources:
 //   React Forms --> https://reactjs.org/docs/forms.html
@@ -55,7 +57,7 @@ class AddForm extends React.Component {
       temp: "",
       humidity: "",
       wind: "",
-      date: "",
+      date: new Date(),
       purs: "",
       timeStart: "",
       timeEnd: "",
@@ -73,20 +75,28 @@ class AddForm extends React.Component {
       lbsP2O5: "",
       lbsK2O: "",
       signature: "",
-      sigDate: "",
+      sigDate: new Date(),
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
   }
 
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
+    console.log(this.value);
 
     this.setState({
       [name]: value,
+    });
+  }
+
+  handleDateChange(newDate) {
+    this.setState({
+      date: newDate,
     });
   }
 
@@ -519,6 +529,15 @@ class AddForm extends React.Component {
         </Row>
 
         {/* date: "", */}
+        <Form.Group controlId="date">
+          <Form.Label>Date Applied</Form.Label>
+          <DatePicker
+            selected={this.state.date}
+            onChange={this.handleDateChange}
+            name="date"
+            dateFormat="MM/dd/yyyy"
+          />
+        </Form.Group>
 
         <Form.Group controlId="purs">
           <Form.Label>PURS</Form.Label>
@@ -672,17 +691,32 @@ class AddForm extends React.Component {
           />
         </Form.Group>
 
-        <Form.Group controlId="signature">
-          <Form.Label>Signature</Form.Label>
-          <Form.Control
-            type="text"
-            name="signature"
-            placeholder="Signature"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group controlId="signature">
+              <Form.Label>Signature</Form.Label>
+              <Form.Control
+                type="text"
+                name="signature"
+                placeholder="Signature"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        {/* sigDate: "", */}
+          {/* sigDate: "", */}
+          <Col>
+            <Form.Group controlId="sigDate">
+              <Form.Label>Date</Form.Label>
+              <DatePicker
+                selected={this.state.sigDate}
+                onChange={this.handleDateChange}
+                name="sigDate"
+                dateFormat="MM/dd/yyyy"
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Button type="submit">Submit</Button>
       </Form>
