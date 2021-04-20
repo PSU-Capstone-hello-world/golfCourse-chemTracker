@@ -81,6 +81,7 @@ class AddForm extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
+    this.handleSigDate = this.handleSigDate.bind(this);
   }
 
   handleInputChange(event) {
@@ -97,6 +98,12 @@ class AddForm extends React.Component {
   handleDateChange(newDate) {
     this.setState({
       date: newDate,
+    });
+  }
+
+  handleSigDate(newDate) {
+    this.setState({
+      sigDate: newDate,
     });
   }
 
@@ -710,7 +717,7 @@ class AddForm extends React.Component {
               <Form.Label>Date</Form.Label>
               <DatePicker
                 selected={this.state.sigDate}
-                onChange={this.handleDateChange}
+                onChange={this.handleSigDate}
                 name="sigDate"
                 dateFormat="MM/dd/yyyy"
               />
