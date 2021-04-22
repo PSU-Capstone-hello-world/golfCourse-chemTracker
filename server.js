@@ -16,15 +16,7 @@ app.use('/login', (req, res) => {
 
     if (req.body.username === mainUserName && req.body.password === mainPassword) {
         res.send(true);
-        // res.send({
-        //     userName: req.body.userName,
-        //     password: req.body.password
-        // })
     } else {
-        // res.send(
-        //     userName: null,
-        //     password: null
-        // })
         res.send(false);
     }
 });

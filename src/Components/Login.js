@@ -12,9 +12,9 @@ async function loginUser(credentials) {
         body: JSON.stringify(credentials)
     })
     .then(data => data.json())
-    .catch(error => {
-        alert(`Error occured: ${error}. Couldn't validate user email and password, is the server running?`);
-    })
+    // .catch(error => {
+    //     alert(`Error occured: ${error}. Couldn't validate user email and password, is the server running?`);
+    // })
 }
 
 export default function Login( { setToken }) {
@@ -38,6 +38,8 @@ export default function Login( { setToken }) {
         if (token) {
             setValidated(true);
             setToken(token);
+        } else {
+            alert(`Error occured: ${error}. Couldn't validate user email and password, is the server running?`);
         }
     }
 
