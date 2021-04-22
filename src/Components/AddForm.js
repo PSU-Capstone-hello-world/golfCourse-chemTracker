@@ -15,6 +15,7 @@ class AddForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const today = new Date();
     // Everyting from the original Gresham Golf Course Form
     this.state = {
       // Product
@@ -57,7 +58,7 @@ class AddForm extends React.Component {
       temp: "",
       humidity: "",
       wind: "",
-      date: new Date(),
+      date: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
       purs: "",
       timeStart: "",
       timeEnd: "",
@@ -75,7 +76,7 @@ class AddForm extends React.Component {
       lbsP2O5: "",
       lbsK2O: "",
       signature: "",
-      sigDate: new Date(),
+      sigDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -95,20 +96,37 @@ class AddForm extends React.Component {
     });
   }
 
+  // Dates from date picker are handled seperatley, they also need a math conversion or else the day can be off by one
+  // A thread about the issue and the workaround were found at: https://github.com/Hacker0x01/react-datepicker/issues/1018
   handleDateChange(newDate) {
+    const offsetDate = new Date(
+      newDate.getTime() - newDate.getTimezoneOffset() * 60000
+    );
     this.setState({
-      date: newDate,
+      date: offsetDate,
     });
   }
 
   handleSigDate(newDate) {
+    const offsetDate = new Date(
+      newDate.getTime() - newDate.getTimezoneOffset() * 60000
+    );
     this.setState({
-      sigDate: newDate,
+      sigDate: offsetDate,
     });
   }
 
   handleSubmit(event) {
-    console.log(JSON.stringify(this.state));
+    // Copy the state, so we can format the individual fields before sending to backend
+    let output = JSON.parse(JSON.stringify(this.state));
+
+    // Format Dates
+    output.date = JSON.stringify(output.date).slice(1, 11);
+    output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
+
+    // Logging the output, this will go to backend later
+    console.log(JSON.stringify(output));
+
     event.preventDefault();
   }
 
