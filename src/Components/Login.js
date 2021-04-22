@@ -39,7 +39,7 @@ export default function Login( { setToken }) {
             setValidated(true);
             setToken(token);
         } else {
-            alert(`Error occured: ${error}. Couldn't validate user email and password, is the server running?`);
+            alert("Failed to login");
         }
     }
 
