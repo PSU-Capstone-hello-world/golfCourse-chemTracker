@@ -1,22 +1,37 @@
 import React from "react";
 import Col from "react-bootstrap/Col";
-//import Image from 'react-bootstrap/Image';
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Students from "./data.json";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./SearchForm.css";
+//import SearchResult from "./test";
+import { axios } from "axios";
 
 class SearchForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       productName: "",
-      startDate: "",
-      endDate: "",
+      startDate: new Date(),
+      endDate: new Date(),
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleStartDateChange = this.handleStartDateChange.bind(this);
+    this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const apiUrl =
+      "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/";
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => console.log("This is your data", data));
+    //.then((data) => displayData(data));
   }
 
   handleInputChange(event) {
@@ -29,6 +44,18 @@ class SearchForm extends React.Component {
     });
   }
 
+  handleStartDateChange(newDate) {
+    this.setState({
+      startDate: newDate,
+    });
+  }
+
+  handleEndDateChange(newDate) {
+    this.setState({
+      endDate: newDate,
+    });
+  }
+
   handleSubmit(event) {
     console.log(JSON.stringify(this.state));
     event.preventDefault();
@@ -37,7 +64,7 @@ class SearchForm extends React.Component {
   render() {
     return (
       <div className={"SearchForm"}>
-        <Row>
+        <Row className={"header"}>
           <Col>
             <h2>Search Criteria</h2>
           </Col>
@@ -50,9 +77,9 @@ class SearchForm extends React.Component {
           <Row>
             <Col>
               <Form.Row>
-                <Col xs={3}>Product Name</Col>
                 <Col>
                   <Form.Group controlId="productName">
+                    <Form.Label>Product Name</Form.Label>
                     <Form.Control
                       type="text"
                       name="productName"
@@ -63,25 +90,27 @@ class SearchForm extends React.Component {
                 </Col>
               </Form.Row>
               <Form.Row>
-                <Col xs={3}>Date Range</Col>
+                <Form.Label>Date Range</Form.Label>
+              </Form.Row>
+              <Form.Row>
                 <Col>
                   <Form.Group controlId="startDate">
-                    <Form.Control
-                      type="text"
+                    <DatePicker
+                      selected={this.state.startDate}
+                      onChange={this.handleStartDateChange}
                       name="startDate"
-                      placeholder="Start Date"
-                      onChange={this.handleInputChange}
+                      dateFormat="MM/dd/yyyy"
                     />
                   </Form.Group>
                 </Col>
                 <p>-</p>
                 <Col>
                   <Form.Group controlId="endDate">
-                    <Form.Control
-                      type="text"
+                    <DatePicker
+                      selected={this.state.endDate}
+                      onChange={this.handleEndDateChange}
                       name="endDate"
-                      placeholder="End Date"
-                      onChange={this.handleInputChange}
+                      dateFormat="MM/dd/yyyy"
                     />
                   </Form.Group>
                 </Col>
@@ -90,7 +119,7 @@ class SearchForm extends React.Component {
                 <Button type="submit">Submit</Button>
               </Form.Row>
             </Col>
-            <Col>
+            <Col className={"table"}>
               <table border="2">
                 <tbody>
                   <tr>
@@ -112,6 +141,25 @@ class SearchForm extends React.Component {
               </table>
             </Col>
           </Row>
+          <table border="2">
+            <tbody>
+              <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Age</th>
+                <th>rollno</th>
+              </tr>
+
+              {Students.students.map((item, i) => (
+                <tr key={i}>
+                  <td>{item.name}</td>
+                  <td>{item.department}</td>
+                  <td>{item.age}</td>
+                  <td>{item.rollno}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </Form>
       </div>
     );
