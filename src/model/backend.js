@@ -93,7 +93,9 @@ class Backend{
         return JSON.parse(response.data['body']);
     }
     async put(document) {
-        
+        const body = document
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/", body)
+        return JSON.parse(response.data['body'])
     }
     async getDocFromImage(image) {
         
