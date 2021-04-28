@@ -26,6 +26,7 @@ class AddForm extends React.Component {
       formulationWet: false,
       formulationEmul: false,
       formulationOther: false,
+      formulationOtherVal: "",
       sigWordCaution: false,
       sigWordWarning: false,
       sigWordDanger: false,
@@ -35,6 +36,7 @@ class AddForm extends React.Component {
       locTees: false,
       locFairways: false,
       locOther: false,
+      locOtherVal: "",
       target: "",
 
       // Equipment and Rates
@@ -69,6 +71,7 @@ class AddForm extends React.Component {
       protectiveHat: false,
       protectiveEye: false,
       protectiveOther: false,
+      protectiveOtherVal: "",
       disposed: "",
       cleaned: "",
       msds: "",
@@ -207,6 +210,14 @@ class AddForm extends React.Component {
             checked={this.state.formulationOther}
             onChange={this.handleInputChange}
           ></Form.Check>
+
+          <Form.Control
+            type="text"
+            name="formulationOtherValue"
+            placeholder="Other Formulation"
+            hidden={!this.state.formulationOther}
+            onChange={this.handleInputChange}
+          />
         </Form.Group>
 
         <Form.Group controlId="signalWord">
@@ -304,6 +315,14 @@ class AddForm extends React.Component {
             checked={this.state.locOther}
             onChange={this.handleInputChange}
           ></Form.Check>
+
+          <Form.Control
+            type="text"
+            name="locOtherValue"
+            placeholder="Other Location"
+            hidden={!this.state.locOther}
+            onChange={this.handleInputChange}
+          />
         </Form.Group>
 
         <Form.Group controlId="target">
@@ -578,6 +597,7 @@ class AddForm extends React.Component {
         {/* timeEnd: "", */}
 
         <Form.Group controlId="protective">
+          <Form.Label>Protective Equipment Used</Form.Label>
           <Form.Check
             inline
             name="protectiveLong"
@@ -640,6 +660,14 @@ class AddForm extends React.Component {
             checked={this.state.protectiveOther}
             onChange={this.handleInputChange}
           ></Form.Check>
+
+          <Form.Control
+            type="text"
+            name="protectiveOtherValue"
+            placeholder="Other Protective Equipment"
+            hidden={!this.state.protectiveOther}
+            onChange={this.handleInputChange}
+          />
         </Form.Group>
 
         <Form.Group controlId="disposed">
