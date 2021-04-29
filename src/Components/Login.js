@@ -12,9 +12,9 @@ async function loginUser(credentials) {
         body: JSON.stringify(credentials)
     })
     .then(data => data.json())
-    // .catch(error => {
-    //     alert(`Error occured: ${error}. Couldn't validate user email and password, is the server running?`);
-    // })
+    .catch(error => {
+        alert(`Error occured: ${error}`);
+    })
 }
 
 export default function Login( { setToken }) {
@@ -46,9 +46,9 @@ export default function Login( { setToken }) {
     return (
         <Container id='containerLogin'>
             <Row className='justify-content-center align-self-center'>
-                <Form id='login' validated={validated} onSubmit={handleSubmit} preventDefault>
+                <Form id='loginForm' validated={validated} onSubmit={handleSubmit} preventDefault>
                     <div className='test d-flex justify-content-center'>
-                        <h3>Sign In</h3>
+                        <h3>Log in</h3>
                     </div>
 
                     <Form.Group controlId='formEmail'>
