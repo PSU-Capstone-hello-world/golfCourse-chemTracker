@@ -15,11 +15,13 @@ import Backend from "../model/backEnd.js";
 class SearchForm extends React.Component {
   constructor(props) {
     super(props);
+    const today = new Date();
     this.state = {
       productName: "",
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
+      endDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
       search: false,
+      document: "",
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -29,24 +31,44 @@ class SearchForm extends React.Component {
     this.result = null;
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { document } = this.state;
+    if (prevState.search !== this.state.search) {
+      this.displayData(document);
+    }
+  }
+
   async fetchData(search) {
     let backend = new Backend();
     let document = await backend.getByName(search.productName);
-    /*
-    let document2 = await backend.getDateRange(
-      search.startDate,
-      search.endDate
-    );
-    
-    console.log("date Search:", document2);
-    */
+    //let document = await backend.getTargetDate(search.start, search.end, search.target);
     console.log("productName", document);
     console.log(typeof document);
-    //this.setState({ search: "true" });
-    this.displayData(document);
+    //this.displayData(document);
+    this.setState({ search: true, document: document });
+    return document;
   }
 
   displayData(document) {
+    return (
+      <table border="2">
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Signature</th>
+          </tr>
+          {document.Items.map((item, i) => (
+            <tr key={i}>
+              <td>{item.productName}</td>
+              <td>{item.date}</td>
+              <td>{item.signature}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+    /*
     this.result = (
       <table border="2">
         <tbody>
@@ -65,6 +87,7 @@ class SearchForm extends React.Component {
         </tbody>
       </table>
     );
+    */
   }
 
   handleInputChange(event) {
@@ -78,26 +101,34 @@ class SearchForm extends React.Component {
   }
 
   handleStartDateChange(newDate) {
+    const offsetDate = new Date(
+      newDate.getTime() - newDate.getTimezoneOffset() * 60000
+    );
     this.setState({
-      //startDate: DateTimeFormat('en-US', {year:'numeric', month: '2-digit', day: '2-digit'}).format(newDate)
-      startDate: newDate,
+      startDate: offsetDate,
     });
   }
 
   handleEndDateChange(newDate) {
+    const offsetDate = new Date(
+      newDate.getTime() - newDate.getTimezoneOffset() * 60000
+    );
     this.setState({
-      endDate: newDate,
+      endDate: offsetDate,
     });
   }
 
-  handleSubmit(event) {
-    this.setState({ search: true });
-    console.log(JSON.stringify(this.state));
+  async handleSubmit(event) {
     event.preventDefault();
-    this.fetchData(this.state);
+    let output = JSON.parse(JSON.stringify(this.state));
+    output.startDate = JSON.stringify(output.startDate).slice(1, 11);
+    output.endDate = JSON.stringify(output.endDate).slice(1, 11);
+    console.log(JSON.stringify(output));
+    await this.fetchData(output);
   }
 
   render() {
+    const { document } = this.state;
     return (
       <div className={"SearchForm"}>
         <Row className={"header"}>
@@ -155,7 +186,9 @@ class SearchForm extends React.Component {
                 <Button type="submit">Submit</Button>
               </Form.Row>
             </Col>
-            <Col className="table">{this.state.search ? this.result : ""}</Col>
+            <Col className="table">
+              {document ? this.displayData(document) : ""}
+            </Col>
           </Row>
         </Form>
       </div>
