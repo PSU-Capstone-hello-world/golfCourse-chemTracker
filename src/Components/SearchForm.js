@@ -3,12 +3,14 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Students from "./data.json";
+//import Students from "./data.json";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SearchForm.css";
+//import { getByDisplayValue } from "@testing-library/dom";
 //import SearchResult from "./test";
-import { axios } from "axios";
+//import { axios } from "axios";
+import Backend from "../model/backEnd.js";
 
 class SearchForm extends React.Component {
   constructor(props) {
@@ -17,21 +19,52 @@ class SearchForm extends React.Component {
       productName: "",
       startDate: new Date(),
       endDate: new Date(),
+      search: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.result = null;
   }
 
-  componentDidMount() {
-    const apiUrl =
-      "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/";
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => console.log("This is your data", data));
-    //.then((data) => displayData(data));
+  async fetchData(search) {
+    let backend = new Backend();
+    let document = await backend.getByName(search.productName);
+    /*
+    let document2 = await backend.getDateRange(
+      search.startDate,
+      search.endDate
+    );
+    
+    console.log("date Search:", document2);
+    */
+    console.log("productName", document);
+    console.log(typeof document);
+    //this.setState({ search: "true" });
+    this.displayData(document);
+  }
+
+  displayData(document) {
+    this.result = (
+      <table border="2">
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Signature</th>
+          </tr>
+          {document.Items.map((item, i) => (
+            <tr key={i}>
+              <td>{item.productName}</td>
+              <td>{item.date}</td>
+              <td>{item.signature}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
   }
 
   handleInputChange(event) {
@@ -46,6 +79,7 @@ class SearchForm extends React.Component {
 
   handleStartDateChange(newDate) {
     this.setState({
+      //startDate: DateTimeFormat('en-US', {year:'numeric', month: '2-digit', day: '2-digit'}).format(newDate)
       startDate: newDate,
     });
   }
@@ -57,8 +91,10 @@ class SearchForm extends React.Component {
   }
 
   handleSubmit(event) {
+    this.setState({ search: true });
     console.log(JSON.stringify(this.state));
     event.preventDefault();
+    this.fetchData(this.state);
   }
 
   render() {
@@ -119,47 +155,8 @@ class SearchForm extends React.Component {
                 <Button type="submit">Submit</Button>
               </Form.Row>
             </Col>
-            <Col className={"table"}>
-              <table border="2">
-                <tbody>
-                  <tr>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Age</th>
-                    <th>rollno</th>
-                  </tr>
-
-                  {Students.students.map((item, i) => (
-                    <tr key={i}>
-                      <td>{item.name}</td>
-                      <td>{item.department}</td>
-                      <td>{item.age}</td>
-                      <td>{item.rollno}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Col>
+            <Col className="table">{this.state.search ? this.result : ""}</Col>
           </Row>
-          <table border="2">
-            <tbody>
-              <tr>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Age</th>
-                <th>rollno</th>
-              </tr>
-
-              {Students.students.map((item, i) => (
-                <tr key={i}>
-                  <td>{item.name}</td>
-                  <td>{item.department}</td>
-                  <td>{item.age}</td>
-                  <td>{item.rollno}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </Form>
       </div>
     );
