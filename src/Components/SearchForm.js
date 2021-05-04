@@ -40,8 +40,12 @@ class SearchForm extends React.Component {
 
   async fetchData(search) {
     let backend = new Backend();
-    let document = await backend.getByName(search.productName);
-    //let document = await backend.getTargetDate(search.start, search.end, search.target);
+    //let document = await backend.getByName(search.productName);
+    let document = await backend.getDateRangeName(
+      search.startDate,
+      search.endDate,
+      search.productName
+    );
     console.log("productName", document);
     console.log(typeof document);
     //this.displayData(document);

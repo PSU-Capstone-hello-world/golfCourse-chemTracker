@@ -6,12 +6,13 @@ class Backend {
   constructor() {
     this.api_key = API_KEY;
   }
-  async getDateRange(start, end) {
+  async getDateRangeName(start, end, name) {
     const body = {
       mode: "name_date",
       queryStringParameters: {
         start: start,
         end: end,
+        productName: name,
       },
     };
     const response = await axios.post(
