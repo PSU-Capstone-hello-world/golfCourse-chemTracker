@@ -5,22 +5,24 @@ class Backend{
     constructor() {
         this.api_key = API_KEY;
     }
-    async getDateRange(start, end) {
+    async getDateRange(start, end, productName) {
         const body = {
             'mode':'name_date',
             'queryStringParameters': {
                 'start': start,
-                'end':end
+                'end': end,
+                'productName':productName
             }
         }
         const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
         return JSON.parse(response.data['body']);
     }
-    async getByName(name) {
+    async getByName(productName) {
         const body = {
             'mode':'name',
             'queryStringParameters': {
-                'name': name            }
+                'productName': productName
+            }
         }
         const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
         return JSON.parse(response.data['body']);
@@ -69,7 +71,7 @@ class Backend{
         const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
         return JSON.parse(response.data['body']);
     }
-    async getNameTargetDate(start, end,nameTarget) {
+    async getNameTargetDate(start, end, nameTarget) {
         const body = {
             'mode':'name_target_date',
             'queryStringParameters': {
@@ -81,12 +83,12 @@ class Backend{
         const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
         return JSON.parse(response.data['body']);
     }
-    async getNameTarget(target, name) {
+    async getNameTarget(target, productName) {
         const body = {
             'mode':'name_target',
             'queryStringParameters': {
                 'target': target,
-                'name':name
+                'productName':productName
             }
         }
         const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
@@ -103,8 +105,19 @@ class Backend{
     async getItem() {
         
     }
-    async update(id, document) {
-        // in development
+    async update(oldDoc, newDoc) {
+        if (oldDoc !== newDoc) {
+            let body = {
+                'id': oldDoc['id'],
+                'updateStringParameters': {}
+            }
+            for (const property in oldDOc) {
+                if(oldDoc[property]!=newDoc[property])
+                    body['updateStringParameters'][property] = newDoc[property]
+            }
+            const response=await axios.patch("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/",body)
+            return JSON.parse(response.data['body'])
+        }
     }
 }
 
