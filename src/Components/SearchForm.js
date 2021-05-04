@@ -10,7 +10,7 @@ import "./SearchForm.css";
 //import { getByDisplayValue } from "@testing-library/dom";
 //import SearchResult from "./test";
 //import { axios } from "axios";
-import Backend from "../model/backEnd.js";
+import Backend from "../model/backend.js";
 
 class SearchForm extends React.Component {
   constructor(props) {
