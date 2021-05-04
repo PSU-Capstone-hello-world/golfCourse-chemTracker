@@ -10,7 +10,11 @@ async function loginUser(credentials) {
         'Content-Type': 'application/json'
         },
         body: JSON.stringify(credentials)
-    }).then(data => data.json())
+    })
+    .then(data => data.json())
+    .catch(error => {
+        alert(`Error occured: ${error}`);
+    })
 }
 
 export default function Login( { setToken }) {
@@ -20,29 +24,31 @@ export default function Login( { setToken }) {
 
     const handleSubmit = async event => {
         const form = event.currentTarget;
+        event.preventDefault();
 
         if (form.checkValidity() === false) {
-            event.preventDefault();
             event.stopPropagation();
         }
 
-        setValidated(true);
         const token = await loginUser({
             username,
             password
-          });
+        });
 
-        console.log("hello");
-
-        setToken(token);
+        if (token) {
+            setValidated(true);
+            setToken(token);
+        } else {
+            alert("Failed to login");
+        }
     }
 
     return (
         <Container id='containerLogin'>
             <Row className='justify-content-center align-self-center'>
-                <Form id='login' validated={validated} onSubmit={handleSubmit} preventDefault>
+                <Form id='loginForm' validated={validated} onSubmit={handleSubmit} preventDefault>
                     <div className='test d-flex justify-content-center'>
-                        <h3>Sign In</h3>
+                        <h3>Log in</h3>
                     </div>
 
                     <Form.Group controlId='formEmail'>
@@ -55,7 +61,6 @@ export default function Login( { setToken }) {
                         <Form.Control type='password' required placeholder='Password' onChange={e => setPassword(e.target.value)}/>
                     </Form.Group>
 
-                    {/* will need to change the url for this once we have authentication up and going */}
                     <Button type='submit' variant='info' className='btn-block'>Submit</Button>
                 </Form>
             </Row>
