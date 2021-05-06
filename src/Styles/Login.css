@@ -6,7 +6,7 @@
     transform: translate(-50%, -50%);
 }
 
-#login {
+#loginForm {
     border: 1px solid black;
     width: 90%;
     margin: 0 auto;
