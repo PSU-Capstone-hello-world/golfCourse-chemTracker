@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
-cd /golfCourse-chemTracker
+cd /
 npm install
 npm run build
