@@ -11,6 +11,7 @@ import "./SearchForm.css";
 //import SearchResult from "./test";
 //import { axios } from "axios";
 import Backend from "../model/backend.js";
+import { Container } from "react-bootstrap";
 
 class SearchForm extends React.Component {
   constructor(props) {
@@ -134,7 +135,7 @@ class SearchForm extends React.Component {
   render() {
     const { document } = this.state;
     return (
-      <div className={"SearchForm"}>
+      <Container fluid>
         <Row className={"header"}>
           <Col>
             <h2>Search Criteria</h2>
@@ -187,7 +188,7 @@ class SearchForm extends React.Component {
                 </Col>
               </Form.Row>
               <Form.Row>
-                <Button type="submit">Submit</Button>
+                <Button type="submit">Search</Button>
               </Form.Row>
             </Col>
             <Col className="table">
@@ -195,7 +196,7 @@ class SearchForm extends React.Component {
             </Col>
           </Row>
         </Form>
-      </div>
+      </Container>
     );
   }
 }
