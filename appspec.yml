@@ -26,8 +26,8 @@ files:
   - source: /
     destination: /
     overwrite: true
-  - source:
-    destination:
+  # - source:
+  #   destination:
 # For deployments to Amazon Linux, Ubuntu Server, or RHEL instances,
 #   you can specify a "permissions" 
 #   section here that describes special permissions to apply to the files 
@@ -38,25 +38,25 @@ files:
 #   then remove the 
 #   "permissions" section altogether. A blank or incomplete "permissions"
 #   section may cause associated deployments to fail.
-permissions:
-  - object:
-    pattern:
-    except:
-    owner:
-    group:
-    mode: 
-    acls:
-      -
-    context:
-      user:
-      type:
-      range:
-    type:
-      -
+# permissions:
+#   - object:
+#     pattern:
+#     except:
+#     owner:
+#     group:
+#     mode: 
+#     acls:
+#       -
+#     context:
+#       user:
+#       type:
+#       range:
+#     type:
+#       -
 # If you are not running any commands on the Amazon EC2 instance, then remove 
 #   the "hooks" section altogether. A blank or incomplete "hooks" section
 #   may cause associated deployments to fail.
-hooks:
+# hooks:
 # For each deployment lifecycle event, specify multiple "location" entries 
 #   if you want to run multiple scripts during that event.
 # You can specify "timeout" as the number of seconds to wait until failing the deployment 
@@ -92,34 +92,34 @@ hooks:
   BeforeInstall:
     - location: scripts/beforeInstallHook.sh
       timeout: 300
-      runas: 
-    - location: 
-      timeout:
-      runas:
+    #   runas: 
+    # - location: 
+    #   timeout:
+    #   runas:
 # During the AfterInstall deployment lifecycle event, run the commands 
 #   in the script specified in "location".
   AfterInstall:
     - location:  scripts/afterInstallHook.sh   
       timeout: 300
-      runas:
-    - location: 
-      timeout:
-      runas:
+    #   runas:
+    # - location: 
+    #   timeout:
+    #   runas:
 # During the ApplicationStart deployment lifecycle event, run the commands 
 #   in the script specified in "location".
-  ApplicationStart:
-    - location:     
-      timeout: 
-      runas:
-    - location: 
-      timeout:
-      runas:
+  # ApplicationStart:
+  #   - location:     
+  #     timeout: 
+  #     runas:
+  #   - location: 
+  #     timeout:
+  #     runas:
 # During the ValidateService deployment lifecycle event, run the commands 
 #   in the script specified in "location".
-  ValidateService:
-    - location:     
-      timeout: 
-      runas:
-    - location: 
-      timeout:
-      runas:
+  # ValidateService:
+  #   - location:     
+  #     timeout: 
+  #     runas:
+  #   - location: 
+  #     timeout:
+  #     runas:
