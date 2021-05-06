@@ -593,8 +593,31 @@ class AddForm extends React.Component {
           />
         </Form.Group>
 
-        {/* timeStart: "", */}
-        {/* timeEnd: "", */}
+        <Row>
+          <Col>
+            <Form.Group controlId="timeStart">
+              <Form.Label>Start Time</Form.Label>
+              <Form.Control
+                type="text"
+                name="timeStart"
+                placeholder="Start Time"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col>
+            <Form.Group controlId="timeEnd">
+              <Form.Label>End Time</Form.Label>
+              <Form.Control
+                type="text"
+                name="timeEnd"
+                placeholder="End Time"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Form.Group controlId="protective">
           <Form.Label>Protective Equipment Used</Form.Label>
