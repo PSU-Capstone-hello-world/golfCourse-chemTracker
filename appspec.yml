@@ -4,6 +4,7 @@ files:
   - source: golfCourse-chemTracker
     destination: /home/ec2-user
     overwrite: true
+    runas: ec2-user
 hooks:
   BeforeInstall:
     - location: scripts/beforeInstallHook.sh
