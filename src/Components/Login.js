@@ -3,13 +3,15 @@ import {Container, Row, Button, Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import '../Styles/Login.css';
 
+
 async function loginUser(credentials) {
-    return await fetch('http://localhost:8080/login', {
-        method: 'POST',
+    return await fetch(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names?name=${credentials.username}&details=${credentials.password}`, {
+        method: 'GET',
         headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
         },
-        body: JSON.stringify(credentials)
+        // body: JSON.stringify(credentials)
     })
     .then(data => data.json())
     .catch(error => {
