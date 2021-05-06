@@ -6,4 +6,4 @@ cd /home/ec2-user
 sudo chown -R $(whoami) ~/.npm
 npm install
 npm cache clean
-npm run build
+# npm run build
