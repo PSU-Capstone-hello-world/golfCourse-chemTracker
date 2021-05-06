@@ -3,6 +3,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 set -e
 cd /home/ec2-user
-npm install
+sudo npm install
 npm cache clean
 sudo npm run build
