@@ -9,7 +9,7 @@ class Templates extends React.Component {
         <Container fluid>
             <Row>
                 <Col>
-                    <Card className="myCard" style={{ width: '15rem' }}>
+                    <Card className="myCard" style={{ position: 'absolute' }}>
                         <Card.Img variant="top" src="https://img.icons8.com/carbon-copy/200/000000/add-rule.png" />
                         <Card.Body>
                             <Card.Title>Create New Template</Card.Title>
@@ -17,7 +17,7 @@ class Templates extends React.Component {
                     </Card>
                 </Col>
                 <Col>
-                    <Card className="myCard" style={{ width: '15rem' }}>
+                    <Card className="myCard" style={{ position: 'absolute' }}>
                         <Card.Img variant="top" src="https://img.icons8.com/carbon-copy/200/000000/edit-property.png" />
                         <Card.Body>
                             <Card.Title>Edit Existing Template</Card.Title>

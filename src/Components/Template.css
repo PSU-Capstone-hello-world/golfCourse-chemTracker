@@ -1,6 +1,12 @@
-.card {
-    position: relative !important;
+.myCard {
+    /* position: relative !important; */
     cursor: pointer;
+    border-radius: 30px;
+    margin-top: 250px;
+}
+
+body {
+    background-color: gainsboro;
 }
 
 .card:hover {
