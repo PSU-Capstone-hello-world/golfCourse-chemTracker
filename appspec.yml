@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: golfCourse-chemTracker
-    destination: /
+    destination: /home/ec2-user
     overwrite: true
 hooks:
   BeforeInstall:

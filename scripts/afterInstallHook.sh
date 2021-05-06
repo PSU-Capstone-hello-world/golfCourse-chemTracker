@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
-cd /
+cd /home/ec2-user
 npm install
 npm run build
