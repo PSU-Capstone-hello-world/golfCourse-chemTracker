@@ -108,7 +108,7 @@ class Backend{
                 'id': oldDoc['id'],
                 'updateStringParameters': {}
             }
-            for (const property in oldDOc) {
+            for (const property in oldDoc) {
                 if(oldDoc[property]!=newDoc[property])
                     body['updateStringParameters'][property] = newDoc[property]
             }
