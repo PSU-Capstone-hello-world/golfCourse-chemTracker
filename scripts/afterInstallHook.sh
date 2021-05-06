@@ -4,5 +4,6 @@ export NVM_DIR="$HOME/.nvm"
 set -e
 cd /home/ec2-user
 npm install
+chown -R nodejs:nodejs /tmp/.npm/
 npm cache clean
 npm run build
