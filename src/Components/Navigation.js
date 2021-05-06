@@ -6,7 +6,8 @@ import Home from "./Home";
 import CalendarView from "./Calendar";
 import AddForm from "./AddForm";
 import SearchForm from "./SearchForm";
-import Analytics from "./Analytics";
+import Templates from "./Templates";
+import NewTemplate from "./NewTemplate";
 
 function Navigation(props) {
     return (
@@ -18,7 +19,7 @@ function Navigation(props) {
                         <Nav.Link as={Link} to="/Calendar">Calendar</Nav.Link>
                         <Nav.Link as={Link} to="/Add_Form">Add Form</Nav.Link>
                         <Nav.Link as={Link} to="/Search_Form">Search Forms</Nav.Link>
-                        <Nav.Link as={Link} to="/Analytics">Analytics</Nav.Link>
+                        <Nav.Link as={Link} to="/Templates">Templates</Nav.Link>
                     </Nav>
                 </Navbar>
                 <Switch>
@@ -31,8 +32,11 @@ function Navigation(props) {
                     <Route path="/Search_Form">
                         <SearchForm/>
                     </Route>
-                    <Route path="/Analytics">
-                        <Analytics/>
+                    <Route path="/Templates">
+                        <Templates />
+                    </Route>
+                    <Route path="/NewTemplate">
+                        <NewTemplate />
                     </Route>
                     <Route path="/">
                         <Home />

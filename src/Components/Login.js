@@ -3,6 +3,9 @@ import {Container, Row, Button, Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import '../Styles/Login.css';
 
+// URL https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names
+
+
 async function loginUser(credentials) {
     return await fetch('http://localhost:8080/login', {
         method: 'POST',
