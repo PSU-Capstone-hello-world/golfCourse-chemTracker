@@ -4,5 +4,5 @@ export NVM_DIR="$HOME/.nvm"
 set -e
 cd /home/ec2-user
 npm install
-sudo chown -R 1000:1000 "/home/user/.npm"
+npm cache clean
 sudo npm run build
