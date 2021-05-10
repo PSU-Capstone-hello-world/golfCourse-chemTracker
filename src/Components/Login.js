@@ -5,11 +5,11 @@ import '../Styles/Login.css';
 
 
 async function loginUser(credentials) {
-    return await fetch(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names?name=${credentials.username}&details=${credentials.password}`, {
+    const url = `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names?name=${credentials.username}&details=${credentials.password}`
+    return await fetch(url, {
         method: 'GET',
         headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
         },
         // body: JSON.stringify(credentials)
     })
@@ -37,7 +37,9 @@ export default function Login( { setToken }) {
             password
         });
 
-        if (token) {
+        const flag = (token.body === "true");
+
+        if (flag) {
             setValidated(true);
             setToken(token);
         } else {
