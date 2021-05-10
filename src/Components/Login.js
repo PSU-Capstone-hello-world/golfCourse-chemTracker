@@ -64,7 +64,7 @@ export default function Login( { setToken }) {
                         <Form.Control type='password' required placeholder='Password' onChange={e => setPassword(e.target.value)}/>
                     </Form.Group>
 
-                    <Button type='submit' variant='info' className='btn-block'>Submit</Button>
+                    <Button type='submit' variant='primary' className='btn-block'>Submit</Button>
                 </Form>
             </Row>
         </Container>

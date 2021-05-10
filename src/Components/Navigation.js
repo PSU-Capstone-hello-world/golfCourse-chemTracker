@@ -6,8 +6,9 @@ import Home from "./Home";
 import CalendarView from "./Calendar";
 import AddForm from "./AddForm";
 import SearchForm from "./SearchForm";
-import Templates from "./Templates";
-import NewTemplate from "./NewTemplate";
+import Templates from "./Templates/Templates";
+import CreateTemplate from "./Templates/Create/CreateTemplate";
+import EditTemplate from "./Templates/Edit/EditTemplate";
 
 function Navigation(props) {
     return (
@@ -35,8 +36,11 @@ function Navigation(props) {
                     <Route path="/Templates">
                         <Templates />
                     </Route>
-                    <Route path="/NewTemplate">
-                        <NewTemplate />
+                    <Route path="/CreateTemplate">
+                        <CreateTemplate />
+                    </Route>
+                    <Route path="/EditTemplate">
+                        <EditTemplate />
                     </Route>
                     <Route path="/">
                         <Home />

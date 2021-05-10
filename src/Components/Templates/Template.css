@@ -3,6 +3,7 @@
     cursor: pointer;
     border-radius: 30px;
     margin-top: 250px;
+    border: 1px solid black;
 }
 
 body {

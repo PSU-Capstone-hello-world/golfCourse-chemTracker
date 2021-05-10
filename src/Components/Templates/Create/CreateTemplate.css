@@ -1,15 +1,18 @@
-#containerLogin {
-    max-width: 1000px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* .parent {
+    position: relative;
 }
 
-#loginForm {
+.child {
+    position: absolute;
+    bottom: 40px;
+    top: 40px;
+} */
+
+
+.createTemplate {
     border: 1px solid black;
     width: 90%;
-    margin: 0 auto;
+    margin: 3% auto;
     padding: 20px 20px;
     border-radius: 20px;
     background-color: white;
