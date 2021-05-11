@@ -1,31 +1,90 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import Calendar from 'react-calendar';
+import React, { Component } from 'react';
 
-import 'react-calendar/dist/Calendar.css';
+import {Calendar, momentLocalizer  } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-function MyCalendar() {
+import axios from 'axios'
 
-    const [date, setDate] = useState(new Date());
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import '../Styles/calendar.css';
 
-    const onDateChange = (newDate) => {
-        setDate(newDate);
-        console.log("devon date: " + newDate);
+import Backend from "../model/backend.js";
+
+//Calendar.momentLocalizer(moment);
+
+moment.locale('en-GB');
+
+
+const localizer = momentLocalizer(moment)
+
+class ChemCalendar extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      cal_events: [
+        //State is updated via componentDidMount
+      ],
     }
 
+  }
+
+  convertDate = (date) => {
+    return moment.utc(date).toDate()
+  }
+
+  async componentDidMount() {
+let backend = new Backend()
+let test = await Backend.getByMonth('2021-03-01').then(data=>data.json());
+
+
+
+    // axios.get('https://api.github.com/users/mapbox')
+    //   .then(response => {
+    //     console.log(response.data);
+    //     let appointments = response.data;
+        
+    //     for (let i = 0; i < appointments.length; i++) {
+    //       appointments[i].start = this.convertDate(appointments[i].start)
+    //       appointments[i].end = this.convertDate(appointments[i].end)
+    //     }
+
+    //     this.setState({
+    //       cal_events:[...appointments]
+    //     })
+  
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+  }
+
+
+  render() {
+
+    const { cal_events } = this.state
+
     return (
-        <Calendar
-            onChange={onDateChange}
-            value={date}
-            showNeighboringMonth={false}
-            locale={"en-US"}
-        />
+      <div className="App">
+        <header className="App-header">
+          <img className="App-logo" alt="logo" />
+          <h1 className="App-title">React Calendar</h1>
+        </header>
+        <div style={{ height: 700 }}>
+          <Calendar
+            localizer={localizer}
+            events={cal_events}
+            step={30}
+            defaultView='week'
+            views={['month','week','day']}
+            defaultDate={new Date()}
+          />
+        </div>
+      </div>
     );
+  }
 }
 
-ReactDOM.render(
-    <MyCalendar />,
-    document.getElementById('root')
-);
-
-export default MyCalendar;
+export default ChemCalendar;
