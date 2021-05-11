@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import '../Styles/Login.css';
 
 async function loginUser(credentials) {
-    return await fetch('http://localhost:8080/login', {
-        method: 'POST',
+    const url = `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names?name=${credentials.username}&details=${credentials.password}`
+    return await fetch(url, {
+        method: 'GET',
         headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
         },
-        body: JSON.stringify(credentials)
     })
     .then(data => data.json())
     .catch(error => {
@@ -35,7 +35,7 @@ export default function Login( { setToken }) {
             password
         });
 
-        if (token) {
+        if (token.body === "true") {
             setValidated(true);
             setToken(token);
         } else {
