@@ -35,9 +35,9 @@ class ChemCalendar extends Component {
     return moment.utc(date).toDate()
   }
 
-  async componentDidMount() {
+async componentDidMount() {
 let backend = new Backend()
-let test = await Backend.getByMonth('2021-03-01').then(data=>data.json());
+let test = await backend.getByMonth('2021-05-01')
 
 
 
@@ -67,10 +67,9 @@ let test = await Backend.getByMonth('2021-03-01').then(data=>data.json());
     const { cal_events } = this.state
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <img className="App-logo" alt="logo" />
-          <h1 className="App-title">React Calendar</h1>
+      <div className="Calendar">
+        <header className="calendar-header">
+          <h1 className=".calendar-title">React Calendar</h1>
         </header>
         <div style={{ height: 700 }}>
           <Calendar
