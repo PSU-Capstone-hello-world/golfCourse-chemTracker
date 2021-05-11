@@ -11,7 +11,6 @@ async function loginUser(credentials) {
         headers: {
         'Content-Type': 'application/json',
         },
-        // body: JSON.stringify(credentials)
     })
     .then(data => data.json())
     .catch(error => {
@@ -37,9 +36,7 @@ export default function Login( { setToken }) {
             password
         });
 
-        const flag = (token.body === "true");
-
-        if (flag) {
+        if (token.body === "true") {
             setValidated(true);
             setToken(token);
         } else {
