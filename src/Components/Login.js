@@ -3,7 +3,6 @@ import {Container, Row, Button, Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import '../Styles/Login.css';
 
-
 async function loginUser(credentials) {
     const url = `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names?name=${credentials.username}&details=${credentials.password}`
     return await fetch(url, {
