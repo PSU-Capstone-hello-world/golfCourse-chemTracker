@@ -39,98 +39,36 @@ class CreateTemplate extends React.Component {
                         <Col>
                             <Form.Group controlId="formulation">
                                 <Form.Label>Formulation</Form.Label>
-
-                                <Form.Check
-                                inline
-                                name="formulationFlow"
-                                label="Flowable"
-                                type="checkbox"
-                                // checked={this.state.formulationFlow}
-                                onChange={this.handleInputChange}
-                                ></Form.Check>
-
-                                <Form.Check
-                                inline
-                                name="formulationGran"
-                                label="Granular"
-                                type="checkbox"
-                                // checked={this.state.formulationGran}
-                                onChange={this.handleInputChange}
-                                ></Form.Check>
-
-                                <Form.Check
-                                inline
-                                name="formulationWet"
-                                label="Wettable Powder"
-                                type="checkbox"
-                                // checked={this.state.formulationWet}
-                                onChange={this.handleInputChange}
-                                ></Form.Check>
-
-                                <Form.Check
-                                inline
-                                name="formulationEmul"
-                                label="Emulsified Concrete"
-                                type="checkbox"
-                                // checked={this.state.formulationEmul}
-                                onChange={this.handleInputChange}
-                                ></Form.Check>
-
-                                <Form.Check
-                                inline
-                                name="formulationOther"
-                                label="Other"
-                                type="checkbox"
-                                // checked={this.state.formulationOther}
-                                onChange={this.handleInputChange}
-                                ></Form.Check>
-
-                                <Form.Control
-                                type="text"
-                                name="formulationOtherValue"
-                                placeholder="Other Formulation"
-                                // hidden={!this.state.formulationOther}
-                                onChange={this.handleInputChange}
-                                />
+                                <div className="justify-content-center align-self-center">
+                                    {['Flowable', 'Granular', 'Wettable Powder', 'Emulsified Concrete', 'Other'].map((type) => (
+                                        <Form.Check
+                                            inline
+                                            label={type}
+                                            type="checkbox"
+                                            className="options ml-3 mr-3"
+                                        />
+                                    ))}
+                                </div>
                             </Form.Group>
                         </Col>
                     </Row>
-
                     <Row>
                         <Col>
                             <Form.Group controlId="signalWord">
-                                <Form.Label>Signal Word</Form.Label>
-
-                                <Form.Check
-                                inline
-                                name="sigWordCaution"
-                                label="Caution"
-                                type="checkbox"
-                                // checked={this.state.sigWordCaution}
-                                onChange={this.handleInputChange}
-                                ></Form.Check>
-
-                                <Form.Check
-                                inline
-                                name="sigWordWarning"
-                                label="Warning"
-                                type="checkbox"
-                                // checked={this.state.sigWordWarning}
-                                onChange={this.handleInputChange}
-                                ></Form.Check>
-
-                                <Form.Check
-                                inline
-                                name="sigWordDanger"
-                                label="Danger"
-                                type="checkbox"
-                                // checked={this.state.sigWordDanger}
-                                onChange={this.handleInputChange}
-                                ></Form.Check>
+                                <Form.Label>Signal Word: </Form.Label>
+                                <div className="justify-content-center align-self-center">
+                                    {['Caution', 'Warning', 'Danger'].map((type) => (
+                                        <Form.Check
+                                            inline
+                                            label={type}
+                                            type="checkbox"
+                                            className="options ml-3 mr-3"
+                                        />
+                                    ))}
+                                </div>
                             </Form.Group>
                         </Col>
                     </Row>
-
                     <Row>
                         <Col>
                             <Form.Group controlId="epaRegNum">
