@@ -6,6 +6,8 @@ import Col from "react-bootstrap/Col";
 import "./AddForm.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Backend from "../model/backend";
+import Document from "../model/document";
 
 // Resources:
 //   React Forms --> https://reactjs.org/docs/forms.html
@@ -119,7 +121,7 @@ class AddForm extends React.Component {
     });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     // Copy the state, so we can format the individual fields before sending to backend
     let output = JSON.parse(JSON.stringify(this.state));
 
@@ -127,8 +129,53 @@ class AddForm extends React.Component {
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
 
+    // Condense checkbox fields into one
+    // output.formulation = [];
+    // output.formulation.push(
+    //   output.formulationFlow,
+    //   output.formulationGran,
+    //   output.formulationWet,
+    //   output.formulationEmul,
+    //   output.formulationOther,
+    //   output.formulationOtherVal
+    // );
+
+    // output.signalWord = [];
+    // output.signalWord.push(
+    //   output.sigWordCaution,
+    //   output.sigWordWarning,
+    //   output.sigWordDanger
+    // );
+
+    // output.location = [];
+    // output.location.push(
+    //   output.locGreens,
+    //   output.locTees,
+    //   output.locFairways,
+    //   output.locOther,
+    //   output.locOtherVal
+    // );
+
+    // output.protectiveEq = [];
+    // output.protectiveEq.push(
+    //   output.protectiveLong,
+    //   output.protectiveShoes,
+    //   output.protectiveBoots,
+    //   output.protectiveGloves,
+    //   output.protectiveHat,
+    //   output.protectiveEye,
+    //   output.protectiveOther,
+    //   output.protectiveOtherVal
+    // );
+
     // Logging the output, this will go to backend later
     console.log(JSON.stringify(output));
+    output = JSON.stringify(output);
+
+    let backend = new Backend();
+    let response = await backend.put(output);
+
+    console.log(response);
 
     event.preventDefault();
   }
@@ -142,6 +189,7 @@ class AddForm extends React.Component {
             <Form.Group controlId="productName">
               <Form.Label>Product Name</Form.Label>
               <Form.Control
+                required
                 type="text"
                 name="productName"
                 placeholder="Product Name"
@@ -213,7 +261,7 @@ class AddForm extends React.Component {
 
           <Form.Control
             type="text"
-            name="formulationOtherValue"
+            name="formulationOtherVal"
             placeholder="Other Formulation"
             hidden={!this.state.formulationOther}
             onChange={this.handleInputChange}
@@ -318,7 +366,7 @@ class AddForm extends React.Component {
 
           <Form.Control
             type="text"
-            name="locOtherValue"
+            name="locOtherVal"
             placeholder="Other Location"
             hidden={!this.state.locOther}
             onChange={this.handleInputChange}
@@ -576,6 +624,7 @@ class AddForm extends React.Component {
         <Form.Group controlId="date">
           <Form.Label>Date Applied</Form.Label>
           <DatePicker
+            required
             selected={this.state.date}
             onChange={this.handleDateChange}
             name="date"
@@ -686,7 +735,7 @@ class AddForm extends React.Component {
 
           <Form.Control
             type="text"
-            name="protectiveOtherValue"
+            name="protectiveOtherVal"
             placeholder="Other Protective Equipment"
             hidden={!this.state.protectiveOther}
             onChange={this.handleInputChange}
@@ -772,6 +821,7 @@ class AddForm extends React.Component {
             <Form.Group controlId="signature">
               <Form.Label>Signature</Form.Label>
               <Form.Control
+                required
                 type="text"
                 name="signature"
                 placeholder="Signature"
