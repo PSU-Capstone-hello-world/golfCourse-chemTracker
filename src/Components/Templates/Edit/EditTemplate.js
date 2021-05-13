@@ -53,7 +53,6 @@ class EditTemplate extends React.Component {
         return (
         <Container>
             <Row className='justify-content-center align-self-center'>
-                {produc}
                 <Form className="createTemplate" preventDefault onSubmit={this.handleSubmit}>
                     <div className='d-flex justify-content-center'>
                         <h3>Edit Template Form</h3>
