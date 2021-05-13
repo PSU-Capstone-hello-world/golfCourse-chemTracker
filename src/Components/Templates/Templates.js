@@ -1,6 +1,6 @@
 import React from "react";
-import { Card, Container, Row, Col, Button } from 'react-bootstrap';
-import "./Template.css"
+import { Card, Container, Row, Col } from 'react-bootstrap';
+import "./Templates.css"
 
 class Templates extends React.Component {
     render() {

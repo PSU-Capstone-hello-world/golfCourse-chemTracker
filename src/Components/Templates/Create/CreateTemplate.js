@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Container, Row, Col, Button } from 'react-bootstrap';
-import "./CreateTemplate.css"
+import "../Templates.css";
 
 class CreateTemplate extends React.Component {
     constructor(props) {
@@ -28,10 +28,6 @@ class CreateTemplate extends React.Component {
         const value = target.type === "checkbox" ? target.checked : target.value;
         const name = target.name;
 
-        if (name === "Other") {
-            name = name.toLocalLowercase();
-        }
-
         this.setState({
             [name]: value,
         });
@@ -46,16 +42,18 @@ class CreateTemplate extends React.Component {
 
         event.preventDefault();
 
-        // Call database and save template 
+        // Call database and save template. Make sure to check that the product name is there before saving. 
+        // in other words, DO NOT save the template without a product name. Otherwise we'll have templates floating out
+        // in the DB that we couldn't retrieve
     }
 
     render() {
-        const { productName, other } = this.state;
+        const { other } = this.state;
 
         return (
         <Container>
             <Row className='justify-content-center align-self-center'>
-                <Form className="createTemplate" preventDefault onSubmit={this.handleSubmit}>
+                <Form className="templateForm" preventDefault onSubmit={this.handleSubmit}>
                     <div className='d-flex justify-content-center'>
                         <h3>Create Template Form</h3>
                     </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Container, Row, Col, Button } from 'react-bootstrap';
+import "../Templates.css";
 
 class EditTemplate extends React.Component {
     constructor(props) {
@@ -19,17 +20,29 @@ class EditTemplate extends React.Component {
             danger: false,
             regNum: "",
             estNum: "",
+            isTemplate: false
         }
     }
 
-    handleInputChange = (event) => {
+    getTemplate = event => {
+        // Take the given product and retrieve the stored template. If 
+        // the template doesn't exist return message displaying "couldn't retrieve template"
+        // or something like that
+        event.preventDefault();
+        console.log("in getTemplate()!");
+        console.log(event.target.value);
+
+        // This is temporary. What will end up happening is once we've gone to the DB and retrieved a tempalte, we'll
+        // store the data and isTemplate to true. Otherwise we'll display the error message
+        if (event.currentTarget[0].value) {
+            this.setState({ productName: event.currentTarget[0].value, isTemplate: true })
+        }
+    }
+
+    handleInputChange = event => {
         const target = event.target;
         const value = target.type === "checkbox" ? target.checked : target.value;
         const name = target.name;
-
-        if (name === "Other") {
-            name = name.toLocalLowercase();
-        }
 
         this.setState({
             [name]: value,
@@ -49,12 +62,12 @@ class EditTemplate extends React.Component {
     }
 
     render() {
-        const { productName, other } = this.state;
+        const { productName, isTemplate, other } = this.state;
         return (
         <Container>
             <Row className='justify-content-center align-self-center'>
-                {productName ? (
-                    <Form className="createTemplate" preventDefault onSubmit={this.handleSubmit}>
+                {isTemplate ? (
+                    <Form className="templateForm" onSubmit={this.handleSubmit}>
                         <div className='d-flex justify-content-center'>
                             <h3>Edit Template Form</h3>
                         </div>
@@ -65,6 +78,7 @@ class EditTemplate extends React.Component {
                                     <Form.Control
                                     type="text"
                                     name="productName"
+                                    value={productName}
                                     placeholder="Product Name"
                                     onChange={this.handleInputChange}
                                     />
@@ -193,26 +207,23 @@ class EditTemplate extends React.Component {
                                 </Form.Group>
                             </Col>
                         </Row>
-                        <Button type='submit' variant='primary' className='btn-block'>Create Template</Button>
+                        <Button type='submit' variant='primary' className='btn-block'>Save Template</Button>
                     </Form>
                 ) : (
-                    <Form className="createTemplate" preventDefault onSubmit={this.handleSubmit}>
-                        <div className='d-flex justify-content-center'>
-                            <h3>Edit Template Form</h3>
-                        </div>
+                    <Form className="templateForm" onSubmit={this.getTemplate}>
                         <Row>
                             <Col>
                                 <Form.Group controlId="productName">
-                                    <Form.Label>Product Name</Form.Label>
-                                    <Form.Control
-                                    type="text"
-                                    name="productName"
-                                    placeholder="Product Name"
-                                    onChange={this.handleInputChange}
+                                    <Form.Label>Please enter a product name</Form.Label>
+                                    <Form.Control 
+                                        type="text"
+                                        name="productName"
+                                        placeholder="Product Name"
                                     />
                                 </Form.Group>
                             </Col>
                         </Row>
+                        <Button type='submit' variant='primary' className='btn-block'>Search Templates</Button>
                     </Form>
                 )}
             </Row>
