@@ -35,7 +35,7 @@ export default function Login( { setToken }) {
             password
         });
 
-        if (token.body === "true") {
+        if (token.body) {
             setValidated(true);
             setToken(token);
         } else {
