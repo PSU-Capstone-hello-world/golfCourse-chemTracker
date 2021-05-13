@@ -50,158 +50,154 @@ class EditTemplate extends React.Component {
 
     render() {
         const { productName, other } = this.state;
-
-        if (!productName) {
-            return "hello"
-        } else {
-            return (
-                <Container>
-                    <Row className='justify-content-center align-self-center'>
-                        <Form className="createTemplate" preventDefault onSubmit={this.handleSubmit}>
-                            <div className='d-flex justify-content-center'>
-                                <h3>Edit Template Form</h3>
-                            </div>
-                            <Row>
-                                <Col>
-                                    <Form.Group controlId="productName">
-                                        <Form.Label>Product Name</Form.Label>
-                                        <Form.Control
-                                        type="text"
-                                        name="productName"
-                                        placeholder="Product Name"
-                                        onChange={this.handleInputChange}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col>
-                                    <Form.Group controlId="supplier">
-                                        <Form.Label>Supplier</Form.Label>
-                                        <Form.Control
-                                        type="text"
-                                        name="supplier"
-                                        placeholder="Supplier"
-                                        onChange={this.handleInputChange}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <Form.Group controlId="formulation">
-                                        <div className="d-flex">
-                                        <Form.Label className="formulationLabel">Formulation: </Form.Label>
-                                            <Form.Check
-                                                name="flow"
-                                                inline
-                                                label="Flowable"
-                                                type="checkbox"
-                                                className="options ml-3 mr-3"
-                                                onChange={this.handleInputChange}
-                                            />
-                                            <Form.Check
-                                                name="granular"
-                                                inline
-                                                label="Granular"
-                                                type="checkbox"
-                                                className="options ml-3 mr-3"
-                                                onChange={this.handleInputChange}
-                                            />
-                                            <Form.Check
-                                                name="wettable"
-                                                inline
-                                                label="Wettable Powder"
-                                                type="checkbox"
-                                                className="options ml-3 mr-3"
-                                                onChange={this.handleInputChange}
-                                            />
-                                            <Form.Check
-                                                name="emulsified"
-                                                inline
-                                                label="Emulsified Concrete"
-                                                type="checkbox"
-                                                className="options ml-3 mr-3"
-                                                onChange={this.handleInputChange}
-                                            />
-                                            <Form.Check
-                                                name="other"
-                                                inline
-                                                label="Other"
-                                                type="checkbox"
-                                                className="options ml-3 mr-3"
-                                                onChange={this.handleInputChange}
-                                            />
-                                        </div>
-                                        <Form.Control
-                                            type="text"
-                                            name="otherVal"
-                                            placeholder="Other Formulation"
-                                            hidden={!other}
-                                            onChange={this.handleInputChange}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <Form.Group controlId="signalWord">
-                                        <div className="d-flex">
-                                        <Form.Label className="signalLabel">Signal Word: </Form.Label>
-                                            <Form.Check
-                                                name="caution"
-                                                inline
-                                                label="Caution"
-                                                type="checkbox"
-                                                className="options ml-3 mr-3"
-                                            />
-                                            <Form.Check
-                                                name="warning"
-                                                inline
-                                                label="Warning"
-                                                type="checkbox"
-                                                className="options ml-3 mr-3"
-                                            />
-                                            <Form.Check
-                                                name="danger"
-                                                inline
-                                                label="Danger"
-                                                type="checkbox"
-                                                className="options ml-3 mr-3"
-                                            />
-                                        </div>
-                                    </Form.Group>
-                                </Col>
-                                <Col />
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <Form.Group controlId="regNum">
-                                        <Form.Label>EPA Registration #</Form.Label>
-                                        <Form.Control
-                                        type="text"
-                                        name="regNum"
-                                        placeholder="EPA Registration #"
-                                        onChange={this.handleInputChange}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col>
-                                    <Form.Group controlId="estNum">
-                                        <Form.Label>EPA Est. #</Form.Label>
-                                        <Form.Control
-                                        type="text"
-                                        name="estNum"
-                                        placeholder="EPA Est. #"
-                                        onChange={this.handleInputChange}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                            <Button type='submit' variant='primary' className='btn-block'>Create Template</Button>
-                        </Form>
+        return (
+        <Container>
+            <Row className='justify-content-center align-self-center'>
+                {produc}
+                <Form className="createTemplate" preventDefault onSubmit={this.handleSubmit}>
+                    <div className='d-flex justify-content-center'>
+                        <h3>Edit Template Form</h3>
+                    </div>
+                    <Row>
+                        <Col>
+                            <Form.Group controlId="productName">
+                                <Form.Label>Product Name</Form.Label>
+                                <Form.Control
+                                type="text"
+                                name="productName"
+                                placeholder="Product Name"
+                                onChange={this.handleInputChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group controlId="supplier">
+                                <Form.Label>Supplier</Form.Label>
+                                <Form.Control
+                                type="text"
+                                name="supplier"
+                                placeholder="Supplier"
+                                onChange={this.handleInputChange}
+                                />
+                            </Form.Group>
+                        </Col>
                     </Row>
-                </Container>
-            )
-        }
+                    <Row>
+                        <Col>
+                            <Form.Group controlId="formulation">
+                                <div className="d-flex">
+                                <Form.Label className="formulationLabel">Formulation: </Form.Label>
+                                    <Form.Check
+                                        name="flow"
+                                        inline
+                                        label="Flowable"
+                                        type="checkbox"
+                                        className="options ml-3 mr-3"
+                                        onChange={this.handleInputChange}
+                                    />
+                                    <Form.Check
+                                        name="granular"
+                                        inline
+                                        label="Granular"
+                                        type="checkbox"
+                                        className="options ml-3 mr-3"
+                                        onChange={this.handleInputChange}
+                                    />
+                                    <Form.Check
+                                        name="wettable"
+                                        inline
+                                        label="Wettable Powder"
+                                        type="checkbox"
+                                        className="options ml-3 mr-3"
+                                        onChange={this.handleInputChange}
+                                    />
+                                    <Form.Check
+                                        name="emulsified"
+                                        inline
+                                        label="Emulsified Concrete"
+                                        type="checkbox"
+                                        className="options ml-3 mr-3"
+                                        onChange={this.handleInputChange}
+                                    />
+                                    <Form.Check
+                                        name="other"
+                                        inline
+                                        label="Other"
+                                        type="checkbox"
+                                        className="options ml-3 mr-3"
+                                        onChange={this.handleInputChange}
+                                    />
+                                </div>
+                                <Form.Control
+                                    type="text"
+                                    name="otherVal"
+                                    placeholder="Other Formulation"
+                                    hidden={!other}
+                                    onChange={this.handleInputChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group controlId="signalWord">
+                                <div className="d-flex">
+                                <Form.Label className="signalLabel">Signal Word: </Form.Label>
+                                    <Form.Check
+                                        name="caution"
+                                        inline
+                                        label="Caution"
+                                        type="checkbox"
+                                        className="options ml-3 mr-3"
+                                    />
+                                    <Form.Check
+                                        name="warning"
+                                        inline
+                                        label="Warning"
+                                        type="checkbox"
+                                        className="options ml-3 mr-3"
+                                    />
+                                    <Form.Check
+                                        name="danger"
+                                        inline
+                                        label="Danger"
+                                        type="checkbox"
+                                        className="options ml-3 mr-3"
+                                    />
+                                </div>
+                            </Form.Group>
+                        </Col>
+                        <Col />
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Form.Group controlId="regNum">
+                                <Form.Label>EPA Registration #</Form.Label>
+                                <Form.Control
+                                type="text"
+                                name="regNum"
+                                placeholder="EPA Registration #"
+                                onChange={this.handleInputChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group controlId="estNum">
+                                <Form.Label>EPA Est. #</Form.Label>
+                                <Form.Control
+                                type="text"
+                                name="estNum"
+                                placeholder="EPA Est. #"
+                                onChange={this.handleInputChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Button type='submit' variant='primary' className='btn-block'>Create Template</Button>
+                </Form>
+            </Row>
+        </Container>
+        )
     }
 }
 
