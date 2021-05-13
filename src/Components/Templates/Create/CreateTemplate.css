@@ -7,21 +7,8 @@
     background-color: white;
 }
 
-.test {
-    display: flex;
-    flex-flow: row;
-}
-
-/* .t {
-    margin: 0 auto;
-} */
-
-/* .form-check {
-    margin: 0 2%;
-} */
-
-.form-label {
-    text-decoration: underline;
+.formulationLabel {
+    width: 15%;
 }
 
 .options {

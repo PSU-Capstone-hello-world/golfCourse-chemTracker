@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, Container, Row, Col, Button } from 'react-bootstrap';
-// import NewTemplate from "./NewTemplate";
 import "./Template.css"
 
 class Templates extends React.Component {
@@ -10,7 +9,7 @@ class Templates extends React.Component {
             <Row>
                 <Col>
                     <a href="/createTemplate">
-                        <Card className="myCard" style={{ position: 'absolute' }}>
+                        <Card className="templateCard" style={{ position: 'absolute' }}>
                             <Card.Img variant="top" src="https://img.icons8.com/carbon-copy/200/000000/add-rule.png" />
                             <Card.Body>
                                 <Card.Title>Create New Template</Card.Title>
@@ -20,7 +19,7 @@ class Templates extends React.Component {
                 </Col>
                 <Col>
                     <a href="/editTemplate">
-                        <Card className="myCard" style={{ position: 'absolute' }}>
+                        <Card className="templateCard" style={{ position: 'absolute' }}>
                             <Card.Img variant="top" src="https://img.icons8.com/carbon-copy/200/000000/edit-property.png" />
                             <Card.Body>
                                 <Card.Title>Edit Existing Template</Card.Title>
