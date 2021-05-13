@@ -108,7 +108,7 @@ class Backend{
                 'id': oldDoc['id'],
                 'updateStringParameters': {}
             }
-            for (const property in oldDOc) {
+            for (const property in oldDoc) {
                 if(oldDoc[property]!=newDoc[property])
                     body['updateStringParameters'][property] = newDoc[property]
             }
@@ -207,7 +207,11 @@ class Backend{
             reject(error);
           }
         })
-      }
+    }
+    async delete(id) {
+        let response = await axios.delete(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id/delete?file_id=${id}`);
+        return response;
+    }
 }
 
 export default Backend;
