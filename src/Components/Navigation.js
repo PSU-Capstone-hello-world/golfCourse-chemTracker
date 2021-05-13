@@ -14,7 +14,7 @@ function Navigation(props) {
             <div>
                 <Navbar bg="primary" variant="dark">
                     <Nav className="mr-auto">
-                        <Nav.Link as={Link} to="/Home">Home</Nav.Link>
+                        <Nav.Link as={Link} to="/">Home</Nav.Link>
                         <Nav.Link as={Link} to="/Calendar">Calendar</Nav.Link>
                         <Nav.Link as={Link} to="/Add_Form">Add Form</Nav.Link>
                         <Nav.Link as={Link} to="/Search_Form">Search Forms</Nav.Link>
@@ -34,7 +34,7 @@ function Navigation(props) {
                     <Route path="/Analytics">
                         <Analytics/>
                     </Route>
-                    <Route path="/Home">
+                    <Route path="/">
                         <Home />
                     </Route>
                 </Switch>
