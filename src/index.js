@@ -14,22 +14,3 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-
-
-// const rootElement = document.getElementById("root");
-// ReactDOM.render(
-//     <Router>
-//         <div>
-//             <Route exact path='/'>
-//                 <Login />
-//             </Route>
-//             <Route path='/Home'>
-//                 <div className="App">
-//                     <header className="App-header">
-//                         <Navigation></Navigation>
-//                     </header>
-//                 </div>
-//             </Route>
-//         </div>
-//     </Router>,
-//     rootElement);

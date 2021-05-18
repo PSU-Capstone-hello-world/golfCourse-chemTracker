@@ -2,8 +2,13 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
+import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import "./AddForm.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Backend from "../model/backend";
+import Document from "../model/document";
 
 // Resources:
 //   React Forms --> https://reactjs.org/docs/forms.html
@@ -13,6 +18,7 @@ class AddForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const today = new Date();
     // Everyting from the original Gresham Golf Course Form
     this.state = {
       // Product
@@ -23,6 +29,7 @@ class AddForm extends React.Component {
       formulationWet: false,
       formulationEmul: false,
       formulationOther: false,
+      formulationOtherVal: "",
       sigWordCaution: false,
       sigWordWarning: false,
       sigWordDanger: false,
@@ -32,6 +39,7 @@ class AddForm extends React.Component {
       locTees: false,
       locFairways: false,
       locOther: false,
+      locOtherVal: "",
       target: "",
 
       // Equipment and Rates
@@ -55,7 +63,7 @@ class AddForm extends React.Component {
       temp: "",
       humidity: "",
       wind: "",
-      date: "",
+      date: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
       purs: "",
       timeStart: "",
       timeEnd: "",
@@ -66,6 +74,7 @@ class AddForm extends React.Component {
       protectiveHat: false,
       protectiveEye: false,
       protectiveOther: false,
+      protectiveOtherVal: "",
       disposed: "",
       cleaned: "",
       msds: "",
@@ -73,25 +82,102 @@ class AddForm extends React.Component {
       lbsP2O5: "",
       lbsK2O: "",
       signature: "",
-      sigDate: "",
+      sigDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
+    this.handleSigDate = this.handleSigDate.bind(this);
   }
 
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
+    console.log(this.value);
 
     this.setState({
       [name]: value,
     });
   }
 
-  handleSubmit(event) {
-    console.log(JSON.stringify(this.state));
+  // Dates from date picker are handled seperatley, they also need a math conversion or else the day can be off by one
+  // A thread about the issue and the workaround were found at: https://github.com/Hacker0x01/react-datepicker/issues/1018
+  handleDateChange(newDate) {
+    const offsetDate = new Date(
+      newDate.getTime() - newDate.getTimezoneOffset() * 60000
+    );
+    this.setState({
+      date: offsetDate,
+    });
+  }
+
+  handleSigDate(newDate) {
+    const offsetDate = new Date(
+      newDate.getTime() - newDate.getTimezoneOffset() * 60000
+    );
+    this.setState({
+      sigDate: offsetDate,
+    });
+  }
+
+  async handleSubmit(event) {
+    // Copy the state, so we can format the individual fields before sending to backend
+    let output = JSON.parse(JSON.stringify(this.state));
+
+    // Format Dates
+    output.date = JSON.stringify(output.date).slice(1, 11);
+    output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
+
+    // Condense checkbox fields into one
+    // output.formulation = [];
+    // output.formulation.push(
+    //   output.formulationFlow,
+    //   output.formulationGran,
+    //   output.formulationWet,
+    //   output.formulationEmul,
+    //   output.formulationOther,
+    //   output.formulationOtherVal
+    // );
+
+    // output.signalWord = [];
+    // output.signalWord.push(
+    //   output.sigWordCaution,
+    //   output.sigWordWarning,
+    //   output.sigWordDanger
+    // );
+
+    // output.location = [];
+    // output.location.push(
+    //   output.locGreens,
+    //   output.locTees,
+    //   output.locFairways,
+    //   output.locOther,
+    //   output.locOtherVal
+    // );
+
+    // output.protectiveEq = [];
+    // output.protectiveEq.push(
+    //   output.protectiveLong,
+    //   output.protectiveShoes,
+    //   output.protectiveBoots,
+    //   output.protectiveGloves,
+    //   output.protectiveHat,
+    //   output.protectiveEye,
+    //   output.protectiveOther,
+    //   output.protectiveOtherVal
+    // );
+
+    // Logging the output, this will go to backend later
+    console.log(JSON.stringify(output));
+    output = JSON.stringify(output);
+
+    let backend = new Backend();
+    let response = await backend.put(output);
+
+    console.log(response);
+
     event.preventDefault();
   }
 
@@ -104,6 +190,7 @@ class AddForm extends React.Component {
             <Form.Group controlId="productName">
               <Form.Label>Product Name</Form.Label>
               <Form.Control
+                required
                 type="text"
                 name="productName"
                 placeholder="Product Name"
@@ -172,6 +259,14 @@ class AddForm extends React.Component {
             checked={this.state.formulationOther}
             onChange={this.handleInputChange}
           ></Form.Check>
+
+          <Form.Control
+            type="text"
+            name="formulationOtherVal"
+            placeholder="Other Formulation"
+            hidden={!this.state.formulationOther}
+            onChange={this.handleInputChange}
+          />
         </Form.Group>
 
         <Form.Group controlId="signalWord">
@@ -269,6 +364,14 @@ class AddForm extends React.Component {
             checked={this.state.locOther}
             onChange={this.handleInputChange}
           ></Form.Check>
+
+          <Form.Control
+            type="text"
+            name="locOtherVal"
+            placeholder="Other Location"
+            hidden={!this.state.locOther}
+            onChange={this.handleInputChange}
+          />
         </Form.Group>
 
         <Form.Group controlId="target">
@@ -519,6 +622,16 @@ class AddForm extends React.Component {
         </Row>
 
         {/* date: "", */}
+        <Form.Group controlId="date">
+          <Form.Label>Date Applied</Form.Label>
+          <DatePicker
+            required
+            selected={this.state.date}
+            onChange={this.handleDateChange}
+            name="date"
+            dateFormat="MM/dd/yyyy"
+          />
+        </Form.Group>
 
         <Form.Group controlId="purs">
           <Form.Label>PURS</Form.Label>
@@ -530,10 +643,34 @@ class AddForm extends React.Component {
           />
         </Form.Group>
 
-        {/* timeStart: "", */}
-        {/* timeEnd: "", */}
+        <Row>
+          <Col>
+            <Form.Group controlId="timeStart">
+              <Form.Label>Start Time</Form.Label>
+              <Form.Control
+                type="text"
+                name="timeStart"
+                placeholder="Start Time"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col>
+            <Form.Group controlId="timeEnd">
+              <Form.Label>End Time</Form.Label>
+              <Form.Control
+                type="text"
+                name="timeEnd"
+                placeholder="End Time"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Form.Group controlId="protective">
+          <Form.Label>Protective Equipment Used</Form.Label>
           <Form.Check
             inline
             name="protectiveLong"
@@ -596,6 +733,14 @@ class AddForm extends React.Component {
             checked={this.state.protectiveOther}
             onChange={this.handleInputChange}
           ></Form.Check>
+
+          <Form.Control
+            type="text"
+            name="protectiveOtherVal"
+            placeholder="Other Protective Equipment"
+            hidden={!this.state.protectiveOther}
+            onChange={this.handleInputChange}
+          />
         </Form.Group>
 
         <Form.Group controlId="disposed">
@@ -672,17 +817,33 @@ class AddForm extends React.Component {
           />
         </Form.Group>
 
-        <Form.Group controlId="signature">
-          <Form.Label>Signature</Form.Label>
-          <Form.Control
-            type="text"
-            name="signature"
-            placeholder="Signature"
-            onChange={this.handleInputChange}
-          />
-        </Form.Group>
+        <Row>
+          <Col>
+            <Form.Group controlId="signature">
+              <Form.Label>Signature</Form.Label>
+              <Form.Control
+                required
+                type="text"
+                name="signature"
+                placeholder="Signature"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
 
-        {/* sigDate: "", */}
+          {/* sigDate: "", */}
+          <Col>
+            <Form.Group controlId="sigDate">
+              <Form.Label>Date</Form.Label>
+              <DatePicker
+                selected={this.state.sigDate}
+                onChange={this.handleSigDate}
+                name="sigDate"
+                dateFormat="MM/dd/yyyy"
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Button type="submit">Submit</Button>
       </Form>
