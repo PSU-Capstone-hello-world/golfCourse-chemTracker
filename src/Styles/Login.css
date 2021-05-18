@@ -11,7 +11,8 @@
     width: 90%;
     margin: 0 auto;
     padding: 20px 20px;
-    border-radius: 5px;
-    background: rgb(207,203,203);
-    background: linear-gradient(90deg, rgba(207,203,203,0.78) 0%, rgba(255,255,255,0.819765406162465) 35%, rgba(207,203,203,0.7777485994397759) 100%);
+    border-radius: 20px;
+    background-color: white;
+    /* background: rgb(207,203,203);
+    background: linear-gradient(90deg, rgba(207,203,203,0.78) 0%, rgba(255,255,255,0.819765406162465) 35%, rgba(207,203,203,0.7777485994397759) 100%); */
 }
