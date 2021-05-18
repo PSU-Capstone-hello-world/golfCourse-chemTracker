@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./SearchForm.css";
 import Backend from "../model/backend.js";
 import { Container } from "react-bootstrap";
+import Modalview from "./Modal";
 
 class SearchForm extends React.Component {
   constructor(props) {
@@ -23,6 +24,7 @@ class SearchForm extends React.Component {
       endDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
       search: false,
       document: "",
+      showModal: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -194,6 +196,12 @@ class SearchForm extends React.Component {
               </Form.Row>
               <Form.Row>
                 <Button type="submit">Search</Button>
+                <Button
+                  onClick={() => this.setState({ showModal: true })}
+                  type="button"
+                >
+                  modal
+                </Button>
               </Form.Row>
             </Col>
             <Col className="table">
@@ -205,5 +213,14 @@ class SearchForm extends React.Component {
     );
   }
 }
+/*
+<Modalview
+modalState={this.state.modalState}
+handleModalOpen={this.handleModalOpen}
+></Modalview>
 
+  handleModalOpen = () => {
+    this.setState({ modalState: !this.state.modalState });
+  };
+  */
 export default SearchForm;
