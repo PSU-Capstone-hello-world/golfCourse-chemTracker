@@ -2,13 +2,11 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
-import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import "./AddForm.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Backend from "../model/backend";
-import Document from "../model/document";
 
 // Resources:
 //   React Forms --> https://reactjs.org/docs/forms.html
@@ -162,7 +160,9 @@ class AddForm extends React.Component {
         <Row>
           <Col>
             <Form.Group controlId="productName">
-              <Form.Label>Product Name</Form.Label>
+              <Form.Label>
+                Product Name <span>(required)</span>
+              </Form.Label>
               <Form.Control
                 required
                 type="text"
@@ -301,7 +301,9 @@ class AddForm extends React.Component {
         </Row>
 
         <Form.Group controlId="location">
-          <Form.Label>Location</Form.Label>
+          <Form.Label>
+            Location <span>(required)</span>
+          </Form.Label>
 
           <Form.Check
             inline
@@ -463,7 +465,7 @@ class AddForm extends React.Component {
           </Col>
           <Col>
             <Form.Group controlId="tankWater">
-              <Form.Label></Form.Label>
+              <Form.Label>Gallons of Water</Form.Label>
               <Form.Control
                 type="text"
                 name="tankWater"
@@ -597,7 +599,9 @@ class AddForm extends React.Component {
 
         {/* date: "", */}
         <Form.Group controlId="date">
-          <Form.Label>Date Applied</Form.Label>
+          <Form.Label>
+            Date Applied <span>(required)</span>
+          </Form.Label>
           <DatePicker
             required
             selected={this.state.date}
@@ -794,7 +798,9 @@ class AddForm extends React.Component {
         <Row>
           <Col>
             <Form.Group controlId="signature">
-              <Form.Label>Signature</Form.Label>
+              <Form.Label>
+                Signature <span>(required)</span>
+              </Form.Label>
               <Form.Control
                 required
                 type="text"
@@ -808,8 +814,11 @@ class AddForm extends React.Component {
           {/* sigDate: "", */}
           <Col>
             <Form.Group controlId="sigDate">
-              <Form.Label>Date</Form.Label>
+              <Form.Label>
+                Today's Date <span>(required)</span>
+              </Form.Label>
               <DatePicker
+                required
                 selected={this.state.sigDate}
                 onChange={this.handleSigDate}
                 name="sigDate"
