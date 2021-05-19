@@ -123,51 +123,24 @@ class AddForm extends React.Component {
   }
 
   async handleSubmit(event) {
+    event.preventDefault();
+    if (
+      !(
+        this.state.locGreens ||
+        this.state.locTees ||
+        this.state.locFairways ||
+        this.state.locOther
+      )
+    ) {
+      alert("Location is required");
+      return false;
+    }
     // Copy the state, so we can format the individual fields before sending to backend
     let output = JSON.parse(JSON.stringify(this.state));
 
     // Format Dates
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
-
-    // Condense checkbox fields into one
-    // output.formulation = [];
-    // output.formulation.push(
-    //   output.formulationFlow,
-    //   output.formulationGran,
-    //   output.formulationWet,
-    //   output.formulationEmul,
-    //   output.formulationOther,
-    //   output.formulationOtherVal
-    // );
-
-    // output.signalWord = [];
-    // output.signalWord.push(
-    //   output.sigWordCaution,
-    //   output.sigWordWarning,
-    //   output.sigWordDanger
-    // );
-
-    // output.location = [];
-    // output.location.push(
-    //   output.locGreens,
-    //   output.locTees,
-    //   output.locFairways,
-    //   output.locOther,
-    //   output.locOtherVal
-    // );
-
-    // output.protectiveEq = [];
-    // output.protectiveEq.push(
-    //   output.protectiveLong,
-    //   output.protectiveShoes,
-    //   output.protectiveBoots,
-    //   output.protectiveGloves,
-    //   output.protectiveHat,
-    //   output.protectiveEye,
-    //   output.protectiveOther,
-    //   output.protectiveOtherVal
-    // );
 
     // Logging the output, this will go to backend later
     console.log(JSON.stringify(output));
@@ -177,8 +150,9 @@ class AddForm extends React.Component {
     let response = await backend.put(output);
 
     console.log(response);
-
-    event.preventDefault();
+    alert("Your form has been submitted");
+    event.target.reset();
+    return true;
   }
 
   render() {
