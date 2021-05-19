@@ -828,7 +828,18 @@ class AddForm extends React.Component {
           </Col>
         </Row>
 
-        <Button type="submit">Submit</Button>
+        <Row style={{ paddingBottom: "20px" }}>
+          <Col>
+            <Button type="submit" style={{ width: "80px" }}>
+              Submit
+            </Button>
+          </Col>
+          <Col>
+            <Button type="reset" variant="info" style={{ width: "80px" }}>
+              Reset
+            </Button>
+          </Col>
+        </Row>
       </Form>
     );
   }
