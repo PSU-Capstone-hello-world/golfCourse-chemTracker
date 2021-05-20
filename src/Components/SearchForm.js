@@ -25,6 +25,7 @@ class SearchForm extends React.Component {
       search: false,
       document: "",
       showModal: false,
+      index: -1,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -101,7 +102,11 @@ class SearchForm extends React.Component {
           </tr>
           {document.Items.map((item, i) => (
             <tr key={i}>
-              <td>{item.productName}</td>
+              <td>
+                <Button onClick={() => this.handleClick(i)}>
+                  {item.productName}
+                </Button>
+              </td>
               <td>{item.date}</td>
               <td>{item.signature}</td>
             </tr>
@@ -139,8 +144,16 @@ class SearchForm extends React.Component {
     });
   }
 
+  handleModal = (isOpen) => {
+    this.setState({ showModal: isOpen });
+  };
+
+  handleClick = (index) => {
+    this.setState({ showModal: true, index: index });
+  };
+
   render() {
-    const { document } = this.state;
+    const { document, showModal, index } = this.state;
     return (
       <Container fluid>
         <Row className={"header"}>
@@ -196,13 +209,16 @@ class SearchForm extends React.Component {
               </Form.Row>
               <Form.Row>
                 <Button type="submit">Search</Button>
-                <Button
-                  onClick={() => this.setState({ showModal: true })}
-                  type="button"
-                >
-                  modal
-                </Button>
               </Form.Row>
+              {showModal ? (
+                <Modalview
+                  formData={document.Items[index]}
+                  handleModal2={this.handleModal.bind(this)}
+                  isOpen={showModal}
+                ></Modalview>
+              ) : (
+                ""
+              )}
             </Col>
             <Col className="table">
               {document ? this.displayData(document) : ""}
