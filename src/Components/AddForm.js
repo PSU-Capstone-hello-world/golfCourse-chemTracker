@@ -33,10 +33,11 @@ class AddForm extends React.Component {
       sigWordDanger: false,
       epaRegNum: "",
       epaEstNum: "",
-      locGreens: false,
-      locTees: false,
-      locFairways: false,
-      locOther: false,
+      location: "",
+      // locGreens: false,
+      // locTees: false,
+      // locFairways: false,
+      // locOther: false,
       locOtherVal: "",
       target: "",
 
@@ -124,10 +125,10 @@ class AddForm extends React.Component {
     event.preventDefault();
     if (
       !(
-        this.state.locGreens ||
-        this.state.locTees ||
-        this.state.locFairways ||
-        this.state.locOther
+        this.state.location === "Greens" ||
+        this.state.location === "Tees" ||
+        this.state.location === "Fairways" ||
+        this.state.location === "Other"
       )
     ) {
       alert("Location is required");
@@ -139,6 +140,9 @@ class AddForm extends React.Component {
     // Format Dates
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
+    if (output.location === "Other") {
+      output.location = output.locOtherVal;
+    }
 
     // Logging the output, this will go to backend later
     console.log(JSON.stringify(output));
@@ -299,7 +303,29 @@ class AddForm extends React.Component {
             </Form.Group>
           </Col>
         </Row>
+        {/* <Form.Group controlId="msds">
+          <Form.Label>Did you read the MSDS?</Form.Label>
 
+          <Form.Check
+            inline
+            name="msds"
+            label="Yes"
+            type="radio"
+            value="Yes"
+            checked={this.state.msds === "Yes"}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="msds"
+            label="No"
+            type="radio"
+            value="No"
+            checked={this.state.msds === "No"}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+        </Form.Group> */}
         <Form.Group controlId="location">
           <Form.Label>
             Location <span>(required)</span>
@@ -307,37 +333,41 @@ class AddForm extends React.Component {
 
           <Form.Check
             inline
-            name="locGreens"
+            name="location"
             label="Greens"
-            type="checkbox"
-            checked={this.state.locGreens}
+            type="radio"
+            value="Greens"
+            checked={this.state.location === "Greens"}
             onChange={this.handleInputChange}
           ></Form.Check>
 
           <Form.Check
             inline
-            name="locTees"
+            name="location"
             label="Tees"
-            type="checkbox"
-            checked={this.state.locTees}
+            type="radio"
+            value="Tees"
+            checked={this.state.location === "Tees"}
             onChange={this.handleInputChange}
           ></Form.Check>
 
           <Form.Check
             inline
-            name="locFairways"
+            name="location"
             label="Fairways"
-            type="checkbox"
-            checked={this.state.locFairways}
+            type="radio"
+            value="Fairways"
+            checked={this.state.location === "Fairways"}
             onChange={this.handleInputChange}
           ></Form.Check>
 
           <Form.Check
             inline
-            name="locOther"
+            name="location"
             label="Other"
-            type="checkbox"
-            checked={this.state.locOther}
+            type="radio"
+            value="Other"
+            checked={this.state.location === "Other"}
             onChange={this.handleInputChange}
           ></Form.Check>
 
@@ -345,7 +375,7 @@ class AddForm extends React.Component {
             type="text"
             name="locOtherVal"
             placeholder="Other Location"
-            hidden={!this.state.locOther}
+            hidden={this.state.location === "Other" ? false : true}
             onChange={this.handleInputChange}
           />
         </Form.Group>
