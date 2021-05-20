@@ -3,13 +3,9 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-//import Students from "./data.json";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SearchForm.css";
-//import { getByDisplayValue } from "@testing-library/dom";
-//import SearchResult from "./test";
-//import { axios } from "axios";
 import Backend from "../model/backend.js";
 import { Container } from "react-bootstrap";
 
@@ -17,9 +13,13 @@ class SearchForm extends React.Component {
   constructor(props) {
     super(props);
     const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 70);
     this.state = {
       productName: "",
-      startDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
+      startDate: new Date(
+        yesterday.getTime() - yesterday.getTimezoneOffset() * 60000
+      ),
       endDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
       search: false,
       document: "",
@@ -39,16 +39,50 @@ class SearchForm extends React.Component {
     }
   }
 
+  monthDiff(d1, d2) {
+    const diff = Math.abs(d2 - d1);
+    return diff / (1000 * 60 * 60 * 24 * 30);
+  }
+
+  async handleSubmit(event) {
+    event.preventDefault();
+    let output = JSON.parse(JSON.stringify(this.state));
+    output.startDate = JSON.stringify(output.startDate).slice(1, 11);
+    output.endDate = JSON.stringify(output.endDate).slice(1, 11);
+    console.log(JSON.stringify(output));
+    await this.fetchData(output);
+  }
+
   async fetchData(search) {
     let backend = new Backend();
     //let document = await backend.getByName(search.productName);
+
+    /*Try setting document = document.concat(doc.items);
+    let test = new Date(search.startDate);
+    let test2 = new Date(search.endDate);
+    console.log(test);
+    console.log(test2);
+    let diff = Math.round(this.monthDiff(test, test2));
+    console.log(diff);
+    let document = [];
+    for (var i = 0; i < diff; i++) {
+      let doc = await backend.getDateRange(
+        search.startDate,
+        search.endDate,
+        search.productName
+      );
+      //document.push(doc.Items);
+      document.concat(doc.Items);
+    }
+    */
+    //document.join();
     let document = await backend.getDateRange(
       search.startDate,
       search.endDate,
       search.productName
     );
     console.log("productName", document);
-    console.log(typeof document);
+    //console.log(typeof document);
     //this.displayData(document);
     this.setState({ search: true, document: document });
     return document;
@@ -73,26 +107,6 @@ class SearchForm extends React.Component {
         </tbody>
       </table>
     );
-    /*
-    this.result = (
-      <table border="2">
-        <tbody>
-          <tr>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Signature</th>
-          </tr>
-          {document.Items.map((item, i) => (
-            <tr key={i}>
-              <td>{item.productName}</td>
-              <td>{item.date}</td>
-              <td>{item.signature}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-    */
   }
 
   handleInputChange(event) {
@@ -121,15 +135,6 @@ class SearchForm extends React.Component {
     this.setState({
       endDate: offsetDate,
     });
-  }
-
-  async handleSubmit(event) {
-    event.preventDefault();
-    let output = JSON.parse(JSON.stringify(this.state));
-    output.startDate = JSON.stringify(output.startDate).slice(1, 11);
-    output.endDate = JSON.stringify(output.endDate).slice(1, 11);
-    console.log(JSON.stringify(output));
-    await this.fetchData(output);
   }
 
   render() {
