@@ -1,9 +1,10 @@
 import axios from 'axios';
-let API_KEY = "API key go here"
 
 class Backend{
     constructor() {
-        this.api_key = API_KEY;
+        this.options = {
+            headers: {'X-Api-Key': 'D7d3nbH0iRsetkSgxomw6h91YsgiUcqanMPVx055'}
+        };
     }
     async getDateRange(start, end, productName) {
         const body = {
@@ -14,7 +15,7 @@ class Backend{
                 'productName':productName
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
         return JSON.parse(response.data['body']);
     }
     async getByName(productName) {
@@ -24,7 +25,7 @@ class Backend{
                 'productName': productName
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
         return JSON.parse(response.data['body']);
     }
     async getByMonth(month) {
@@ -34,7 +35,7 @@ class Backend{
                 'month': month
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
         return JSON.parse(response.data['body']);
     }
     async getByMonthDate(start, end, month) {
@@ -46,7 +47,7 @@ class Backend{
                 'month':month
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
         return JSON.parse(response.data['body']);
     }
     async getTargetDate(start, end,target) {
@@ -58,7 +59,7 @@ class Backend{
                 'target':target
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
         return JSON.parse(response.data['body']);
     }
     async getTarget(target) {
@@ -68,7 +69,7 @@ class Backend{
                 'target':target
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
         return JSON.parse(response.data['body']);
     }
     async getNameTargetDate(start, end, nameTarget) {
@@ -80,7 +81,7 @@ class Backend{
                 'name_target_date':nameTarget
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
         return JSON.parse(response.data['body']);
     }
     async getNameTarget(target, productName) {
@@ -91,12 +92,12 @@ class Backend{
                 'productName':productName
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
         return JSON.parse(response.data['body']);
     }
     async put(document) {
         const body = document
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/", body)
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/", body,this.options)
         return JSON.parse(response.data['body'])
     }
     async getItem() {
@@ -112,7 +113,7 @@ class Backend{
                 if(oldDoc[property]!=newDoc[property])
                     body['updateStringParameters'][property] = newDoc[property]
             }
-            const response=await axios.patch("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/",body)
+            const response=await axios.patch("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/",body,this.options)
             return JSON.parse(response.data['body'])
         }
     }
@@ -122,7 +123,7 @@ class Backend{
             const body = {
                 'Image':  image_base64.replace(/^data:image\/\w+;base64,/, '') 
             }
-            const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/gettextfromimage", body);
+            const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/gettextfromimage", body,this.options);
             let temp  ={}
             let result = String(response.data['body']).split(/\\n/)
             for (var i = 0; i < result.length; i++){
@@ -209,7 +210,7 @@ class Backend{
         })
     }
     async delete(id) {
-        let response = await axios.delete(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id/delete?file_id=${id}`);
+        let response = await axios.delete(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id/delete?file_id=${id}`,this.options);
         return response;
     }
 }
