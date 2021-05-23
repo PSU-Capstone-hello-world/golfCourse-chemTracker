@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 class Backend{
     constructor() {
         this.options = {
