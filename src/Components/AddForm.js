@@ -6,6 +6,7 @@ import Col from "react-bootstrap/Col";
 import "./AddForm.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Backend from "../model/backend";
 
 // Resources:
 //   React Forms --> https://reactjs.org/docs/forms.html
@@ -32,10 +33,11 @@ class AddForm extends React.Component {
       sigWordDanger: false,
       epaRegNum: "",
       epaEstNum: "",
-      locGreens: false,
-      locTees: false,
-      locFairways: false,
-      locOther: false,
+      location: "",
+      // locGreens: false,
+      // locTees: false,
+      // locFairways: false,
+      // locOther: false,
       locOtherVal: "",
       target: "",
 
@@ -119,18 +121,40 @@ class AddForm extends React.Component {
     });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
+    event.preventDefault();
+    if (
+      !(
+        this.state.location === "Greens" ||
+        this.state.location === "Tees" ||
+        this.state.location === "Fairways" ||
+        this.state.location === "Other"
+      )
+    ) {
+      alert("Location is required");
+      return false;
+    }
     // Copy the state, so we can format the individual fields before sending to backend
     let output = JSON.parse(JSON.stringify(this.state));
 
     // Format Dates
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
+    if (output.location === "Other") {
+      output.location = output.locOtherVal;
+    }
 
     // Logging the output, this will go to backend later
     console.log(JSON.stringify(output));
+    output = JSON.stringify(output);
 
-    event.preventDefault();
+    let backend = new Backend();
+    let response = await backend.put(output);
+
+    console.log(response);
+    alert("Your form has been submitted");
+    event.target.reset();
+    return true;
   }
 
   render() {
@@ -140,8 +164,11 @@ class AddForm extends React.Component {
         <Row>
           <Col>
             <Form.Group controlId="productName">
-              <Form.Label>Product Name</Form.Label>
+              <Form.Label>
+                Product Name <span>(required)</span>
+              </Form.Label>
               <Form.Control
+                required
                 type="text"
                 name="productName"
                 placeholder="Product Name"
@@ -213,7 +240,7 @@ class AddForm extends React.Component {
 
           <Form.Control
             type="text"
-            name="formulationOtherValue"
+            name="formulationOtherVal"
             placeholder="Other Formulation"
             hidden={!this.state.formulationOther}
             onChange={this.handleInputChange}
@@ -276,51 +303,79 @@ class AddForm extends React.Component {
             </Form.Group>
           </Col>
         </Row>
+        {/* <Form.Group controlId="msds">
+          <Form.Label>Did you read the MSDS?</Form.Label>
 
+          <Form.Check
+            inline
+            name="msds"
+            label="Yes"
+            type="radio"
+            value="Yes"
+            checked={this.state.msds === "Yes"}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+
+          <Form.Check
+            inline
+            name="msds"
+            label="No"
+            type="radio"
+            value="No"
+            checked={this.state.msds === "No"}
+            onChange={this.handleInputChange}
+          ></Form.Check>
+        </Form.Group> */}
         <Form.Group controlId="location">
-          <Form.Label>Location</Form.Label>
+          <Form.Label>
+            Location <span>(required)</span>
+          </Form.Label>
 
           <Form.Check
             inline
-            name="locGreens"
+            name="location"
             label="Greens"
-            type="checkbox"
-            checked={this.state.locGreens}
+            type="radio"
+            value="Greens"
+            checked={this.state.location === "Greens"}
             onChange={this.handleInputChange}
           ></Form.Check>
 
           <Form.Check
             inline
-            name="locTees"
+            name="location"
             label="Tees"
-            type="checkbox"
-            checked={this.state.locTees}
+            type="radio"
+            value="Tees"
+            checked={this.state.location === "Tees"}
             onChange={this.handleInputChange}
           ></Form.Check>
 
           <Form.Check
             inline
-            name="locFairways"
+            name="location"
             label="Fairways"
-            type="checkbox"
-            checked={this.state.locFairways}
+            type="radio"
+            value="Fairways"
+            checked={this.state.location === "Fairways"}
             onChange={this.handleInputChange}
           ></Form.Check>
 
           <Form.Check
             inline
-            name="locOther"
+            name="location"
             label="Other"
-            type="checkbox"
-            checked={this.state.locOther}
+            type="radio"
+            value="Other"
+            checked={this.state.location === "Other"}
             onChange={this.handleInputChange}
           ></Form.Check>
 
           <Form.Control
             type="text"
-            name="locOtherValue"
+            name="locOtherVal"
             placeholder="Other Location"
-            hidden={!this.state.locOther}
+            hidden={this.state.location === "Other" ? false : true}
             onChange={this.handleInputChange}
           />
         </Form.Group>
@@ -440,7 +495,7 @@ class AddForm extends React.Component {
           </Col>
           <Col>
             <Form.Group controlId="tankWater">
-              <Form.Label></Form.Label>
+              <Form.Label>Gallons of Water</Form.Label>
               <Form.Control
                 type="text"
                 name="tankWater"
@@ -574,8 +629,11 @@ class AddForm extends React.Component {
 
         {/* date: "", */}
         <Form.Group controlId="date">
-          <Form.Label>Date Applied</Form.Label>
+          <Form.Label>
+            Date Applied <span>(required)</span>
+          </Form.Label>
           <DatePicker
+            required
             selected={this.state.date}
             onChange={this.handleDateChange}
             name="date"
@@ -593,8 +651,31 @@ class AddForm extends React.Component {
           />
         </Form.Group>
 
-        {/* timeStart: "", */}
-        {/* timeEnd: "", */}
+        <Row>
+          <Col>
+            <Form.Group controlId="timeStart">
+              <Form.Label>Start Time</Form.Label>
+              <Form.Control
+                type="text"
+                name="timeStart"
+                placeholder="Start Time"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+
+          <Col>
+            <Form.Group controlId="timeEnd">
+              <Form.Label>End Time</Form.Label>
+              <Form.Control
+                type="text"
+                name="timeEnd"
+                placeholder="End Time"
+                onChange={this.handleInputChange}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
 
         <Form.Group controlId="protective">
           <Form.Label>Protective Equipment Used</Form.Label>
@@ -663,7 +744,7 @@ class AddForm extends React.Component {
 
           <Form.Control
             type="text"
-            name="protectiveOtherValue"
+            name="protectiveOtherVal"
             placeholder="Other Protective Equipment"
             hidden={!this.state.protectiveOther}
             onChange={this.handleInputChange}
@@ -747,8 +828,11 @@ class AddForm extends React.Component {
         <Row>
           <Col>
             <Form.Group controlId="signature">
-              <Form.Label>Signature</Form.Label>
+              <Form.Label>
+                Signature <span>(required)</span>
+              </Form.Label>
               <Form.Control
+                required
                 type="text"
                 name="signature"
                 placeholder="Signature"
@@ -760,8 +844,11 @@ class AddForm extends React.Component {
           {/* sigDate: "", */}
           <Col>
             <Form.Group controlId="sigDate">
-              <Form.Label>Date</Form.Label>
+              <Form.Label>
+                Today's Date <span>(required)</span>
+              </Form.Label>
               <DatePicker
+                required
                 selected={this.state.sigDate}
                 onChange={this.handleSigDate}
                 name="sigDate"
@@ -771,7 +858,18 @@ class AddForm extends React.Component {
           </Col>
         </Row>
 
-        <Button type="submit">Submit</Button>
+        <Row style={{ paddingBottom: "20px" }}>
+          <Col>
+            <Button type="submit" style={{ width: "80px" }}>
+              Submit
+            </Button>
+          </Col>
+          <Col>
+            <Button type="reset" variant="info" style={{ width: "80px" }}>
+              Reset
+            </Button>
+          </Col>
+        </Row>
       </Form>
     );
   }

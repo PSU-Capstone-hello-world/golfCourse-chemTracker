@@ -1,0 +1,32 @@
+.templateCard {
+    /* position: relative !important; */
+    cursor: pointer;
+    border-radius: 20px;
+    margin-top: 250px;
+    border: 1px solid black;
+}
+
+body {
+    background-color: gainsboro;
+}
+
+.card:hover {
+    box-shadow: 10px 10px 15px rgba(0,0,0,0.3);
+}
+
+.templateForm {
+    border: 1px solid black;
+    width: 90%;
+    margin: 3% auto;
+    padding: 20px 20px;
+    border-radius: 20px;
+    background-color: white;
+}
+
+.formulationLabel {
+    width: 15%;
+}
+
+.options {
+    font-size: large;
+}

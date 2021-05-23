@@ -3,13 +3,16 @@ import {Container, Row, Button, Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import '../Styles/Login.css';
 
+// URL https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names
+
+
 async function loginUser(credentials) {
-    return await fetch('http://localhost:8080/login', {
-        method: 'POST',
+    const url = `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names?name=${credentials.username}&details=${credentials.password}`
+    return await fetch(url, {
+        method: 'GET',
         headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
         },
-        body: JSON.stringify(credentials)
     })
     .then(data => data.json())
     .catch(error => {
@@ -35,7 +38,7 @@ export default function Login( { setToken }) {
             password
         });
 
-        if (token) {
+        if (token.body) {
             setValidated(true);
             setToken(token);
         } else {
@@ -61,7 +64,7 @@ export default function Login( { setToken }) {
                         <Form.Control type='password' required placeholder='Password' onChange={e => setPassword(e.target.value)}/>
                     </Form.Group>
 
-                    <Button type='submit' variant='info' className='btn-block'>Submit</Button>
+                    <Button type='submit' variant='primary' className='btn-block'>Submit</Button>
                 </Form>
             </Row>
         </Container>
