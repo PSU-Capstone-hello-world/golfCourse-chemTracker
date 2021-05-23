@@ -74,9 +74,12 @@ class EditTemplate extends React.Component {
                         <Row>
                             <Col>
                                 <Form.Group controlId="productName">
-                                    <Form.Label>Product Name</Form.Label>
+                                    <Form.Label>Product Name <span>(Required)</span></Form.Label>
                                     <Form.Control
                                     type="text"
+                                    required
+                                    isInvalid={productName ? "" : "true"}
+                                    isValid={productName ? "true" : ""}
                                     name="productName"
                                     value={productName}
                                     placeholder="Product Name"
@@ -99,14 +102,14 @@ class EditTemplate extends React.Component {
                         <Row>
                             <Col>
                                 <Form.Group controlId="formulation">
-                                    <div className="d-flex">
                                     <Form.Label className="formulationLabel">Formulation: </Form.Label>
+                                    <div className="d-flex justify-content-center">
                                         <Form.Check
                                             name="flow"
                                             inline
                                             label="Flowable"
                                             type="checkbox"
-                                            className="options ml-3 mr-3"
+                                            className="options"
                                             onChange={this.handleInputChange}
                                         />
                                         <Form.Check
@@ -114,7 +117,7 @@ class EditTemplate extends React.Component {
                                             inline
                                             label="Granular"
                                             type="checkbox"
-                                            className="options ml-3 mr-3"
+                                            className="options"
                                             onChange={this.handleInputChange}
                                         />
                                         <Form.Check
@@ -122,7 +125,7 @@ class EditTemplate extends React.Component {
                                             inline
                                             label="Wettable Powder"
                                             type="checkbox"
-                                            className="options ml-3 mr-3"
+                                            className="options"
                                             onChange={this.handleInputChange}
                                         />
                                         <Form.Check
@@ -130,7 +133,7 @@ class EditTemplate extends React.Component {
                                             inline
                                             label="Emulsified Concrete"
                                             type="checkbox"
-                                            className="options ml-3 mr-3"
+                                            className="options"
                                             onChange={this.handleInputChange}
                                         />
                                         <Form.Check
@@ -138,7 +141,7 @@ class EditTemplate extends React.Component {
                                             inline
                                             label="Other"
                                             type="checkbox"
-                                            className="options ml-3 mr-3"
+                                            className="options"
                                             onChange={this.handleInputChange}
                                         />
                                     </div>
@@ -155,33 +158,32 @@ class EditTemplate extends React.Component {
                         <Row>
                             <Col>
                                 <Form.Group controlId="signalWord">
-                                    <div className="d-flex">
                                     <Form.Label className="signalLabel">Signal Word: </Form.Label>
+                                    <div className="d-flex justify-content-center">
                                         <Form.Check
                                             name="caution"
                                             inline
                                             label="Caution"
                                             type="checkbox"
-                                            className="options ml-3 mr-3"
+                                            className="options"
                                         />
                                         <Form.Check
                                             name="warning"
                                             inline
                                             label="Warning"
                                             type="checkbox"
-                                            className="options ml-3 mr-3"
+                                            className="options"
                                         />
                                         <Form.Check
                                             name="danger"
                                             inline
                                             label="Danger"
                                             type="checkbox"
-                                            className="options ml-3 mr-3"
+                                            className="options"
                                         />
                                     </div>
                                 </Form.Group>
                             </Col>
-                            <Col />
                         </Row>
                         <Row>
                             <Col>
@@ -207,7 +209,16 @@ class EditTemplate extends React.Component {
                                 </Form.Group>
                             </Col>
                         </Row>
-                        <Button type='submit' variant='primary' className='btn-block'>Save Template</Button>
+                        <Row className="mt-3">
+                            <Col>
+                                <a href="/Templates">
+                                    <Button variant='secondary' className='btn-block'>Cancel</Button>
+                                </a>
+                            </Col>
+                            <Col>
+                                <Button type='submit' variant='primary' className='btn-block'>Save Template</Button>
+                            </Col>
+                        </Row>
                     </Form>
                 ) : (
                     <Form className="templateForm" onSubmit={this.getTemplate}>

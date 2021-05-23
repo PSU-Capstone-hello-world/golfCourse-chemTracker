@@ -28,6 +28,12 @@ class CreateTemplate extends React.Component {
         const value = target.type === "checkbox" ? target.checked : target.value;
         const name = target.name;
 
+        // if (name === "productName") {
+        //     this.setState({ validation: true });
+        // } else {
+        //     this.setState({ validation: false });
+        // }
+
         this.setState({
             [name]: value,
         });
@@ -48,7 +54,7 @@ class CreateTemplate extends React.Component {
     }
 
     render() {
-        const { other } = this.state;
+        const { other, productName } = this.state;
 
         return (
         <Container>
@@ -59,11 +65,14 @@ class CreateTemplate extends React.Component {
                     </div>
                     <Row>
                         <Col>
-                            <Form.Group controlId="productName">
-                                <Form.Label>Product Name</Form.Label>
+                            <Form.Group hasValidation controlId="productName">
+                                <Form.Label>Product Name<span> (Required) </span></Form.Label>
                                 <Form.Control
                                 type="text"
+                                required
                                 name="productName"
+                                isInvalid={productName ? "" : "true"}
+                                isValid={productName ? "true" : ""}
                                 placeholder="Product Name"
                                 onChange={this.handleInputChange}
                                 />
@@ -84,14 +93,14 @@ class CreateTemplate extends React.Component {
                     <Row>
                         <Col>
                             <Form.Group controlId="formulation">
-                                <div className="d-flex">
-                                <Form.Label className="formulationLabel">Formulation: </Form.Label>
+                                <Form.Label className="formulationLabel">Formulation:</Form.Label>
+                                <div className="d-flex justify-content-center">
                                     <Form.Check
                                         name="flow"
                                         inline
                                         label="Flowable"
                                         type="checkbox"
-                                        className="options ml-3 mr-3"
+                                        className="options"
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
@@ -99,7 +108,7 @@ class CreateTemplate extends React.Component {
                                         inline
                                         label="Granular"
                                         type="checkbox"
-                                        className="options ml-3 mr-3"
+                                        className="options"
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
@@ -107,7 +116,7 @@ class CreateTemplate extends React.Component {
                                         inline
                                         label="Wettable Powder"
                                         type="checkbox"
-                                        className="options ml-3 mr-3"
+                                        className="options"
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
@@ -115,7 +124,7 @@ class CreateTemplate extends React.Component {
                                         inline
                                         label="Emulsified Concrete"
                                         type="checkbox"
-                                        className="options ml-3 mr-3"
+                                        className="options"
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
@@ -123,7 +132,7 @@ class CreateTemplate extends React.Component {
                                         inline
                                         label="Other"
                                         type="checkbox"
-                                        className="options ml-3 mr-3"
+                                        className="options"
                                         onChange={this.handleInputChange}
                                     />
                                 </div>
@@ -140,33 +149,32 @@ class CreateTemplate extends React.Component {
                     <Row>
                         <Col>
                             <Form.Group controlId="signalWord">
-                                <div className="d-flex">
                                 <Form.Label className="signalLabel">Signal Word: </Form.Label>
+                                <div className="d-flex justify-content-center">
                                     <Form.Check
                                         name="caution"
                                         inline
                                         label="Caution"
                                         type="checkbox"
-                                        className="options ml-3 mr-3"
+                                        className="options"
                                     />
                                     <Form.Check
                                         name="warning"
                                         inline
                                         label="Warning"
                                         type="checkbox"
-                                        className="options ml-3 mr-3"
+                                        className="options"
                                     />
                                     <Form.Check
                                         name="danger"
                                         inline
                                         label="Danger"
                                         type="checkbox"
-                                        className="options ml-3 mr-3"
+                                        className="options"
                                     />
                                 </div>
                             </Form.Group>
                         </Col>
-                        <Col />
                     </Row>
                     <Row>
                         <Col>
@@ -192,7 +200,17 @@ class CreateTemplate extends React.Component {
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Button type='submit' variant='primary' className='btn-block'>Create Template</Button>
+                    <Row className="mt-3">
+                        <Col>
+                            <a href="/Templates">
+                                <Button variant='secondary' className='btn-block'>Cancel</Button>
+                            </a>
+                        </Col>
+                        <Col>
+                            <Button type='submit' variant='primary' className='btn-block'>Create Template</Button>
+                        </Col>
+
+                    </Row>
                 </Form>
             </Row>
         </Container>
