@@ -3,10 +3,11 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import React from "react";
+import "./home.css";
 
 function Home(props){
     return(
-        <Card>
+        <Card className="homeCard">
             <Card.Header as="h5">Home Page</Card.Header>
             <Card.Body>
                 <Card.Title>Welcome to the home page</Card.Title>
