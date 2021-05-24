@@ -2,7 +2,7 @@ import axios from 'axios';
 class Backend{
     constructor() {
         this.options = {
-            headers: {'X-Api-Key': 'D7d3nbH0iRsetkSgxomw6h91YsgiUcqanMPVx055'}
+            headers: {'X-Api-Key': 'RTR6SrTkDj3DnPLawIaDQ7QsMJ3qDZ332u7PMMOs'}
         };
     }
     async getDateRange(start, end, productName) {
