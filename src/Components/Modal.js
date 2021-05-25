@@ -7,8 +7,8 @@ import { Modal } from "react-bootstrap";
 import "./AddForm.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-//import Backend from "../model/backend";
 import "./Modal.css";
+import Backend from "../model/backend";
 
 //import Document from "../model/document";
 
@@ -23,8 +23,24 @@ class Modalview extends React.Component {
     // Everyting from the original Gresham Golf Course Form
     this.state = {
       isOpen: props.isOpen,
+      isEdit: false,
       formData: props.formData,
     };
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
+    this.handleSigDate = this.handleSigDate.bind(this);
+  }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    const name = target.name;
+    console.log(this.value);
+
+    this.setState({
+      [name]: value,
+    });
   }
 
   // Dates from date picker are handled seperatley, they also need a math conversion or else the day can be off by one
@@ -47,16 +63,55 @@ class Modalview extends React.Component {
     });
   }
 
+  async handleSubmit(event) {
+    const { formData } = this.state;
+    event.preventDefault();
+    console.log("test");
+    if (
+      !(
+        formData.location === "greens" ||
+        formData.location === "tees" ||
+        formData.location === "fairways" ||
+        formData.location === "other"
+      )
+    ) {
+      alert("Location is required");
+      return false;
+    }
+    // Copy the state, so we can format the individual fields before sending to backend
+    let output = JSON.parse(JSON.stringify(formData));
+
+    // Format Dates
+    output.date = JSON.stringify(output.date).slice(1, 11);
+    output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
+    if (output.location === "Other") {
+      output.location = output.locOtherVal;
+    }
+
+    // Logging the output, this will go to backend later
+    //console.log(JSON.stringify(output));
+    console.log("form Data", JSON.stringify(formData.id));
+    output = JSON.stringify(output);
+
+    let backend = new Backend();
+    let response = await backend.put(output);
+
+    //console.log(response);
+    alert("Your form has been submitted");
+    event.target.reset();
+    return true;
+  }
   openModal = () => this.setState({ isOpen: true });
   closeModal = (e) => {
     this.props.handleModal2(false);
     //this.setState({ isOpen: false });
   };
+  editMode = () => this.setState({ isEdit: true });
 
   render() {
-    const { formData } = this.state;
-    console.log(formData);
-    console.log(formData.formulation);
+    const { formData, isEdit } = this.state;
+    //console.log(formData);
+    //console.log(formData.formulation);
     return (
       <>
         <Modal
@@ -80,11 +135,12 @@ class Modalview extends React.Component {
                     <Form.Label>Product Name</Form.Label>
                     <Form.Control
                       required
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="productName"
                       value={formData.productName}
                       placeholder="Product Name"
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -93,11 +149,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="supplier">
                     <Form.Label>Supplier</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="supplier"
                       value={formData.supplier}
                       placeholder="Supplier"
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -108,60 +165,62 @@ class Modalview extends React.Component {
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="formulationFlow"
                   label="Flowable"
                   type="checkbox"
-                  checked={formData.formulationFlow === "true"}
-                  readOnly
+                  checked={formData.formulationFlow}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="formulationGran"
                   label="Granular"
                   type="checkbox"
-                  checked={formData.formulationGran === "true"}
-                  readOnly
+                  checked={formData.formulationGran}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="formulationWet"
                   label="Wettable Powder"
                   type="checkbox"
-                  checked={formData.formulationWet === "true"}
-                  readOnly
+                  checked={formData.formulationWet}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="formulationEmul"
                   label="Emulsified Concrete"
                   type="checkbox"
-                  checked={formData.formulationEmul === "true"}
-                  readOnly
+                  checked={formData.formulationEmul}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="formulationOther"
                   label="Other"
                   type="checkbox"
-                  checked={formData.formulationOther === "true"}
+                  checked={formData.formulationOther}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="formulationOtherVal"
                   placeholder="Other Formulation"
                   value={formData.formulationOtherVal}
-                  hidden={!formData.formulationOther === "true"}
+                  hidden={!formData.formulationOther}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -170,32 +229,32 @@ class Modalview extends React.Component {
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="sigWordCaution"
                   label="Caution"
                   type="checkbox"
-                  checked={formData.signalWordCaution === "true"}
-                  readOnly
+                  checked={formData.sigWordCaution}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="sigWordWarning"
                   label="Warning"
                   type="checkbox"
-                  checked={formData.sigWordWarning === "true"}
-                  readOnly
+                  checked={formData.sigWordWarning}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="sigWordDanger"
                   label="Danger"
                   type="checkbox"
-                  checked={formData.sigWordDanger === "true"}
-                  readOnly
+                  checked={formData.sigWordDanger}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
               </Form.Group>
 
@@ -204,11 +263,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="epaRegNum">
                     <Form.Label>EPA Registration #</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="epaRegNum"
                       placeholder="EPA Registration #"
                       value={formData.epaRegNum}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -217,11 +277,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="epaEstNum">
                     <Form.Label>EPA Est. #</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="epaEstNum"
                       placeholder="EPA Est. #"
                       value={formData.epaEstNum}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -232,74 +293,75 @@ class Modalview extends React.Component {
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="locGreens"
                   label="Greens"
                   type="radio"
-                  checked={formData.location === "Greens"}
-                  readOnly
+                  checked={formData.location === "greens"}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="locTees"
                   label="Tees"
                   type="radio"
-                  checked={formData.location === "Tees"}
-                  readOnly
+                  checked={formData.location === "tees"}
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="locFairways"
                   label="Fairways"
                   type="radio"
-                  checked={formData.location === "Fairways"}
-                  readOnly
+                  checked={formData.location === "fairways"}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="locOther"
                   label="Other"
                   type="radio"
                   checked={
-                    formData.location !== "Greens" ||
-                    formData.location !== "Tees" ||
-                    formData.location !== "Fairways"
-                      ? true
-                      : false
+                    formData.location !== "greens" ||
+                    formData.location !== "tees" ||
+                    formData.location !== "fairways"
+                      ? false
+                      : true
                   }
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="locOtherVal"
                   placeholder="Other Location"
                   hidden={
-                    !(formData.location !== "Greens" ||
-                    formData.location !== "Tees" ||
-                    formData.location !== "Fairways"
-                      ? true
-                      : false)
+                    !(formData.location !== "greens" ||
+                    formData.location !== "tees" ||
+                    formData.location !== "fairways"
+                      ? false
+                      : true)
                   }
                   value={formData.location}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
               <Form.Group controlId="target">
                 <Form.Label>Target</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="target"
                   placeholder="Target"
                   value={formData.target}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -310,11 +372,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="vehicle">
                     <Form.Label>Vehicle</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="vehicle"
                       placeholder="Vehicle"
                       value={formData.vehicle}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -323,11 +386,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="gear">
                     <Form.Label>Gear</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="gear"
                       placeholder="Gear"
                       value={formData.gear}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -336,11 +400,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="rpm">
                     <Form.Label>RPM</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="rpm"
                       placeholder="RPM"
                       value={formData.rpm}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -349,11 +414,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="mph">
                     <Form.Label>MPH</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="mph"
                       placeholder="MPH"
                       value={formData.rpm}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -364,11 +430,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="sprayer">
                     <Form.Label>Sprayer/Spreader</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="sprayer"
                       placeholder="Sprayer/Spreader"
                       value={formData.sprayer}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -377,11 +444,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="nozzle">
                     <Form.Label>Nozzles/Setting</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="nozzle"
                       placeholder="Nozzles/Setting"
                       value={formData.nozzle}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -390,11 +458,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="pressure">
                     <Form.Label>Pressure Number</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="pressure"
                       placeholder="Pressure Number"
                       value={formData.pressure}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -406,11 +475,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="tankAmt">
                     <Form.Label>Tank Mix</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="tankAmt"
                       placeholder="Amount of Product"
                       value={formData.tankAmt}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -418,11 +488,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="tankWater">
                     <Form.Label></Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="tankWater"
                       placeholder="Gallons of Water"
                       value={formData.tankWater}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -431,22 +502,24 @@ class Modalview extends React.Component {
               <Form.Group controlId="adjuvant">
                 <Form.Label>Adjuvant/Dye</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="adjuvant"
                   placeholder="Adjuvant/Dye"
                   value={formData.adjuvant}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
               <Form.Group controlId="totalApplied">
                 <Form.Label>Total Amount of Product Applied</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="totalApplied"
                   placeholder="Total Amount of Product Applied"
                   value={formData.totalApplied}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -456,11 +529,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="appRateOz">
                     <Form.Label>Application Rate (oz. / lbs.)</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="appRateOz"
                       placeholder="Application Rate (oz. / lbs.)"
                       value={formData.appRateOz}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -469,11 +543,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="appRateLbs">
                     <Form.Label>Application Rate (gal. / lbs.) </Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="appRateLbs"
                       placeholder="Application Rate (gal. / lbs.)"
                       value={formData.appRateLbs}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -484,35 +559,36 @@ class Modalview extends React.Component {
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="wateredIn"
                   label="Yes"
                   type="radio"
                   value="Yes"
                   checked={formData.wateredIn === "Yes"}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="wateredIn"
                   label="No"
                   type="radio"
                   value="No"
                   checked={formData.wateredIn === "No"}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
               </Form.Group>
 
               <Form.Group controlId="wateredMin">
                 <Form.Label>Minutes Watered</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="wateredMin"
                   placeholder="Minutes Watered"
                   value={formData.wateredMin}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -523,11 +599,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="temp">
                     <Form.Label>Temperature</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="temp"
                       placeholder="Temperature"
                       value={formData.temp}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -536,11 +613,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="humidity">
                     <Form.Label>Humidity</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="humidity"
                       placeholder="Humidity"
                       value={formData.humidity}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -549,11 +627,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="wind">
                     <Form.Label>Wind</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="wind"
                       placeholder="Wind"
                       value={formData.wind}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -563,22 +642,24 @@ class Modalview extends React.Component {
               <Form.Group controlId="date">
                 <Form.Label>Date Applied</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="date"
                   placeholder="date"
                   value={formData.date}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
               <Form.Group controlId="purs">
                 <Form.Label>PURS</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="purs"
                   placeholder="PURS"
                   value={formData.purs}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -587,11 +668,12 @@ class Modalview extends React.Component {
                   <Form.Group controlId="timeStart">
                     <Form.Label>Start Time</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="timeStart"
                       placeholder="Start Time"
                       value={formData.timeStart}
+                      onChange={this.handleDateChange}
                     />
                   </Form.Group>
                 </Col>
@@ -600,7 +682,7 @@ class Modalview extends React.Component {
                   <Form.Group controlId="timeEnd">
                     <Form.Label>End Time</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="timeEnd"
                       placeholder="End Time"
@@ -614,72 +696,72 @@ class Modalview extends React.Component {
                 <Form.Label>Protective Equipment Used</Form.Label>
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="protectiveLong"
                   label="Long Pants & Shirt"
                   type="checkbox"
                   checked={formData.protectiveLong}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="protectiveShoes"
                   label="Shoes & Socks"
                   type="checkbox"
                   checked={formData.protectiveShoes}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="protectiveBoots"
                   label="Rubber Boots"
                   type="checkbox"
                   checked={formData.protectiveBoots}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="protectiveGloves"
                   label="5 mil. Nitrile Gloves"
                   type="checkbox"
                   checked={formData.protectiveGloves}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="protectiveHat"
                   label="Hard Hat"
                   type="checkbox"
                   checked={formData.protectiveHat}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="protectiveEye"
                   label="Protective Eye Wear"
                   type="checkbox"
                   checked={formData.protectiveEye}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="protectiveOther"
                   label="Other"
                   type="checkbox"
                   checked={formData.protectiveOther}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Control
@@ -688,28 +770,31 @@ class Modalview extends React.Component {
                   placeholder="Other Protective Equipment"
                   hidden={!formData.protectiveOther}
                   value={formData.protectiveOtherVal}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
               <Form.Group controlId="disposed">
                 <Form.Label>How Was Container Disposed?</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="disposed"
                   placeholder="How Was Container Disposed?"
                   value={formData.disposed}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
               <Form.Group controlId="cleaned">
                 <Form.Label>How Was Equipment Cleaned</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="cleaned"
                   placeholder="How Was Equipment Cleaned"
                   value={formData.cleaned}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -718,35 +803,36 @@ class Modalview extends React.Component {
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="msds"
                   label="Yes"
                   type="radio"
                   value="Yes"
                   checked={formData.msds === "Yes"}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
 
                 <Form.Check
                   inline
-                  disabled
+                  disabled={!isEdit}
                   name="msds"
                   label="No"
                   type="radio"
                   value="No"
                   checked={formData.msds === "No"}
-                  readOnly
+                  onChange={this.handleInputChange}
                 ></Form.Check>
               </Form.Group>
 
               <Form.Group controlId="lbsN">
                 <Form.Label>Actual lbs of N applied per 1000 sqft.</Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="lbsN"
                   placeholder="Actual lbs of N applied per 1000 sqft."
                   value={formData.lbsN}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -755,11 +841,12 @@ class Modalview extends React.Component {
                   Actual lbs of P2O5 applied per 1000 sqft.
                 </Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="lbsP2O5"
                   placeholder="Actual lbs of P2O5 applied per 1000 sqft."
                   value={formData.lbsP2O5}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -768,11 +855,12 @@ class Modalview extends React.Component {
                   Actual lbs of K2O applied per 1000 sqft.
                 </Form.Label>
                 <Form.Control
-                  disabled
+                  disabled={!isEdit}
                   type="text"
                   name="lbsK2O"
                   placeholder="Actual lbs of K2O applied per 1000 sqft."
                   value={formData.lbsK2O}
+                  onChange={this.handleInputChange}
                 />
               </Form.Group>
 
@@ -781,11 +869,13 @@ class Modalview extends React.Component {
                   <Form.Group controlId="signature">
                     <Form.Label>Signature</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
+                      required
                       type="text"
                       name="signature"
                       placeholder="Signature"
                       value={formData.signature}
+                      onChange={this.handleSigDate}
                     />
                   </Form.Group>
                 </Col>
@@ -795,7 +885,7 @@ class Modalview extends React.Component {
                   <Form.Group controlId="sigDate">
                     <Form.Label>Date</Form.Label>
                     <Form.Control
-                      disabled
+                      disabled={!isEdit}
                       type="text"
                       name="sigDate"
                       placeholder="sigDate."
@@ -804,14 +894,28 @@ class Modalview extends React.Component {
                   </Form.Group>
                 </Col>
               </Row>
+              {isEdit ? (
+                <Modal.Footer>
+                  <Button
+                    type="submit"
+                    style={{ width: "80px" }}
+                    variant="primary"
+                  >
+                    Submit
+                  </Button>
+                </Modal.Footer>
+              ) : (
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={this.closeModal}>
+                    Close
+                  </Button>
+                  <Button variant="primary" onClick={this.editMode}>
+                    Make Edits
+                  </Button>
+                </Modal.Footer>
+              )}
             </Form>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.closeModal}>
-              Close
-            </Button>
-            <Button variant="primary">Make Edits</Button>
-          </Modal.Footer>
         </Modal>
       </>
     );
