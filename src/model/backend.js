@@ -215,6 +215,7 @@ class Backend {
     } catch (error) {
       console.log("Error");
     }
+<<<<<<< HEAD
   }
   convertBase64 = (image) => {
     return new Promise((resolve, reject) => {
@@ -235,6 +236,22 @@ class Backend {
     );
     return response;
   }
+=======
+    async put_template(document) {
+        const body = document
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template", body, this.options)
+        return response
+    }
+    async get_template(productName) {
+        let response = await axios.get(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`, this.options)
+        console.log(response)
+        return response;
+    }
+    async delete_tempalte(productName) {
+        let response = await axios.delete(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`, this.options)
+        return response;
+    }
+>>>>>>> dev
 }
 
 export default Backend;
