@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Container, Row, Col, Button } from 'react-bootstrap';
+import { Form, Container, Row, Col, Button, Alert } from 'react-bootstrap';
 import "../Templates.css";
 
 class CreateTemplate extends React.Component {
@@ -20,6 +20,7 @@ class CreateTemplate extends React.Component {
             danger: false,
             regNum: "",
             estNum: "",
+            isSaved: false
         }
     }
 
@@ -28,33 +29,78 @@ class CreateTemplate extends React.Component {
         const value = target.type === "checkbox" ? target.checked : target.value;
         const name = target.name;
 
-        // if (name === "productName") {
-        //     this.setState({ validation: true });
-        // } else {
-        //     this.setState({ validation: false });
-        // }
-
         this.setState({
             [name]: value,
         });
     }
 
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
+        const { 
+            productName, 
+            supplier, 
+            flowable, 
+            granular, 
+            wettable, 
+            emulsified, 
+            other,
+            otherVal, 
+            caution, 
+            warning, 
+            danger, 
+            regNum,
+            estNum,
+            isSaved
+            } = this.state;
+
         // Copy the state, so we can format the individual fields before sending to backend
         let output = JSON.parse(JSON.stringify(this.state));
 
         // Logging the output, this will go to backend later
-        console.log(JSON.stringify(output));
-
+        console.log("In handleSubmit()!" + JSON.stringify(output));
         event.preventDefault();
 
         // Call database and save template. Make sure to check that the product name is there before saving. 
         // in other words, DO NOT save the template without a product name. Otherwise we'll have templates floating out
         // in the DB that we couldn't retrieve
+
+        const url = "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template";
+
+        const formPost = await fetch(url, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productName: productName,
+                supplier: supplier, 
+                formulationFlow: flowable,
+                formulationGran: granular, 
+                formulationWet: wettable, 
+                formulationEmul: emulsified, 
+                formulationOther: other, 
+                formulationOtherVal: otherVal,
+                signalWordCaution: caution, 
+                signalWordWarning: warning, 
+                signalWordDanger: danger,
+                epaRegNum: regNum, 
+                epaEstNum: estNum
+            })
+        })
+        .then(data => data.json())
+        .then(json => {return json.statusCode === 200 })
+        .catch(error => {
+            alert(`Error occured: ${error}`);
+        })
+
+        if (formPost) {
+            alert("template saved successfully!");
+        } else {
+            alert("template was not saved because an error occurred");
+        }
     }
 
     render() {
-        const { other, productName } = this.state;
+        const { other, productName, isSaved } = this.state;
 
         return (
         <Container>
@@ -209,7 +255,6 @@ class CreateTemplate extends React.Component {
                         <Col>
                             <Button type='submit' variant='primary' className='btn-block'>Create Template</Button>
                         </Col>
-
                     </Row>
                 </Form>
             </Row>

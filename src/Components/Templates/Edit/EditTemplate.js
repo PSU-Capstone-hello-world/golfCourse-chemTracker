@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Container, Row, Col, Button } from 'react-bootstrap';
 import "../Templates.css";
 
+
 class EditTemplate extends React.Component {
     constructor(props) {
         super(props);
@@ -24,19 +25,34 @@ class EditTemplate extends React.Component {
         }
     }
 
-    getTemplate = event => {
+    getTemplate = async event => {
+        const { productName } = this.state;
         // Take the given product and retrieve the stored template. If 
         // the template doesn't exist return message displaying "couldn't retrieve template"
         // or something like that
         event.preventDefault();
-        console.log("in getTemplate()!");
         console.log(event.target.value);
+
+        const url = `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`;
+        const retrieveTemplate = await fetch(url, {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+        })
+        .then(data => data.json())
+        .then(json => console.log(json))
+        .catch(error => {
+            alert(`Error occured: ${error}`);
+        })
+
+        console.log(retrieveTemplate);
 
         // This is temporary. What will end up happening is once we've gone to the DB and retrieved a tempalte, we'll
         // store the data and isTemplate to true. Otherwise we'll display the error message
-        if (event.currentTarget[0].value) {
-            this.setState({ productName: event.currentTarget[0].value, isTemplate: true })
-        }
+        // if (event.currentTarget[0].value) {
+        //     this.setState({ productName: event.currentTarget[0].value, isTemplate: true })
+        // }
     }
 
     handleInputChange = event => {
@@ -229,12 +245,22 @@ class EditTemplate extends React.Component {
                                     <Form.Control 
                                         type="text"
                                         name="productName"
+                                        onChange={this.handleInputChange}
                                         placeholder="Product Name"
                                     />
                                 </Form.Group>
                             </Col>
                         </Row>
-                        <Button type='submit' variant='primary' className='btn-block'>Search Templates</Button>
+                        <Row className="mt-3">
+                            <Col>
+                                <a href="/Templates">
+                                    <Button variant='secondary' className='btn-block'>Cancel</Button>
+                                </a>
+                            </Col>
+                            <Col>
+                                <Button type='submit' variant='primary' className='btn-block'>Search for Template</Button>
+                            </Col>
+                        </Row>
                     </Form>
                 )}
             </Row>
