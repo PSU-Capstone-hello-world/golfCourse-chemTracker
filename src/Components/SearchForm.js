@@ -52,7 +52,7 @@ class SearchForm extends React.Component {
     let output = JSON.parse(JSON.stringify(this.state));
     output.startDate = JSON.stringify(output.startDate).slice(1, 11);
     output.endDate = JSON.stringify(output.endDate).slice(1, 11);
-    console.log(JSON.stringify(output));
+    //console.log(JSON.stringify(output));
     await this.fetchData(output);
   }
 
@@ -84,7 +84,7 @@ class SearchForm extends React.Component {
       search.endDate,
       search.productName
     );
-    console.log("productName", document);
+    //console.log("productName", document);
     //console.log(typeof document);
     //this.displayData(document);
     this.setState({ search: true, document: document });

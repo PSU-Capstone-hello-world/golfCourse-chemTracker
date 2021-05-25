@@ -19,7 +19,7 @@ class Modalview extends React.Component {
   constructor(props) {
     super(props);
 
-    const today = new Date();
+    //const today = new Date();
     // Everyting from the original Gresham Golf Course Form
     this.state = {
       isOpen: props.isOpen,
@@ -36,51 +36,46 @@ class Modalview extends React.Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    console.log(this.value);
+    //console.log(value);
+    //console.log(name);
 
-    this.setState({
-      [name]: value,
-    });
+    this.setState((prevState) => ({
+      formData: { ...prevState.formData, [name]: value },
+    }));
   }
-
   // Dates from date picker are handled seperatley, they also need a math conversion or else the day can be off by one
   // A thread about the issue and the workaround were found at: https://github.com/Hacker0x01/react-datepicker/issues/1018
   handleDateChange(newDate) {
     const offsetDate = new Date(
       newDate.getTime() - newDate.getTimezoneOffset() * 60000
     );
-    this.setState({
-      date: offsetDate,
-    });
+    this.setState((prevState) => ({
+      formData: { ...prevState.formData, date: offsetDate },
+    }));
   }
 
   handleSigDate(newDate) {
     const offsetDate = new Date(
       newDate.getTime() - newDate.getTimezoneOffset() * 60000
     );
-    this.setState({
-      sigDate: offsetDate,
-    });
+    this.setState((prevState) => ({
+      formData: { ...prevState.formData, sigDate: offsetDate },
+    }));
   }
 
   async handleSubmit(event) {
     const { formData } = this.state;
     event.preventDefault();
-    console.log("test");
-    if (
-      !(
-        formData.location === "greens" ||
-        formData.location === "tees" ||
-        formData.location === "fairways" ||
-        formData.location === "other"
-      )
-    ) {
+    if (formData.location === "") {
       alert("Location is required");
       return false;
     }
+
+    console.log("form", formData);
     // Copy the state, so we can format the individual fields before sending to backend
     let output = JSON.parse(JSON.stringify(formData));
-
+    console.log("output", output);
+    console.log("date", output.date);
     // Format Dates
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
@@ -90,8 +85,9 @@ class Modalview extends React.Component {
 
     // Logging the output, this will go to backend later
     //console.log(JSON.stringify(output));
-    console.log("form Data", JSON.stringify(formData.id));
+    //console.log("form Data", JSON.stringify(formData.id));
     output = JSON.stringify(output);
+    //console.log("output", output);
 
     let backend = new Backend();
     let response = await backend.put(output);
@@ -110,8 +106,9 @@ class Modalview extends React.Component {
 
   render() {
     const { formData, isEdit } = this.state;
-    //console.log(formData);
+    //console.log("form v1", formData);
     //console.log(formData.formulation);
+
     return (
       <>
         <Modal
@@ -125,14 +122,16 @@ class Modalview extends React.Component {
             onClick={() => this.handleModalOpen}
           ></Modal.Header>
           <Modal.Title className="modal-title text-center">
-            <p>Read Only Modal</p>
+            {isEdit ? <p>Edit Modal </p> : <p>Read Only Modal</p>}
           </Modal.Title>
           <Modal.Body>
             <Form className="new-form" onSubmit={this.handleSubmit}>
               <Row>
                 <Col>
                   <Form.Group controlId="productName">
-                    <Form.Label>Product Name</Form.Label>
+                    <Form.Label>
+                      Product Name <span>(required)</span>
+                    </Form.Label>
                     <Form.Control
                       required
                       disabled={!isEdit}
@@ -289,7 +288,9 @@ class Modalview extends React.Component {
               </Row>
 
               <Form.Group controlId="location">
-                <Form.Label>Location</Form.Label>
+                <Form.Label>
+                  Location <span>(required)</span>
+                </Form.Label>
 
                 <Form.Check
                   inline
@@ -327,9 +328,9 @@ class Modalview extends React.Component {
                   label="Other"
                   type="radio"
                   checked={
-                    formData.location !== "greens" ||
-                    formData.location !== "tees" ||
-                    formData.location !== "fairways"
+                    formData.location === "greens" ||
+                    formData.location === "tees" ||
+                    formData.location === "fairways"
                       ? false
                       : true
                   }
@@ -342,9 +343,9 @@ class Modalview extends React.Component {
                   name="locOtherVal"
                   placeholder="Other Location"
                   hidden={
-                    !(formData.location !== "greens" ||
-                    formData.location !== "tees" ||
-                    formData.location !== "fairways"
+                    !(formData.location === "greens" ||
+                    formData.location === "tees" ||
+                    formData.location === "fairways"
                       ? false
                       : true)
                   }
@@ -640,14 +641,17 @@ class Modalview extends React.Component {
 
               {/* date: "", */}
               <Form.Group controlId="date">
-                <Form.Label>Date Applied</Form.Label>
-                <Form.Control
+                <Form.Label>
+                  Date Applied <span>(required)</span>
+                </Form.Label>
+                <DatePicker
+                  required
                   disabled={!isEdit}
                   type="text"
                   name="date"
                   placeholder="date"
-                  value={formData.date}
-                  onChange={this.handleInputChange}
+                  selected={(formData.date = new Date(formData.date))}
+                  onChange={this.handleDateChange}
                 />
               </Form.Group>
 
@@ -673,7 +677,7 @@ class Modalview extends React.Component {
                       name="timeStart"
                       placeholder="Start Time"
                       value={formData.timeStart}
-                      onChange={this.handleDateChange}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -687,6 +691,7 @@ class Modalview extends React.Component {
                       name="timeEnd"
                       placeholder="End Time"
                       value={formData.timeEnd}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -867,7 +872,9 @@ class Modalview extends React.Component {
               <Row>
                 <Col>
                   <Form.Group controlId="signature">
-                    <Form.Label>Signature</Form.Label>
+                    <Form.Label>
+                      Signature <span>(required)</span>
+                    </Form.Label>
                     <Form.Control
                       disabled={!isEdit}
                       required
@@ -875,7 +882,7 @@ class Modalview extends React.Component {
                       name="signature"
                       placeholder="Signature"
                       value={formData.signature}
-                      onChange={this.handleSigDate}
+                      onChange={this.handleInputChange}
                     />
                   </Form.Group>
                 </Col>
@@ -883,13 +890,17 @@ class Modalview extends React.Component {
                 {/* sigDate: "", */}
                 <Col>
                   <Form.Group controlId="sigDate">
-                    <Form.Label>Date</Form.Label>
-                    <Form.Control
+                    <Form.Label>
+                      Date <span>(required)</span>
+                    </Form.Label>
+                    <DatePicker
+                      required
                       disabled={!isEdit}
                       type="text"
                       name="sigDate"
                       placeholder="sigDate."
-                      value={formData.sigDate}
+                      selected={(formData.sigDate = new Date(formData.sigDate))}
+                      onChange={this.handleSigDate}
                     />
                   </Form.Group>
                 </Col>
