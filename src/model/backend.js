@@ -224,7 +224,7 @@ class Backend{
     }
     async delete_tempalte(productName) {
         let response = await axios.delete(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`, this.options)
-        return JSON.parse(response);
+        return response;
     }
 }
 
