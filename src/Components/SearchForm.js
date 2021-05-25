@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./SearchForm.css";
 import Backend from "../model/backend.js";
 import { Container } from "react-bootstrap";
+import Modalview from "./Modal";
 
 class SearchForm extends React.Component {
   constructor(props) {
@@ -23,6 +24,8 @@ class SearchForm extends React.Component {
       endDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
       search: false,
       document: "",
+      showModal: false,
+      index: -1,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -49,7 +52,7 @@ class SearchForm extends React.Component {
     let output = JSON.parse(JSON.stringify(this.state));
     output.startDate = JSON.stringify(output.startDate).slice(1, 11);
     output.endDate = JSON.stringify(output.endDate).slice(1, 11);
-    console.log(JSON.stringify(output));
+    //console.log(JSON.stringify(output));
     await this.fetchData(output);
   }
 
@@ -81,7 +84,7 @@ class SearchForm extends React.Component {
       search.endDate,
       search.productName
     );
-    console.log("productName", document);
+    //console.log("productName", document);
     //console.log(typeof document);
     //this.displayData(document);
     this.setState({ search: true, document: document });
@@ -99,7 +102,11 @@ class SearchForm extends React.Component {
           </tr>
           {document.Items.map((item, i) => (
             <tr key={i}>
-              <td>{item.productName}</td>
+              <td>
+                <Button onClick={() => this.handleClick(i)}>
+                  {item.productName}
+                </Button>
+              </td>
               <td>{item.date}</td>
               <td>{item.signature}</td>
             </tr>
@@ -137,8 +144,16 @@ class SearchForm extends React.Component {
     });
   }
 
+  handleModal = (isOpen) => {
+    this.setState({ showModal: isOpen });
+  };
+
+  handleClick = (index) => {
+    this.setState({ showModal: true, index: index });
+  };
+
   render() {
-    const { document } = this.state;
+    const { document, showModal, index } = this.state;
     return (
       <Container fluid>
         <Row className={"header"}>
@@ -195,6 +210,15 @@ class SearchForm extends React.Component {
               <Form.Row>
                 <Button type="submit">Search</Button>
               </Form.Row>
+              {showModal ? (
+                <Modalview
+                  formData={document.Items[index]}
+                  handleModal2={this.handleModal.bind(this)}
+                  isOpen={showModal}
+                ></Modalview>
+              ) : (
+                ""
+              )}
             </Col>
             <Col className="table">
               {document ? this.displayData(document) : ""}
@@ -205,5 +229,14 @@ class SearchForm extends React.Component {
     );
   }
 }
+/*
+<Modalview
+modalState={this.state.modalState}
+handleModalOpen={this.handleModalOpen}
+></Modalview>
 
+  handleModalOpen = () => {
+    this.setState({ modalState: !this.state.modalState });
+  };
+  */
 export default SearchForm;

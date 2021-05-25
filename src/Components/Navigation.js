@@ -7,6 +7,7 @@ import CalendarView from "./Calendar";
 import AddForm from "./AddForm";
 import SearchForm from "./SearchForm";
 import Templates from "./Templates/Templates";
+import Modalview from "./Modal";
 import CreateTemplate from "./Templates/Create/CreateTemplate";
 import EditTemplate from "./Templates/Edit/EditTemplate";
 import FormHome from "./FormHome";
@@ -46,6 +47,9 @@ function Navigation(props) {
           </Route>
           <Route path="/Search_Form">
             <SearchForm />
+          </Route>
+          <Route path="/Modal">
+            <Modalview />
           </Route>
           <Route path="/Templates">
             <Templates />
