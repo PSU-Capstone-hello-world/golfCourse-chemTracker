@@ -5,7 +5,84 @@ class Backend {
       headers: { "X-Api-Key": "RTR6SrTkDj3DnPLawIaDQ7QsMJ3qDZ332u7PMMOs" },
     };
   }
-  async getDateRange(start, end, productName) {
+  async getNameLocation(productName, location) {
+    const body = {
+      mode: "name_location",
+      queryStringParameters: {
+        productName: productName,
+        location: location,
+      },
+    };
+    const response = await axios.post(
+      "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id",
+      body,
+      this.options
+    );
+    return JSON.parse(response.data["body"]);
+  }
+  async getDateLocation(start, end, location) {
+    const body = {
+      mode: "date_location",
+      queryStringParameters: {
+        start: start,
+        end: end,
+        location: location,
+      },
+    };
+    const response = await axios.post(
+      "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id",
+      body,
+      this.options
+    );
+    return JSON.parse(response.data["body"]);
+  }
+  async getLocation(location) {
+    const body = {
+      mode: "location",
+      queryStringParameters: {
+        location: location,
+      },
+    };
+    const response = await axios.post(
+      "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id",
+      body,
+      this.options
+    );
+    return JSON.parse(response.data["body"]);
+  }
+  async getDateRange(start, end) {
+    const body = {
+      mode: "date",
+      queryStringParameters: {
+        start: start,
+        end: end,
+      },
+    };
+    const response = await axios.post(
+      "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id",
+      body,
+      this.options
+    );
+    return JSON.parse(response.data["body"]);
+  }
+  async getDateProductLocation(start, end, productName, location) {
+    const body = {
+      mode: "name_date_location",
+      queryStringParameters: {
+        start: start,
+        end: end,
+        productName: productName,
+        location: location,
+      },
+    };
+    const response = await axios.post(
+      "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id",
+      body,
+      this.options
+    );
+    return JSON.parse(response.data["body"]);
+  }
+  async getDateProduct(start, end, productName) {
     const body = {
       mode: "name_date",
       queryStringParameters: {
@@ -215,7 +292,6 @@ class Backend {
     } catch (error) {
       console.log("Error");
     }
-<<<<<<< HEAD
   }
   convertBase64 = (image) => {
     return new Promise((resolve, reject) => {
@@ -236,22 +312,30 @@ class Backend {
     );
     return response;
   }
-=======
-    async put_template(document) {
-        const body = document
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template", body, this.options)
-        return response
-    }
-    async get_template(productName) {
-        let response = await axios.get(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`, this.options)
-        console.log(response)
-        return response;
-    }
-    async delete_tempalte(productName) {
-        let response = await axios.delete(`https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`, this.options)
-        return response;
-    }
->>>>>>> dev
+  async put_template(document) {
+    const body = document;
+    const response = await axios.post(
+      "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template",
+      body,
+      this.options
+    );
+    return response;
+  }
+  async get_template(productName) {
+    let response = await axios.get(
+      `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`,
+      this.options
+    );
+    console.log(response);
+    return response;
+  }
+  async delete_tempalte(productName) {
+    let response = await axios.delete(
+      `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`,
+      this.options
+    );
+    return response;
+  }
 }
 
 export default Backend;

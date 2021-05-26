@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -99,8 +99,11 @@ class Modalview extends React.Component {
   }
   openModal = () => this.setState({ isOpen: true });
   closeModal = (e) => {
+    const { formData } = this.state;
     this.props.handleModal2(false);
     //this.setState({ isOpen: false });
+    formData.date = JSON.stringify(formData.date).slice(1, 11);
+    formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
   };
   editMode = () => this.setState({ isEdit: true });
 
