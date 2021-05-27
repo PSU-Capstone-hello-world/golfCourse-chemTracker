@@ -1,83 +1,93 @@
-import React, { Component } from 'react';
-
-import {Calendar, momentLocalizer  } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-
-import axios from 'axios'
-
+import React, { Component } from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import '../Styles/calendar.css';
-
+import axios from "axios";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "../Styles/calendar.css";
 import Backend from "../model/backend.js";
 
-//Calendar.momentLocalizer(moment);
+moment.locale("en-GB");
 
-moment.locale('en-GB');
-
-
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment);
 
 class ChemCalendar extends Component {
-
   constructor(props) {
-    super(props)
-
+    super(props);
     this.state = {
+      dateString: '',
+      selectedYear: new Date().getFullYear(),
+      selectedMonth: new Date().getMonth()+1,
       cal_events: [
         //State is updated via componentDidMount
       ],
+    };
+  }
+
+  getDate = () => {
+    const {selectedYear, selectedMonth} = this.state;
+    if(selectedMonth < 10){
+      this.setState({dateString:`${selectedYear}-0${selectedMonth}`});
     }
-
+    else{
+      this.setState({dateString:`${selectedYear}-${selectedMonth}`});
+    }
   }
 
-  convertDate = (date) => {
-    return moment.utc(date).toDate()
+  async populateEvents() {
+    const {dateString} = this.state;
+    let backend = new Backend();
+    this.getDate();
+    let test = await backend.getByMonth(dateString);
+    let response = test["Items"];
+    let events = [response.length];
+
+    for (let i = 0; i < response.length; i++) {
+      let temp = {
+        productName: response[i].productName,
+        location: response[i].location,
+        start: response[i].date,
+        end: response[i].date,
+        name: "test product",
+        allDay: true,
+        title: response[i].productName + " " + response[i].location,
+      };
+
+      events[i] = temp;
+    }
+    this.setState({
+      cal_events: [...events],
+    });
   }
 
-async componentDidMount() {
-let backend = new Backend()
-let test = await backend.getByMonth('2021-05-01')
-
-
-
-    // axios.get('https://api.github.com/users/mapbox')
-    //   .then(response => {
-    //     console.log(response.data);
-    //     let appointments = response.data;
-        
-    //     for (let i = 0; i < appointments.length; i++) {
-    //       appointments[i].start = this.convertDate(appointments[i].start)
-    //       appointments[i].end = this.convertDate(appointments[i].end)
-    //     }
-
-    //     this.setState({
-    //       cal_events:[...appointments]
-    //     })
-  
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
+  async componentDidMount() {
+    let something = new Date();
+    this.setState({selectedDate: something.getMonth(), selectedYear: something.getFullYear()})
   }
 
+  componentDidUpdate() {
+    //this.populateEvents();
+  }
+
+  onChange = (date) => { 
+    this.setState({ selectedMonth: date.getMonth() }) 
+  };
 
   render() {
-
-    const { cal_events } = this.state
-
+    const { cal_events, selectedMonth, dateString } = this.state;
+    console.log(dateString);
     return (
       <div className="Calendar">
         <header className="calendar-header">
-          <h1 className=".calendar-title">React Calendar</h1>
+          <h1 className=".calendar-title">Calendar</h1>
         </header>
         <div style={{ height: 700 }}>
           <Calendar
+            onChange={this.onChange}
             localizer={localizer}
             events={cal_events}
-            step={30}
-            defaultView='week'
-            views={['month','week','day']}
+            defaultView="month"
+            views={["month", "week", "day"]}
             defaultDate={new Date()}
           />
         </div>

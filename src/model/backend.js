@@ -1,10 +1,12 @@
 import axios from 'axios';
-let API_KEY = "API key go here"
 
 class Backend{
     constructor() {
-        this.api_key = API_KEY;
+        this.options = {
+            headers: {'X-Api-Key': 'RTR6SrTkDj3DnPLawIaDQ7QsMJ3qDZ332u7PMMOs'}
+        };
     }
+
     async getDateRange(start, end, productName) {
         const body = {
             'mode':'name_date',
@@ -34,8 +36,10 @@ class Backend{
                 'month': month
             }
         }
-        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body);
+        const response = await axios.post("https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/id", body,this.options);
+        console.log(response);
         return JSON.parse(response.data['body']);
+        
     }
     async getByMonthDate(start, end, month) {
         const body = {
