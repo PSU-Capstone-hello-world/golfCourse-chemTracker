@@ -46,20 +46,14 @@ class Modalview extends React.Component {
   // Dates from date picker are handled seperatley, they also need a math conversion or else the day can be off by one
   // A thread about the issue and the workaround were found at: https://github.com/Hacker0x01/react-datepicker/issues/1018
   handleDateChange(newDate) {
-    const offsetDate = new Date(
-      newDate.getTime() - newDate.getTimezoneOffset() * 60000
-    );
     this.setState((prevState) => ({
-      formData: { ...prevState.formData, date: offsetDate },
+      formData: { ...prevState.formData, date: newDate.getTime() },
     }));
   }
 
   handleSigDate(newDate) {
-    const offsetDate = new Date(
-      newDate.getTime() - newDate.getTimezoneOffset() * 60000
-    );
     this.setState((prevState) => ({
-      formData: { ...prevState.formData, sigDate: offsetDate },
+      formData: { ...prevState.formData, sigDate: newDate.getTime() },
     }));
   }
 

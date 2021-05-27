@@ -195,11 +195,8 @@ class SearchForm extends React.Component {
 
   handleStartDateChange(newDate) {
     if (newDate) {
-      const offsetDate = new Date(
-        newDate.getTime() - newDate.getTimezoneOffset() * 60000
-      );
       this.setState({
-        startDate: offsetDate,
+        startDate: newDate.getTime(),
       });
     } else {
       this.setState({
@@ -210,11 +207,8 @@ class SearchForm extends React.Component {
 
   handleEndDateChange(newDate) {
     if (newDate) {
-      const offsetDate = new Date(
-        newDate.getTime() - newDate.getTimezoneOffset() * 60000
-      );
       this.setState({
-        endDate: offsetDate,
+        endDate: newDate.getTime(),
       });
     } else {
       this.setState({
