@@ -92,10 +92,10 @@ class SearchForm extends React.Component {
       search.location
     ) {
       document = await backend.getDateProductLocation(
-        search.startDate,
-        search.endDatend,
         search.productName,
-        search.location
+        search.location,
+        search.startDate,
+        search.endDate
       );
     } else if (
       search.startDate &&
@@ -275,7 +275,7 @@ class SearchForm extends React.Component {
                     />
                   </Form.Group>
                 </Col>
-                <p>-</p>
+
                 <Col>
                   <Form.Group controlId="endDate">
                     <DatePicker

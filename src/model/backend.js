@@ -22,7 +22,7 @@ class Backend {
   }
   async getDateLocation(start, end, location) {
     const body = {
-      mode: "date_location",
+      mode: "location_date",
       queryStringParameters: {
         start: start,
         end: end,
@@ -52,7 +52,7 @@ class Backend {
   }
   async getDateRange(start, end) {
     const body = {
-      mode: "date",
+      mode: "month_date",
       queryStringParameters: {
         start: start,
         end: end,
@@ -65,14 +65,14 @@ class Backend {
     );
     return JSON.parse(response.data["body"]);
   }
-  async getDateProductLocation(start, end, productName, location) {
+  async getDateProductLocation(productName, location, start, end) {
     const body = {
-      mode: "name_date_location",
+      mode: "name_location_date",
       queryStringParameters: {
+        name: productName,
+        location: location,
         start: start,
         end: end,
-        productName: productName,
-        location: location,
       },
     };
     const response = await axios.post(
