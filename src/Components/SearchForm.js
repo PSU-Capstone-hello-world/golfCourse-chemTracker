@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./SearchForm.css";
 import Backend from "../model/backend.js";
 import { Container } from "react-bootstrap";
+import Modalview from "./Modal";
 
 class SearchForm extends React.Component {
   constructor(props) {
@@ -17,12 +18,15 @@ class SearchForm extends React.Component {
     yesterday.setDate(yesterday.getDate() - 70);
     this.state = {
       productName: "",
-      startDate: new Date(
-        yesterday.getTime() - yesterday.getTimezoneOffset() * 60000
-      ),
-      endDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
+      startDate: null,
+      //yesterday.getTime() - yesterday.getTimezoneOffset() * 60000)
+      endDate: null,
+      //today.getTime() - today.getTimezoneOffset() * 60000),
+      location: "",
       search: false,
       document: "",
+      showModal: false,
+      index: -1,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -47,9 +51,13 @@ class SearchForm extends React.Component {
   async handleSubmit(event) {
     event.preventDefault();
     let output = JSON.parse(JSON.stringify(this.state));
-    output.startDate = JSON.stringify(output.startDate).slice(1, 11);
-    output.endDate = JSON.stringify(output.endDate).slice(1, 11);
-    console.log(JSON.stringify(output));
+    if (output.startDate) {
+      output.startDate = JSON.stringify(output.startDate).slice(1, 11);
+    }
+    if (output.endDate) {
+      output.endDate = JSON.stringify(output.endDate).slice(1, 11);
+    }
+    //console.log(JSON.stringify(output));
     await this.fetchData(output);
   }
 
@@ -76,12 +84,74 @@ class SearchForm extends React.Component {
     }
     */
     //document.join();
-    let document = await backend.getDateRange(
-      search.startDate,
-      search.endDate,
-      search.productName
-    );
-    console.log("productName", document);
+    let document;
+    if (
+      search.startDate &&
+      search.endDate &&
+      search.productName &&
+      search.location
+    ) {
+      document = await backend.getDateProductLocation(
+        search.productName,
+        search.location,
+        search.startDate,
+        search.endDate
+      );
+    } else if (
+      search.startDate &&
+      search.endDate &&
+      search.productName &&
+      !search.location
+    ) {
+      document = await backend.getDateProduct(
+        search.startDate,
+        search.endDate,
+        search.productName
+      );
+    } else if (
+      !search.productName &&
+      search.startDate &&
+      search.endDate &&
+      search.location
+    ) {
+      document = await backend.getDateLocation(
+        search.startDate,
+        search.endDate,
+        search.location
+      );
+    } else if (
+      !search.startDate &&
+      !search.endDate &&
+      search.productName &&
+      search.location
+    ) {
+      document = await backend.getNameLocation(
+        search.productName,
+        search.location
+      );
+    } else if (
+      search.startDate &&
+      search.endDate &&
+      !search.productName &&
+      !search.location
+    ) {
+      document = await backend.getDateRange(search.startDate, search.endDate);
+    } else if (
+      search.productName &&
+      !search.startDate &&
+      !search.endDate &&
+      !search.location
+    ) {
+      document = await backend.getByName(search.productName);
+    } else if (
+      search.location &&
+      !search.productName &&
+      !search.startDate &&
+      !search.endDate
+    ) {
+      document = await backend.getLocation(search.location);
+    }
+    if (document) console.log("productName", document);
     //console.log(typeof document);
     //this.displayData(document);
     this.setState({ search: true, document: document });
@@ -99,7 +169,11 @@ class SearchForm extends React.Component {
           </tr>
           {document.Items.map((item, i) => (
             <tr key={i}>
-              <td>{item.productName}</td>
+              <td>
+                <Button onClick={() => this.handleClick(i)}>
+                  {item.productName}
+                </Button>
+              </td>
               <td>{item.date}</td>
               <td>{item.signature}</td>
             </tr>
@@ -120,25 +194,45 @@ class SearchForm extends React.Component {
   }
 
   handleStartDateChange(newDate) {
-    const offsetDate = new Date(
-      newDate.getTime() - newDate.getTimezoneOffset() * 60000
-    );
-    this.setState({
-      startDate: offsetDate,
-    });
+    if (newDate) {
+      const offsetDate = new Date(
+        newDate.getTime() - newDate.getTimezoneOffset() * 60000
+      );
+      this.setState({
+        startDate: offsetDate,
+      });
+    } else {
+      this.setState({
+        startDate: null,
+      });
+    }
   }
 
   handleEndDateChange(newDate) {
-    const offsetDate = new Date(
-      newDate.getTime() - newDate.getTimezoneOffset() * 60000
-    );
-    this.setState({
-      endDate: offsetDate,
-    });
+    if (newDate) {
+      const offsetDate = new Date(
+        newDate.getTime() - newDate.getTimezoneOffset() * 60000
+      );
+      this.setState({
+        endDate: offsetDate,
+      });
+    } else {
+      this.setState({
+        endDate: null,
+      });
+    }
   }
 
+  handleModal = (isOpen) => {
+    this.setState({ showModal: isOpen });
+  };
+
+  handleClick = (index) => {
+    this.setState({ showModal: true, index: index });
+  };
+
   render() {
-    const { document } = this.state;
+    const { document, showModal, index } = this.state;
     return (
       <Container fluid>
         <Row className={"header"}>
@@ -175,17 +269,19 @@ class SearchForm extends React.Component {
                     <DatePicker
                       selected={this.state.startDate}
                       onChange={this.handleStartDateChange}
+                      autoComplete="off"
                       name="startDate"
                       dateFormat="MM/dd/yyyy"
                     />
                   </Form.Group>
                 </Col>
-                <p>-</p>
+
                 <Col>
                   <Form.Group controlId="endDate">
                     <DatePicker
                       selected={this.state.endDate}
                       onChange={this.handleEndDateChange}
+                      autoComplete="off"
                       name="endDate"
                       dateFormat="MM/dd/yyyy"
                     />
@@ -193,8 +289,30 @@ class SearchForm extends React.Component {
                 </Col>
               </Form.Row>
               <Form.Row>
+                <Col>
+                  <Form.Group controlId="location">
+                    <Form.Label>Location</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="location"
+                      placeholder="Location"
+                      onChange={this.handleInputChange}
+                    ></Form.Control>
+                  </Form.Group>
+                </Col>
+              </Form.Row>
+              <Form.Row>
                 <Button type="submit">Search</Button>
               </Form.Row>
+              {showModal ? (
+                <Modalview
+                  formData={document.Items[index]}
+                  handleModal2={this.handleModal.bind(this)}
+                  isOpen={showModal}
+                ></Modalview>
+              ) : (
+                ""
+              )}
             </Col>
             <Col className="table">
               {document ? this.displayData(document) : ""}
@@ -205,5 +323,14 @@ class SearchForm extends React.Component {
     );
   }
 }
+/*
+<Modalview
+modalState={this.state.modalState}
+handleModalOpen={this.handleModalOpen}
+></Modalview>
 
+  handleModalOpen = () => {
+    this.setState({ modalState: !this.state.modalState });
+  };
+  */
 export default SearchForm;
