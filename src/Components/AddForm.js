@@ -104,21 +104,27 @@ class AddForm extends React.Component {
   // Dates from date picker are handled seperatley, they also need a math conversion or else the day can be off by one
   // A thread about the issue and the workaround were found at: https://github.com/Hacker0x01/react-datepicker/issues/1018
   handleDateChange(newDate) {
-    const offsetDate = new Date(
-      newDate.getTime() - newDate.getTimezoneOffset() * 60000
-    );
-    this.setState({
-      date: offsetDate,
-    });
+    if (newDate) {
+      this.setState({
+        date: newDate.getTime(),
+      });
+    } else {
+      this.setState({
+        sigDate: null,
+      });
+    }
   }
 
   handleSigDate(newDate) {
-    const offsetDate = new Date(
-      newDate.getTime() - newDate.getTimezoneOffset() * 60000
-    );
-    this.setState({
-      sigDate: offsetDate,
-    });
+    if (newDate) {
+      this.setState({
+        sigDate: newDate.getTime(),
+      });
+    } else {
+      this.setState({
+        sigDate: null,
+      });
+    }
   }
 
   async handleSubmit(event) {
@@ -303,29 +309,7 @@ class AddForm extends React.Component {
             </Form.Group>
           </Col>
         </Row>
-        {/* <Form.Group controlId="msds">
-          <Form.Label>Did you read the MSDS?</Form.Label>
 
-          <Form.Check
-            inline
-            name="msds"
-            label="Yes"
-            type="radio"
-            value="Yes"
-            checked={this.state.msds === "Yes"}
-            onChange={this.handleInputChange}
-          ></Form.Check>
-
-          <Form.Check
-            inline
-            name="msds"
-            label="No"
-            type="radio"
-            value="No"
-            checked={this.state.msds === "No"}
-            onChange={this.handleInputChange}
-          ></Form.Check>
-        </Form.Group> */}
         <Form.Group controlId="location">
           <Form.Label>
             Location <span>(required)</span>

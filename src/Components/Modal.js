@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -46,20 +46,14 @@ class Modalview extends React.Component {
   // Dates from date picker are handled seperatley, they also need a math conversion or else the day can be off by one
   // A thread about the issue and the workaround were found at: https://github.com/Hacker0x01/react-datepicker/issues/1018
   handleDateChange(newDate) {
-    const offsetDate = new Date(
-      newDate.getTime() - newDate.getTimezoneOffset() * 60000
-    );
     this.setState((prevState) => ({
-      formData: { ...prevState.formData, date: offsetDate },
+      formData: { ...prevState.formData, date: newDate.getTime() },
     }));
   }
 
   handleSigDate(newDate) {
-    const offsetDate = new Date(
-      newDate.getTime() - newDate.getTimezoneOffset() * 60000
-    );
     this.setState((prevState) => ({
-      formData: { ...prevState.formData, sigDate: offsetDate },
+      formData: { ...prevState.formData, sigDate: newDate.getTime() },
     }));
   }
 
@@ -99,8 +93,11 @@ class Modalview extends React.Component {
   }
   openModal = () => this.setState({ isOpen: true });
   closeModal = (e) => {
+    const { formData } = this.state;
     this.props.handleModal2(false);
     //this.setState({ isOpen: false });
+    formData.date = JSON.stringify(formData.date).slice(1, 11);
+    formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
   };
   editMode = () => this.setState({ isEdit: true });
 
