@@ -23,8 +23,9 @@ body {
     background-color: white;
 }
 
-.formulationLabel {
-    width: 15%;
+span {
+    color: red;
+    font-size: medium;
 }
 
 .options {

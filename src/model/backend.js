@@ -292,6 +292,7 @@ class Backend {
     } catch (error) {
       console.log("Error");
     }
+
   }
   convertBase64 = (image) => {
     return new Promise((resolve, reject) => {
@@ -312,6 +313,7 @@ class Backend {
     );
     return response;
   }
+
   async put_template(document) {
     const body = document;
     const response = await axios.post(
