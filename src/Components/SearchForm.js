@@ -196,7 +196,7 @@ class SearchForm extends React.Component {
   handleStartDateChange(newDate) {
     if (newDate) {
       this.setState({
-        startDate: newDate.getTime(),
+        startDate: new Date(newDate.getTime()),
       });
     } else {
       this.setState({
@@ -208,7 +208,7 @@ class SearchForm extends React.Component {
   handleEndDateChange(newDate) {
     if (newDate) {
       this.setState({
-        endDate: newDate.getTime(),
+        endDate: new Date(newDate.getTime()),
       });
     } else {
       this.setState({
