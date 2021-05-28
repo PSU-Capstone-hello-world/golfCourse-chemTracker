@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Container, Row, Col, Button, Alert } from 'react-bootstrap';
 import Backend from "../../../model/backend";
+import { Redirect } from "react-router-dom";
 import "../Templates.css";
 
 class CreateTemplate extends React.Component {
@@ -18,10 +19,10 @@ class CreateTemplate extends React.Component {
             formulationOtherVal: "",
             signalWordCaution: false,
             signalWordWarning: false,
-            signlaWordDanger: false,
+            signalWordDanger: false,
             epaRegNum: "",
             epaEstNum: "",
-            isSaved: false
+            redirect: false, 
         }
     }
 
@@ -46,10 +47,20 @@ class CreateTemplate extends React.Component {
         } else {
             alert("template was not saved because an error occurred");
         }
+
+        this.setState({ redirect: true });
     }
 
     render() {
-        const { other, productName } = this.state;
+        const { 
+            formulationOther, 
+            productName, 
+            redirect,
+        } = this.state;
+
+        if (redirect) {
+            return <Redirect to="/Templates" />
+        }
 
         return (
         <Container>
@@ -135,7 +146,7 @@ class CreateTemplate extends React.Component {
                                     type="text"
                                     name="formulationOtherVal"
                                     placeholder="Other Formulation"
-                                    hidden={!other}
+                                    hidden={!formulationOther}
                                     onChange={this.handleInputChange}
                                 />
                             </Form.Group>
