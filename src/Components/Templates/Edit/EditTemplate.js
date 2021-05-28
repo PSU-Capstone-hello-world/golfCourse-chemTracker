@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Container, Row, Col, Button } from 'react-bootstrap';
+import Backend from "../../../model/backend";
 import "../Templates.css";
 
 
@@ -21,39 +22,57 @@ class EditTemplate extends React.Component {
             danger: false,
             regNum: "",
             estNum: "",
-            isTemplate: false
+            isTemplate: false,
+            formData: {}
         }
     }
 
     getTemplate = async event => {
         const { productName } = this.state;
+        const backend = new Backend();
         // Take the given product and retrieve the stored template. If 
         // the template doesn't exist return message displaying "couldn't retrieve template"
         // or something like that
         event.preventDefault();
         console.log(event.target.value);
 
-        const url = `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template?productName=${productName}`;
-        const retrieveTemplate = await fetch(url, {
-            method: 'GET',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-        })
-        .then(data => data.json())
-        .then(json => console.log(json))
-        .catch(error => {
-            alert(`Error occured: ${error}`);
-        })
+        const response = await backend.get_template(productName);
 
-        console.log(retrieveTemplate);
+        if (response.data.Count === 0) {
+            alert("A template for that chemical does not exist!");
+            return;
+        }
 
-        // This is temporary. What will end up happening is once we've gone to the DB and retrieved a tempalte, we'll
-        // store the data and isTemplate to true. Otherwise we'll display the error message
-        // if (event.currentTarget[0].value) {
-        //     this.setState({ productName: event.currentTarget[0].value, isTemplate: true })
-        // }
+        console.log(response);
+        this.populateFormData(response.data.Items[0]);
     }
+    
+    populateFormData = data => {
+        let productName,
+            supplier, 
+            flowable, 
+            granular, 
+            wettable, 
+            emulsified, 
+            other, 
+            otherVal, 
+            caution, 
+            warning,
+            danger,
+            regNum,
+            estNum,
+            isTemplate; 
+
+        //const { formData } = this.state;
+
+        for (const [key, value] of Object.entries(data)) {
+            if (key === "productName") {
+
+            }
+            console.log(`${key} : ${value}`);
+        }
+    }
+
 
     handleInputChange = event => {
         const target = event.target;

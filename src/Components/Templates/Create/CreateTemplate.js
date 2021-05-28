@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Container, Row, Col, Button, Alert } from 'react-bootstrap';
+import Backend from "../../../model/backend";
 import "../Templates.css";
 
 class CreateTemplate extends React.Component {
@@ -9,17 +10,17 @@ class CreateTemplate extends React.Component {
         this.state = {
             productName: "",
             supplier: "",
-            flowable: false,
-            granular: false,
-            wettable: false,
-            emulsified: false,
-            other: false,
-            otherVal: "",
-            caution: false,
-            warning: false,
-            danger: false,
-            regNum: "",
-            estNum: "",
+            formulationFlow: false,
+            formulationGran: false,
+            formulationWet: false,
+            formulationEmul: false,
+            formulationOther: false,
+            formulationOtherVal: "",
+            signalWordCaution: false,
+            signalWordWarning: false,
+            signlaWordDanger: false,
+            epaRegNum: "",
+            epaEstNum: "",
             isSaved: false
         }
     }
@@ -35,64 +36,12 @@ class CreateTemplate extends React.Component {
     }
 
     handleSubmit = async (event) => {
-        const { 
-            productName, 
-            supplier, 
-            flowable, 
-            granular, 
-            wettable, 
-            emulsified, 
-            other,
-            otherVal, 
-            caution, 
-            warning, 
-            danger, 
-            regNum,
-            estNum,
-            isSaved
-            } = this.state;
-
-        // Copy the state, so we can format the individual fields before sending to backend
-        let output = JSON.parse(JSON.stringify(this.state));
-
-        // Logging the output, this will go to backend later
-        console.log("In handleSubmit()!" + JSON.stringify(output));
+        const backend = new Backend();
         event.preventDefault();
 
-        // Call database and save template. Make sure to check that the product name is there before saving. 
-        // in other words, DO NOT save the template without a product name. Otherwise we'll have templates floating out
-        // in the DB that we couldn't retrieve
+        const response = await backend.put_template(JSON.stringify(this.state));
 
-        const url = "https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template";
-
-        const formPost = await fetch(url, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                productName: productName,
-                supplier: supplier, 
-                formulationFlow: flowable,
-                formulationGran: granular, 
-                formulationWet: wettable, 
-                formulationEmul: emulsified, 
-                formulationOther: other, 
-                formulationOtherVal: otherVal,
-                signalWordCaution: caution, 
-                signalWordWarning: warning, 
-                signalWordDanger: danger,
-                epaRegNum: regNum, 
-                epaEstNum: estNum
-            })
-        })
-        .then(data => data.json())
-        .then(json => {return json.statusCode === 200 })
-        .catch(error => {
-            alert(`Error occured: ${error}`);
-        })
-
-        if (formPost) {
+        if (response.data.statusCode === 200) {
             alert("template saved successfully!");
         } else {
             alert("template was not saved because an error occurred");
@@ -100,7 +49,7 @@ class CreateTemplate extends React.Component {
     }
 
     render() {
-        const { other, productName, isSaved } = this.state;
+        const { other, productName } = this.state;
 
         return (
         <Container>
@@ -142,7 +91,7 @@ class CreateTemplate extends React.Component {
                                 <Form.Label className="formulationLabel">Formulation:</Form.Label>
                                 <div className="d-flex justify-content-center">
                                     <Form.Check
-                                        name="flow"
+                                        name="formulationFlow"
                                         inline
                                         label="Flowable"
                                         type="checkbox"
@@ -150,7 +99,7 @@ class CreateTemplate extends React.Component {
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
-                                        name="granular"
+                                        name="formulationGran"
                                         inline
                                         label="Granular"
                                         type="checkbox"
@@ -158,7 +107,7 @@ class CreateTemplate extends React.Component {
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
-                                        name="wettable"
+                                        name="formulationWet"
                                         inline
                                         label="Wettable Powder"
                                         type="checkbox"
@@ -166,7 +115,7 @@ class CreateTemplate extends React.Component {
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
-                                        name="emulsified"
+                                        name="formulationEmul"
                                         inline
                                         label="Emulsified Concrete"
                                         type="checkbox"
@@ -174,7 +123,7 @@ class CreateTemplate extends React.Component {
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
-                                        name="other"
+                                        name="formulationOther"
                                         inline
                                         label="Other"
                                         type="checkbox"
@@ -184,7 +133,7 @@ class CreateTemplate extends React.Component {
                                 </div>
                                 <Form.Control
                                     type="text"
-                                    name="otherVal"
+                                    name="formulationOtherVal"
                                     placeholder="Other Formulation"
                                     hidden={!other}
                                     onChange={this.handleInputChange}
@@ -198,21 +147,21 @@ class CreateTemplate extends React.Component {
                                 <Form.Label className="signalLabel">Signal Word: </Form.Label>
                                 <div className="d-flex justify-content-center">
                                     <Form.Check
-                                        name="caution"
+                                        name="signalWordCaution"
                                         inline
                                         label="Caution"
                                         type="checkbox"
                                         className="options"
                                     />
                                     <Form.Check
-                                        name="warning"
+                                        name="signalWordWarning"
                                         inline
                                         label="Warning"
                                         type="checkbox"
                                         className="options"
                                     />
                                     <Form.Check
-                                        name="danger"
+                                        name="signalWordDanger"
                                         inline
                                         label="Danger"
                                         type="checkbox"
@@ -228,7 +177,7 @@ class CreateTemplate extends React.Component {
                                 <Form.Label>EPA Registration #</Form.Label>
                                 <Form.Control
                                 type="text"
-                                name="regNum"
+                                name="epaRegNum"
                                 placeholder="EPA Registration #"
                                 onChange={this.handleInputChange}
                                 />
@@ -239,7 +188,7 @@ class CreateTemplate extends React.Component {
                                 <Form.Label>EPA Est. #</Form.Label>
                                 <Form.Control
                                 type="text"
-                                name="estNum"
+                                name="epaEstNum"
                                 placeholder="EPA Est. #"
                                 onChange={this.handleInputChange}
                                 />
