@@ -171,7 +171,7 @@ class EditTemplate extends React.Component {
                         <Row>
                             <Col>
                                 <Form.Group controlId="productName">
-                                    <Form.Label>Product Name <span>(Required)</span></Form.Label>
+                                    <Form.Label>Product Name <span className="required">(Required)</span></Form.Label>
                                     <Form.Control
                                     type="text"
                                     required

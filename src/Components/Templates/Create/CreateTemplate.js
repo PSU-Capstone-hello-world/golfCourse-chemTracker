@@ -72,7 +72,7 @@ class CreateTemplate extends React.Component {
                     <Row>
                         <Col>
                             <Form.Group hasValidation controlId="productName">
-                                <Form.Label>Product Name<span> (Required) </span></Form.Label>
+                                <Form.Label>Product Name<span class="required"> (Required) </span></Form.Label>
                                 <Form.Control
                                 type="text"
                                 required
