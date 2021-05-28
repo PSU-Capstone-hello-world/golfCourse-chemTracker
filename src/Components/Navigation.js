@@ -3,7 +3,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { Route, Switch, Link, BrowserRouter as Router } from "react-router-dom";
 import Home from "./Home";
-import CalendarView from "./Calendar";
+import CalendarView from "./Calendar/Calendar";
 import AddForm from "./AddForm";
 import SearchForm from "./SearchForm";
 import Templates from "./Templates/Templates";

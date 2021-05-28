@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Card, Container, Row, Col } from 'react-bootstrap';
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import "../Styles/calendar.css";
-import Backend from "../model/backend.js";
-import Day from './day.js';
+// import "../Styles/calendar.css";
+import Backend from "../../model/backend.js";
+
+import Day from '../day.js';
+import "./Calendar.css"
 
 moment.locale("en-GB");
 
@@ -111,44 +113,67 @@ class ChemCalendar extends Component {
   render() {
     const { cal_events, selectedMonth, dateString } = this.state;
     return (
-      <div className="Calendar">
-        <header className="calendar-header">
-          <h1 className=".calendar-title">Calendar</h1>
-        </header>
-        <div style={{ height: 700 }}>
-          <Calendar
-            onNavigate={this.onChange}
-            localizer={localizer}
-            events={cal_events}
-            defaultView="month"
-            views={{
-              month: true, 
-              week: true, 
-              day: true,
-            }}
-            // eventPropGetter={this.eventStyleGetter}
-            // eventPropGetter={(event, start, end, isSelected) => {
-              // let newStyle = {
-              //   backgroundColor: "lightgrey",
-              //   color: "white",
-              //   borderRadius: "5px",
-              //   border: "none",
-              // };
-              // if (event.location === 'tees') {
-              //   newStyle.backgroundColor = "blue";
-              // } else if (event.symptoms === 'fairways') {
-              //   newStyle.backgroundColor = "grey";
-              // } else {
-              //   newStyle.backgroundColor = "blue";
-              // }
-              // return {
-              //   className: "",
-              //   style: newStyle,
-              // };
-            // }}
-          />
-        </div>
-      </div>
+      <Container fluid className="calendarContainer">
+        <Row>
+          {/* <div className="Calendar"> */}
+            {/* <header className="calendar-header">
+              <h1 className=".calendar-title">Calendar</h1>
+            </header> */}
+            <Col>
+            <div style={{ height: 700 }}>
+              <Calendar
+                onNavigate={this.onChange}
+                localizer={localizer}
+                events={cal_events}
+                defaultView="month"
+                views={{
+                  month: true, 
+                  week: true, 
+                  day: true,
+                }}
+                components={{
+                  month: {
+                    event: (props) => {
+                      return <div className="dateTest"></div>
+                    }
+                  },
+                  week: {
+                    event: (props) => {
+                      return <div className="dateTest"></div>
+                    }
+                  },
+                  day: {
+                    event: (props) => {
+                      return <div className="dateTest"></div>
+                    }
+                  }
+                }}
+                // eventPropGetter={this.eventStyleGetter}
+                // eventPropGetter={(event, start, end, isSelected) => {
+                  // let newStyle = {
+                  //   backgroundColor: "lightgrey",
+                  //   color: "white",
+                  //   borderRadius: "5px",
+                  //   border: "none",
+                  // };
+                  // if (event.location === 'tees') {
+                  //   newStyle.backgroundColor = "blue";
+                  // } else if (event.symptoms === 'fairways') {
+                  //   newStyle.backgroundColor = "grey";
+                  // } else {
+                  //   newStyle.backgroundColor = "blue";
+                  // }
+                  // return {
+                  //   className: "",
+                  //   style: newStyle,
+                  // };
+                // }}
+              />
+            </div>
+            </Col>
+          {/* </div> */}
+        </Row>
+      </Container>
     );
   }
 }
