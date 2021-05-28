@@ -106,7 +106,7 @@ class AddForm extends React.Component {
   handleDateChange(newDate) {
     if (newDate) {
       this.setState({
-        date: newDate.getTime(),
+        date: new Date(newDate.getTime()),
       });
     } else {
       this.setState({
@@ -118,7 +118,7 @@ class AddForm extends React.Component {
   handleSigDate(newDate) {
     if (newDate) {
       this.setState({
-        sigDate: newDate.getTime(),
+        sigDate: new Date(newDate.getTime()),
       });
     } else {
       this.setState({

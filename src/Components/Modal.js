@@ -47,13 +47,13 @@ class Modalview extends React.Component {
   // A thread about the issue and the workaround were found at: https://github.com/Hacker0x01/react-datepicker/issues/1018
   handleDateChange(newDate) {
     this.setState((prevState) => ({
-      formData: { ...prevState.formData, date: newDate.getTime() },
+      formData: { ...prevState.formData, date: new Date(newDate.getTime()) },
     }));
   }
 
   handleSigDate(newDate) {
     this.setState((prevState) => ({
-      formData: { ...prevState.formData, sigDate: newDate.getTime() },
+      formData: { ...prevState.formData, sigDate: new Date(newDate.getTime()) },
     }));
   }
 
