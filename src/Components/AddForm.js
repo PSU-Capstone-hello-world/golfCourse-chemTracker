@@ -171,7 +171,7 @@ class AddForm extends React.Component {
           <Col>
             <Form.Group controlId="productName">
               <Form.Label>
-                Product Name <span>(required)</span>
+                Product Name <span className="required">(required)</span>
               </Form.Label>
               <Form.Control
                 required
@@ -312,7 +312,7 @@ class AddForm extends React.Component {
 
         <Form.Group controlId="location">
           <Form.Label>
-            Location <span>(required)</span>
+            Location <span className="required">(required)</span>
           </Form.Label>
 
           <Form.Check
@@ -614,7 +614,7 @@ class AddForm extends React.Component {
         {/* date: "", */}
         <Form.Group controlId="date">
           <Form.Label>
-            Date Applied <span>(required)</span>
+            Date Applied <span className="required">(required)</span>
           </Form.Label>
           <DatePicker
             required
@@ -813,7 +813,7 @@ class AddForm extends React.Component {
           <Col>
             <Form.Group controlId="signature">
               <Form.Label>
-                Signature <span>(required)</span>
+                Signature <span className="required">(required)</span>
               </Form.Label>
               <Form.Control
                 required
@@ -829,7 +829,7 @@ class AddForm extends React.Component {
           <Col>
             <Form.Group controlId="sigDate">
               <Form.Label>
-                Today's Date <span>(required)</span>
+                Today's Date <span className="required">(required)</span>
               </Form.Label>
               <DatePicker
                 required
