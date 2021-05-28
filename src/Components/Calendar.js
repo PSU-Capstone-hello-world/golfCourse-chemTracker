@@ -6,6 +6,7 @@ import axios from "axios";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../Styles/calendar.css";
 import Backend from "../model/backend.js";
+import Day from './day.js';
 
 moment.locale("en-GB");
 
@@ -15,29 +16,25 @@ class ChemCalendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateString: '',
       selectedYear: new Date().getFullYear(),
-      selectedMonth: new Date().getMonth()+1,
+      selectedMonth: new Date().getMonth() + 1,
+      dateString: "",
       cal_events: [
         //State is updated via componentDidMount
       ],
     };
   }
 
-  getDate = () => {
-    const {selectedYear, selectedMonth} = this.state;
-    if(selectedMonth < 10){
-      this.setState({dateString:`${selectedYear}-0${selectedMonth}`});
-    }
-    else{
-      this.setState({dateString:`${selectedYear}-${selectedMonth}`});
-    }
-  }
-
   async populateEvents() {
-    const {dateString} = this.state;
+    const { dateString } = this.state;
     let backend = new Backend();
-    this.getDate();
+    // if(selectedMonth < 10){
+    //   this.setState({dateString:`${selectedYear}-0${selectedMonth}`});
+    //   return `${selectedYear}-0${selectedMonth}`;
+    // }
+    // else{
+    //   this.setState({dateString:`${selectedYear}-${selectedMonth}`});
+    // }
     let test = await backend.getByMonth(dateString);
     let response = test["Items"];
     let events = [response.length];
@@ -50,7 +47,12 @@ class ChemCalendar extends Component {
         end: response[i].date,
         name: "test product",
         allDay: true,
-        title: response[i].productName + " " + response[i].location,
+        title:
+          "Product name: " +
+          response[i].productName +
+          "\n" +
+          " Location: " +
+          response[i].location,
       };
 
       events[i] = temp;
@@ -60,22 +62,54 @@ class ChemCalendar extends Component {
     });
   }
 
-  async componentDidMount() {
-    let something = new Date();
-    this.setState({selectedDate: something.getMonth(), selectedYear: something.getFullYear()})
+  setDate() {
+    const { selectedYear, selectedMonth } = this.state;
+    if (selectedMonth < 10) {
+      this.setState({ dateString: `${selectedYear}-0${selectedMonth}` }, () =>
+        this.populateEvents()
+      );
+    } else {
+      this.setState({ dateString: `${selectedYear}-${selectedMonth}` }, () =>
+        this.populateEvents()
+      );
+    }
   }
 
-  componentDidUpdate() {
-    //this.populateEvents();
+  componentDidMount() {
+    this.setDate();
+    // const {selectedYear, selectedMonth} = this.state;
+    //   if(selectedMonth < 10){
+    //     this.setState({dateString:`${selectedYear}-0${selectedMonth}`}, () => this.populateEvents());
+    //   }
+    //   else{
+    //     this.setState({dateString:`${selectedYear}-${selectedMonth}`}, () => this.populateEvents());
+    //   }
   }
 
-  onChange = (date) => { 
-    this.setState({ selectedMonth: date.getMonth() }) 
+  onChange = (date) => {
+    const { selectedMonth, selectedYear } = this.state;
+    if (
+      date.getMonth() !== selectedMonth &&
+      date.getFullYear() !== selectedYear
+    ) {
+      this.setState(
+        {
+          selectedYear: date.getFullYear(),
+          selectedMonth: date.getMonth() + 1,
+        },
+        () => this.setDate()
+      );
+    } else if (date.getMonth() + 1 !== selectedMonth) {
+      this.setState({ selectedMonth: date.getMonth() + 1 }, () =>
+        this.setDate()
+      );
+    } else if (date.getFullYear() !== selectedYear) {
+      this.setState({ selectedYear: date.getFullYear() }, () => this.setDate());
+    }
   };
 
   render() {
     const { cal_events, selectedMonth, dateString } = this.state;
-    console.log(dateString);
     return (
       <div className="Calendar">
         <header className="calendar-header">
@@ -83,12 +117,35 @@ class ChemCalendar extends Component {
         </header>
         <div style={{ height: 700 }}>
           <Calendar
-            onChange={this.onChange}
+            onNavigate={this.onChange}
             localizer={localizer}
             events={cal_events}
             defaultView="month"
-            views={["month", "week", "day"]}
-            defaultDate={new Date()}
+            views={{
+              month: true, 
+              week: true, 
+              day: true,
+            }}
+            // eventPropGetter={this.eventStyleGetter}
+            // eventPropGetter={(event, start, end, isSelected) => {
+              // let newStyle = {
+              //   backgroundColor: "lightgrey",
+              //   color: "white",
+              //   borderRadius: "5px",
+              //   border: "none",
+              // };
+              // if (event.location === 'tees') {
+              //   newStyle.backgroundColor = "blue";
+              // } else if (event.symptoms === 'fairways') {
+              //   newStyle.backgroundColor = "grey";
+              // } else {
+              //   newStyle.backgroundColor = "blue";
+              // }
+              // return {
+              //   className: "",
+              //   style: newStyle,
+              // };
+            // }}
           />
         </div>
       </div>
