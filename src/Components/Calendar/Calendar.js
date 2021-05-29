@@ -43,6 +43,7 @@ class ChemCalendar extends Component {
         start: response[i].date,
         end: response[i].date,
         allDay: true,
+        supplier: response[i].supplier,
         title: `${response[i].productName}`
       };
 
@@ -64,6 +65,51 @@ class ChemCalendar extends Component {
         this.populateEvents()
       );
     }
+  }
+
+  eventStyleGetter = (event) => {
+    const eventColor = this.stringToColour(event.productName, event.supplier);
+
+    var style = {
+        backgroundColor: eventColor,
+        borderRadius: '10px',
+        opacity: 0.8,
+        color: 'white',
+        border: '0px',
+        display: 'block'
+    };
+
+    return {
+        style: style
+    }
+  }
+
+  stringToColour(str1, str2) {
+    let hash = 0;
+
+    if (str1.length === 0 && str2.length === 0) {
+      return hash;
+    }
+
+    for (let i = 0; i < str1.length; i++) {
+      let chr   = str1.charCodeAt(i);
+      hash  = ((hash << 3) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+
+    for (let i = 0; i < str2.length; i++) {
+      let chr   = str2.charCodeAt(i);
+      hash  = ((hash << 1) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+
+    let colour = '#';
+    for (let i = 0; i < 3; i++) {
+      let value = (hash >> (i * 8)) & 0xFF;
+      colour += ('00' + value.toString(16)).substr(-2);
+    }
+
+    return colour;
   }
 
   handleEventClick = async (event) => {
@@ -147,7 +193,7 @@ class ChemCalendar extends Component {
   }
 
   handleModal = (isOpen) => {
-    this.setState({ showModal: isOpen });
+    this.setState({ showModal: isOpen }, () => this.setDate());
   };
 
   onChange = (date) => {
@@ -171,6 +217,10 @@ class ChemCalendar extends Component {
       this.setState({ selectedYear: date.getFullYear() }, () => this.setDate());
     }
   };
+
+  handleSelect = date => {
+    console.log(date);
+  }
 
   render() {
     const { cal_events, showModal, document } = this.state;
@@ -201,6 +251,7 @@ class ChemCalendar extends Component {
                     day: true,
                   }}
                   onDoubleClickEvent={event => this.handleEventClick(event)}
+                  eventPropGetter={this.eventStyleGetter}
                 />
             </div>
             </Col>
