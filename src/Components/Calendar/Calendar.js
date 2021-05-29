@@ -43,7 +43,7 @@ class ChemCalendar extends Component {
         start: response[i].date,
         end: response[i].date,
         allDay: true,
-        title: `Name: ${response[i].productName} | Location: ${response[i].location}`
+        title: `${response[i].productName}`
       };
 
       events[i] = temp;
@@ -189,25 +189,19 @@ class ChemCalendar extends Component {
       <Container fluid className="calendarContainer">
         <Row>
             <Col>
-            <div style={{ height: 700 }}>
-              <Calendar
-                onNavigate={this.onChange}
-                localizer={localizer}
-                events={cal_events}
-                defaultView="month"
-                views={{
-                  month: true, 
-                  week: true, 
-                  day: true,
-                }}
-                onDoubleClickEvent={event => this.handleEventClick(event)}
-                // components={{
-                //   onDoubleClickEvent: (props) => { 
-                //     // this.handleEventClick()
-                //     alert("helllllllllllllo");
-                //   }
-                // }}
-              />
+              <div style={{ height: 1100 }}>
+                <Calendar
+                  onNavigate={this.onChange}
+                  localizer={localizer}
+                  events={cal_events}
+                  defaultView="month"
+                  views={{
+                    month: true, 
+                    week: true, 
+                    day: true,
+                  }}
+                  onDoubleClickEvent={event => this.handleEventClick(event)}
+                />
             </div>
             </Col>
         </Row>
