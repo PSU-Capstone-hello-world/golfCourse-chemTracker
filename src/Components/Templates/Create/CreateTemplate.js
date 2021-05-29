@@ -163,6 +163,7 @@ class CreateTemplate extends React.Component {
                                         label="Caution"
                                         type="checkbox"
                                         className="options"
+                                        onChange={this.handleInputChange}
                                     />
                                     <Form.Check
                                         name="signalWordWarning"
@@ -170,6 +171,7 @@ class CreateTemplate extends React.Component {
                                         label="Warning"
                                         type="checkbox"
                                         className="options"
+                                        onChange={this.handleInputChange}
                                     />
                                     <Form.Check
                                         name="signalWordDanger"
@@ -177,6 +179,7 @@ class CreateTemplate extends React.Component {
                                         label="Danger"
                                         type="checkbox"
                                         className="options"
+                                        onChange={this.handleInputChange}
                                     />
                                 </div>
                             </Form.Group>
