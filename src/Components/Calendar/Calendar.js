@@ -25,6 +25,8 @@ class ChemCalendar extends Component {
       showModal: false,
       cal_events: [
       ],
+      selectedDate: null,
+      selectedView: "month"
     };
   }
 
@@ -197,33 +199,38 @@ class ChemCalendar extends Component {
   };
 
   onChange = (date) => {
-    const { selectedMonth, selectedYear } = this.state;
-    if (
-      date.getMonth() !== selectedMonth &&
-      date.getFullYear() !== selectedYear
-    ) {
-      this.setState(
-        {
-          selectedYear: date.getFullYear(),
-          selectedMonth: date.getMonth() + 1,
-        },
-        () => this.setDate()
-      );
-    } else if (date.getMonth() + 1 !== selectedMonth) {
-      this.setState({ selectedMonth: date.getMonth() + 1 }, () =>
-        this.setDate()
-      );
-    } else if (date.getFullYear() !== selectedYear) {
-      this.setState({ selectedYear: date.getFullYear() }, () => this.setDate());
+    const { selectedMonth, selectedYear, selectedDate } = this.state;
+    if (selectedDate != date) {
+      this.setState({
+        selectedDate: date,
+        selectedMonth: date.getMonth() + 1,
+        selectedYear: date.getFullYear()
+      }, () => this.setDate())
     }
+    // if (
+    //   date.getMonth() !== selectedMonth &&
+    //   date.getFullYear() !== selectedYear
+    // ) {
+    //   this.setState(
+    //     {
+    //       selectedYear: date.getFullYear(),
+    //       selectedMonth: date.getMonth() + 1,
+    //       selectedDate: date
+    //     },
+    //     () => this.setDate()
+    //   );
+    // } else if (date.getMonth() + 1 !== selectedMonth) {
+    //   this.setState({ selectedMonth: date.getMonth() + 1, selectedDate: date }, () =>
+    //     this.setDate()
+    //   );
+    // } else if (date.getFullYear() !== selectedYear) {
+    //   this.setState({ selectedYear: date.getFullYear(), selectedDate: date }, () => this.setDate());
+    // }
   };
 
-  handleSelect = date => {
-    console.log(date);
-  }
-
   render() {
-    const { cal_events, showModal, document } = this.state;
+    const { cal_events, showModal, document, selectedDate, selectedView } = this.state;
+    console.log(`date is ${selectedDate}`);
 
     if (showModal) {
       return (
@@ -244,7 +251,8 @@ class ChemCalendar extends Component {
                   onNavigate={this.onChange}
                   localizer={localizer}
                   events={cal_events}
-                  defaultView="month"
+                  defaultView={selectedView}
+                  onView={view => this.setState({ selectedView: view})}
                   views={{
                     month: true, 
                     week: true, 
@@ -252,6 +260,7 @@ class ChemCalendar extends Component {
                   }}
                   onDoubleClickEvent={event => this.handleEventClick(event)}
                   eventPropGetter={this.eventStyleGetter}
+                  defaultDate={selectedDate ? selectedDate : new Date()}
                 />
             </div>
             </Col>
