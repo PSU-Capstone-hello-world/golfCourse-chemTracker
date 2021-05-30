@@ -4,8 +4,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 import moment from "moment";
 import Modalview from "../Modal";
 import Backend from "../../model/backend.js";
-// import Week from "./Week";
-// import Day from "./Day";
 import "./Calendar.css"
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -207,25 +205,6 @@ class ChemCalendar extends Component {
         selectedYear: date.getFullYear()
       }, () => this.setDate())
     }
-    // if (
-    //   date.getMonth() !== selectedMonth &&
-    //   date.getFullYear() !== selectedYear
-    // ) {
-    //   this.setState(
-    //     {
-    //       selectedYear: date.getFullYear(),
-    //       selectedMonth: date.getMonth() + 1,
-    //       selectedDate: date
-    //     },
-    //     () => this.setDate()
-    //   );
-    // } else if (date.getMonth() + 1 !== selectedMonth) {
-    //   this.setState({ selectedMonth: date.getMonth() + 1, selectedDate: date }, () =>
-    //     this.setDate()
-    //   );
-    // } else if (date.getFullYear() !== selectedYear) {
-    //   this.setState({ selectedYear: date.getFullYear(), selectedDate: date }, () => this.setDate());
-    // }
   };
 
   render() {
@@ -248,6 +227,7 @@ class ChemCalendar extends Component {
             <Col>
               <div style={{ height: 1100 }}>
                 <Calendar
+                  className="m-3"
                   onNavigate={this.onChange}
                   localizer={localizer}
                   events={cal_events}
