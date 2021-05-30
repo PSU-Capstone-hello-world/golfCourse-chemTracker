@@ -1,3 +1,7 @@
 .calendarContainer {
     background-color: white;
 }
+
+.rbc-month-row {
+    overflow: visible !important;
+}
