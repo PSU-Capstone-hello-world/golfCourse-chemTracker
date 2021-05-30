@@ -72,7 +72,7 @@ class EditTemplate extends React.Component {
                 formulationFlow = value;
             } else if (key === "formulationGran") {
                 formulationGran = value;
-            } else if (key === "formulationWeb") {
+            } else if (key === "formulationWet") {
                 formulationWet = value;
             } else if (key === "formulationEmul") {
                 formulationEmul = value;
