@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from "react-bootstrap";
 import moment from "moment";
 import Modalview from "../Modal";
 import Backend from "../../model/backend.js";
 // import Week from "./Week";
 // import Day from "./Day";
-import "./Calendar.css"
+import "./Calendar.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -23,8 +23,7 @@ class ChemCalendar extends Component {
       dateString: "",
       document: "",
       showModal: false,
-      cal_events: [
-      ],
+      cal_events: [],
     };
   }
 
@@ -43,7 +42,7 @@ class ChemCalendar extends Component {
         start: response[i].date,
         end: response[i].date,
         allDay: true,
-        title: `Name: ${response[i].productName} | Location: ${response[i].location}`
+        title: `Name: ${response[i].productName} | Location: ${response[i].location}`,
       };
 
       events[i] = temp;
@@ -140,7 +139,7 @@ class ChemCalendar extends Component {
     if (document.Items[0]) {
       this.setState({ document: document.Items[0], showModal: true });
     }
-  }
+  };
 
   componentDidMount() {
     this.setDate();
@@ -182,13 +181,13 @@ class ChemCalendar extends Component {
           handleModal2={this.handleModal.bind(this)}
           isOpen={showModal}
         />
-      )
+      );
     }
 
     return (
       <Container fluid className="calendarContainer">
         <Row>
-            <Col>
+          <Col>
             <div style={{ height: 700 }}>
               <Calendar
                 onNavigate={this.onChange}
@@ -196,20 +195,20 @@ class ChemCalendar extends Component {
                 events={cal_events}
                 defaultView="month"
                 views={{
-                  month: true, 
-                  week: true, 
+                  month: true,
+                  week: true,
                   day: true,
                 }}
-                onDoubleClickEvent={event => this.handleEventClick(event)}
+                onDoubleClickEvent={(event) => this.handleEventClick(event)}
                 // components={{
-                //   onDoubleClickEvent: (props) => { 
+                //   onDoubleClickEvent: (props) => {
                 //     // this.handleEventClick()
                 //     alert("helllllllllllllo");
                 //   }
                 // }}
               />
             </div>
-            </Col>
+          </Col>
         </Row>
       </Container>
     );

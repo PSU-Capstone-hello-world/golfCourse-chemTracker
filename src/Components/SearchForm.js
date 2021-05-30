@@ -51,6 +51,14 @@ class SearchForm extends React.Component {
   async handleSubmit(event) {
     event.preventDefault();
     let output = JSON.parse(JSON.stringify(this.state));
+    if (
+      !output.startDate &&
+      !output.endDate &&
+      !output.productName &&
+      !output.location
+    ) {
+      alert("Must Search by Atleast One Field");
+    }
     if (output.startDate) {
       output.startDate = JSON.stringify(output.startDate).slice(1, 11);
     }
@@ -58,6 +66,7 @@ class SearchForm extends React.Component {
       output.endDate = JSON.stringify(output.endDate).slice(1, 11);
     }
     //console.log(JSON.stringify(output));
+
     await this.fetchData(output);
   }
 
@@ -154,7 +163,16 @@ class SearchForm extends React.Component {
     if (document) console.log("productName", document);
     //console.log(typeof document);
     //this.displayData(document);
-    this.setState({ search: true, document: document });
+    if (
+      search.startDate ||
+      search.endDate ||
+      search.productName ||
+      search.location
+    ) {
+      this.setState({ search: true, document: document });
+    } else {
+      this.setState({ search: false, document: null });
+    }
     return document;
   }
 

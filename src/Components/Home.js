@@ -11,21 +11,18 @@ import { useTheme } from "@material-ui/core";
 
 function Home(props) {
   const [header, setHeader] = useState([
-    "homeCard",
     "calendarCard",
     "addCard",
     "SearchCard",
     "templatesCard",
   ]);
   const [title, setTitle] = useState([
-    "Home",
     "Calendar",
     "Add Form",
     "Search Form",
     "Templates",
   ]);
   const [link, setLink] = useState([
-    "/",
     "/Calendar",
     "/FormHome",
     "/Search_Form",
@@ -34,7 +31,6 @@ function Home(props) {
   const [description, setDescription] = useState([""]);
 
   const [action, setAction] = useState([
-    "go to the home page",
     "see the calendar view",
     "add a form",
     "search a form",
@@ -56,25 +52,19 @@ function Home(props) {
           link={link[1]}
           action={action[1]}
         ></HomeCard>
+      </Row>
+      <Row className="mt-5">
         <HomeCard
           header={header[2]}
           title={title[2]}
           link={link[2]}
           action={action[2]}
         ></HomeCard>
-      </Row>
-      <Row className="mt-5">
         <HomeCard
           header={header[3]}
           title={title[3]}
           link={link[3]}
           action={action[3]}
-        ></HomeCard>
-        <HomeCard
-          header={header[4]}
-          title={title[4]}
-          link={link[4]}
-          action={action[4]}
         ></HomeCard>
       </Row>
     </Container>
