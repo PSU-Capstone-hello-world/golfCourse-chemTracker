@@ -1,6 +1,5 @@
 import React from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
+import { Navbar, Nav, Alert } from "react-bootstrap";
 import { Route, Switch, Link, BrowserRouter as Router } from "react-router-dom";
 import Home from "./Home";
 import CalendarView from "./Calendar/Calendar";
@@ -38,6 +37,9 @@ function Navigation(props) {
         <Switch>
           <Route path="/Calendar">
             <CalendarView />
+          </Route>
+          <Route path="/AlertSuccess">
+            <Alert variant="success">Test Alert Component</Alert>
           </Route>
           <Route path="/FormHome">
             <FormHome />

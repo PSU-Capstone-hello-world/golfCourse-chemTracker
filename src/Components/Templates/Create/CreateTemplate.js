@@ -23,6 +23,8 @@ class CreateTemplate extends React.Component {
             epaRegNum: "",
             epaEstNum: "",
             redirect: false, 
+            success: false,
+            error: false,
         }
     }
 
@@ -41,14 +43,27 @@ class CreateTemplate extends React.Component {
         event.preventDefault();
 
         const response = await backend.put_template(JSON.stringify(this.state));
-
         if (response.data.statusCode === 200) {
-            alert("template saved successfully!");
+            this.onShowSuccessAlert();
         } else {
-            alert("template was not saved because an error occurred");
+            this.onShowErrorAlert();
         }
+    }
 
-        this.setState({ redirect: true });
+    onShowSuccessAlert = () => {
+        this.setState({ success: true }, () => {
+            window.setTimeout(() => {
+                this.setState({ success: false, redirect: true })
+            }, 2000);
+        });
+    }
+
+    onShowErrorAlert = () => {
+        this.setState({ error: true }, () => {
+            window.setTimeout(() => {
+                this.setState({ error: false })
+            }, 3000);
+        });
     }
 
     render() {
@@ -56,6 +71,8 @@ class CreateTemplate extends React.Component {
             formulationOther, 
             productName, 
             redirect,
+            success,
+            error,
         } = this.state;
 
         if (redirect) {
@@ -65,6 +82,8 @@ class CreateTemplate extends React.Component {
         return (
         <Container>
             <Row className='justify-content-center align-self-center'>
+            <Alert variant="success" hidden={!success} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template Saved!</Alert>
+            <Alert variant="danger" hidden={!error} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template was not saved due to an error</Alert>
                 <Form className="templateForm" preventDefault onSubmit={this.handleSubmit}>
                     <div className='d-flex justify-content-center'>
                         <h3>Create Template Form</h3>

@@ -4,8 +4,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 import moment from "moment";
 import Modalview from "../Modal";
 import Backend from "../../model/backend.js";
-// import Week from "./Week";
-// import Day from "./Day";
 import "./Calendar.css"
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
