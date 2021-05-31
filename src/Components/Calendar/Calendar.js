@@ -242,7 +242,7 @@ class ChemCalendar extends Component {
                   eventPropGetter={this.eventStyleGetter}
                   defaultDate={selectedDate ? selectedDate : new Date()}
                 />
-            </div>
+              </div>
             </Col>
         </Row>
       </Container>
