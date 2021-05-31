@@ -10,6 +10,7 @@ import Modalview from "./Modal";
 import CreateTemplate from "./Templates/Create/CreateTemplate";
 import EditTemplate from "./Templates/Edit/EditTemplate";
 import FormHome from "./FormHome";
+import AddFromTemplate from "./AddFromTemplate/AddFromTemplate";
 
 function Navigation(props) {
   return (
@@ -61,6 +62,9 @@ function Navigation(props) {
           </Route>
           <Route path="/EditTemplate">
             <EditTemplate />
+          </Route>
+          <Route path="/AddFromTemplate">
+            <AddFromTemplate />
           </Route>
           <Route path="/">
             <Home />
