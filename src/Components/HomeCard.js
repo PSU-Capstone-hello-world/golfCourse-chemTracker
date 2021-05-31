@@ -9,7 +9,10 @@ function HomeCard(props) {
   return (
     <Col>
       <Card className={props.header}>
-        <Card.Header as="h5">{props.title} Page Card</Card.Header>
+        <Card.Header as="h5">
+          <Col>{props.icon}</Col>
+          {props.title} Page Card
+        </Card.Header>
         <Card.Body>
           <Card.Text>
             To {props.action} click {props.title} in the top navigation or click

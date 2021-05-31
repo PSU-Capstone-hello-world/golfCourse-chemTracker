@@ -3,7 +3,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Modal } from "react-bootstrap";
+import Alert from "react-bootstrap/Alert";
+import { Container, Modal } from "react-bootstrap";
 import "./AddForm.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -25,11 +26,13 @@ class Modalview extends React.Component {
       isOpen: props.isOpen,
       isEdit: false,
       formData: props.formData,
+      alert: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleSigDate = this.handleSigDate.bind(this);
+    //this.handleAlert = this.handleAlert.bind(this);
   }
 
   handleInputChange(event) {
@@ -84,10 +87,13 @@ class Modalview extends React.Component {
     //console.log("output", output);
 
     let backend = new Backend();
-    let response = await backend.put(output);
+    //let response =
+    await backend.put(output);
 
     //console.log(response);
-    alert("Your form has been submitted");
+    //this.props.handleSuccessAlert(true);
+    //alert("Your form has been submitted");
+    //this.props.handleModal2(false);
     event.target.reset();
     return true;
   }
@@ -904,6 +910,9 @@ class Modalview extends React.Component {
               </Row>
               {isEdit ? (
                 <Modal.Footer>
+                  <Button variant="secondary" onClick={this.closeModal}>
+                    Close
+                  </Button>
                   <Button
                     type="submit"
                     style={{ width: "80px" }}
@@ -919,6 +928,9 @@ class Modalview extends React.Component {
                   </Button>
                   <Button variant="primary" onClick={this.editMode}>
                     Make Edits
+                  </Button>
+                  <Button variant="danger" onClick={this.closeModal}>
+                    Delete This Form
                   </Button>
                 </Modal.Footer>
               )}

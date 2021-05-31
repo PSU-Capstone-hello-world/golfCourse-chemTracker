@@ -4,6 +4,7 @@ import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import DatePicker from "react-datepicker";
+import Alert from "react-bootstrap/Alert";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SearchForm.css";
 import Backend from "../model/backend.js";
@@ -26,6 +27,8 @@ class SearchForm extends React.Component {
       search: false,
       document: "",
       showModal: false,
+      alert: false,
+      submitted: false,
       index: -1,
     };
 
@@ -33,6 +36,8 @@ class SearchForm extends React.Component {
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleAlert = this.handleAlert.bind(this);
+    this.displayAlert = this.displayAlert.bind(this);
     this.result = null;
   }
 
@@ -57,7 +62,7 @@ class SearchForm extends React.Component {
       !output.productName &&
       !output.location
     ) {
-      alert("Must Search by Atleast One Field");
+      this.handleAlert(true);
     }
     if (output.startDate) {
       output.startDate = JSON.stringify(output.startDate).slice(1, 11);
@@ -201,6 +206,29 @@ class SearchForm extends React.Component {
     );
   }
 
+  displayAlert(variantInput, header, message, outline) {
+    return (
+      <Col className="alert-card d-flex justify-content-center">
+        <Alert className="alert" show={alert} variant={variantInput}>
+          <Alert.Heading>{header}</Alert.Heading>
+          <p>{message}</p>
+          <hr />
+          <div className="d-flex justify-content-center">
+            <Button
+              onClick={() => {
+                this.handleAlert(false);
+                this.handleSuccessAlert(false);
+              }}
+              variant={outline}
+            >
+              Close Me
+            </Button>
+          </div>
+        </Alert>
+      </Col>
+    );
+  }
+
   handleInputChange(event) {
     const target = event.target;
     const value = target.value;
@@ -243,95 +271,125 @@ class SearchForm extends React.Component {
     this.setState({ showModal: true, index: index });
   };
 
-  render() {
-    const { document, showModal, index } = this.state;
-    return (
-      <Container fluid>
-        <Row className={"header"}>
-          <Col>
-            <h2>Search Criteria</h2>
-          </Col>
-          <Col>
-            <h2>Search Results</h2>
-          </Col>
-        </Row>
-        <hr className={"line"} />
-        <Form className="search-form" onSubmit={this.handleSubmit}>
-          <Row>
-            <Col>
-              <Form.Row>
-                <Col>
-                  <Form.Group controlId="productName">
-                    <Form.Label>Product Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="productName"
-                      placeholder="Product Name"
-                      onChange={this.handleInputChange}
-                    />
-                  </Form.Group>
-                </Col>
-              </Form.Row>
-              <Form.Row>
-                <Form.Label>Date Range</Form.Label>
-              </Form.Row>
-              <Form.Row>
-                <Col>
-                  <Form.Group controlId="startDate">
-                    <DatePicker
-                      selected={this.state.startDate}
-                      onChange={this.handleStartDateChange}
-                      autoComplete="off"
-                      name="startDate"
-                      dateFormat="MM/dd/yyyy"
-                    />
-                  </Form.Group>
-                </Col>
+  handleAlert = (status) => {
+    this.setState({ alert: status });
+  };
 
-                <Col>
-                  <Form.Group controlId="endDate">
-                    <DatePicker
-                      selected={this.state.endDate}
-                      onChange={this.handleEndDateChange}
-                      autoComplete="off"
-                      name="endDate"
-                      dateFormat="MM/dd/yyyy"
-                    />
-                  </Form.Group>
-                </Col>
-              </Form.Row>
-              <Form.Row>
-                <Col>
-                  <Form.Group controlId="location">
-                    <Form.Label>Location</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="location"
-                      placeholder="Location"
-                      onChange={this.handleInputChange}
-                    ></Form.Control>
-                  </Form.Group>
-                </Col>
-              </Form.Row>
-              <Form.Row>
-                <Button type="submit">Search</Button>
-              </Form.Row>
-              {showModal ? (
-                <Modalview
-                  formData={document.Items[index]}
-                  handleModal2={this.handleModal.bind(this)}
-                  isOpen={showModal}
-                ></Modalview>
-              ) : (
-                ""
-              )}
+  handleSuccessAlert = (status) => {
+    this.setState({ submitted: status });
+  };
+
+  render() {
+    const { document, showModal, index, alert, submitted } = this.state;
+    return (
+      <>
+        <Container className="alertContainer">
+          {alert
+            ? this.displayAlert(
+                "warning",
+                "",
+                "You must fill in atleast one field to be able to search for Forms",
+                "outline-warning"
+              )
+            : ""}
+          {submitted
+            ? this.displayAlert(
+                "success",
+                "",
+                "Successfully Submitted Your Edited Form",
+                "outline-success"
+              )
+            : ""}
+        </Container>
+        <Container fluid>
+          <Row className={"header"}>
+            <Col>
+              <h2>Search Criteria</h2>
             </Col>
-            <Col className="table">
-              {document ? this.displayData(document) : ""}
+            <Col>
+              <h2>Search Results</h2>
             </Col>
           </Row>
-        </Form>
-      </Container>
+          <hr className={"line"} />
+          <Form className="search-form" onSubmit={this.handleSubmit}>
+            <Row>
+              <Col>
+                <Form.Row>
+                  <Col>
+                    <Form.Group controlId="productName">
+                      <Form.Label>Product Name</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="productName"
+                        placeholder="Product Name"
+                        onChange={this.handleInputChange}
+                      />
+                    </Form.Group>
+                  </Col>
+                </Form.Row>
+                <Form.Row>
+                  <Form.Label>Date Range</Form.Label>
+                </Form.Row>
+                <Form.Row>
+                  <Col>
+                    <Form.Group controlId="startDate">
+                      <DatePicker
+                        selected={this.state.startDate}
+                        onChange={this.handleStartDateChange}
+                        autoComplete="off"
+                        name="startDate"
+                        dateFormat="MM/dd/yyyy"
+                      />
+                    </Form.Group>
+                  </Col>
+
+                  <Col>
+                    <Form.Group controlId="endDate">
+                      <DatePicker
+                        selected={this.state.endDate}
+                        onChange={this.handleEndDateChange}
+                        autoComplete="off"
+                        name="endDate"
+                        dateFormat="MM/dd/yyyy"
+                      />
+                    </Form.Group>
+                  </Col>
+                </Form.Row>
+                <Form.Row>
+                  <Col>
+                    <Form.Group controlId="location">
+                      <Form.Label>Location</Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="location"
+                        placeholder="Location"
+                        onChange={this.handleInputChange}
+                      ></Form.Control>
+                    </Form.Group>
+                  </Col>
+                </Form.Row>
+                <Form.Row>
+                  <Button type="submit">Search</Button>
+                </Form.Row>
+                {showModal ? (
+                  <Modalview
+                    formData={document.Items[index]}
+                    handleModal2={this.handleModal.bind(this)}
+                    handleSuccessAlert={this.handleSuccessAlert.bind(this)}
+                    //displaySuccess={this.displayAlert.bind(this)}
+                    isOpen={showModal}
+                  ></Modalview>
+                ) : (
+                  ""
+                )}
+              </Col>
+              <Col className="table">
+                {document ? this.displayData(document) : ""}
+              </Col>
+            </Row>
+          </Form>
+        </Container>
+      </>
     );
   }
 }
