@@ -17,3 +17,8 @@
 .required {
   color: rgb(207, 45, 5);
 }
+
+.time-picker {
+  background: white;
+  margin: 0px !important;
+}
