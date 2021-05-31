@@ -43,7 +43,8 @@ class SearchForm extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { document } = this.state;
-    if (prevState.search !== this.state.search) {
+    if (!this.state.search) {
+    } else if (prevState.search !== this.state.search) {
       this.displayData(document);
     }
   }
@@ -99,6 +100,14 @@ class SearchForm extends React.Component {
     */
     //document.join();
     let document;
+    if (
+      !search.startDate &&
+      !search.endDate &&
+      !search.productName &&
+      !search.location
+    ) {
+      this.handleAlert(true);
+    }
     if (
       search.startDate &&
       search.endDate &&

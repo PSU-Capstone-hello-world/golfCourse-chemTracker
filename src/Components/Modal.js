@@ -26,7 +26,7 @@ class Modalview extends React.Component {
       isOpen: props.isOpen,
       isEdit: false,
       formData: props.formData,
-      alert: false,
+      //alert: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -91,10 +91,10 @@ class Modalview extends React.Component {
     await backend.put(output);
 
     //console.log(response);
-    //this.props.handleSuccessAlert(true);
-    //alert("Your form has been submitted");
-    //this.props.handleModal2(false);
-    event.target.reset();
+
+    this.props.handleModal2(false);
+    this.props.handleSuccessAlert(true);
+    //event.target.reset();
     return true;
   }
   openModal = () => this.setState({ isOpen: true });
@@ -106,7 +106,12 @@ class Modalview extends React.Component {
     formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
   };
   editMode = () => this.setState({ isEdit: true });
-
+  async deleteForm() {
+    const { formData } = this.state;
+    let backend = new Backend();
+    await backend.delete(formData.id);
+    this.props.handleModal2(false);
+  }
   render() {
     const { formData, isEdit } = this.state;
     //console.log("form v1", formData);
@@ -128,7 +133,7 @@ class Modalview extends React.Component {
             {isEdit ? <p>Edit Modal </p> : <p>Read Only Modal</p>}
           </Modal.Title>
           <Modal.Body>
-            <Form className="new-form" onSubmit={this.handleSubmit}>
+            <Form className="new-form">
               <Row>
                 <Col>
                   <Form.Group controlId="productName">
@@ -915,6 +920,7 @@ class Modalview extends React.Component {
                   </Button>
                   <Button
                     type="submit"
+                    onClick={this.handleSubmit}
                     style={{ width: "80px" }}
                     variant="primary"
                   >
