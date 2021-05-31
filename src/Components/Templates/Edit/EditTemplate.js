@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Container, Row, Col, Button } from 'react-bootstrap';
+import { Form, Container, Row, Col, Button, Alert } from 'react-bootstrap';
 import { Redirect } from "react-router-dom";
 import Backend from "../../../model/backend";
 import "../Templates.css";
@@ -24,23 +24,22 @@ class EditTemplate extends React.Component {
             epaRegNum: "",
             epaEstNum: "",
             isTemplate: false,
-            redirect: false
+            redirect: false,
+            success: false,
+            error: false,
+            found: false
         }
     }
 
     getTemplate = async event => {
         const { productName } = this.state;
         const backend = new Backend();
-        // Take the given product and retrieve the stored template. If 
-        // the template doesn't exist return message displaying "couldn't retrieve template"
-        // or something like that
         event.preventDefault();
         console.log(event.target.value);
 
         const response = await backend.get_template(productName);
-
         if (response.data.Count === 0) {
-            alert("A template for that chemical does not exist!");
+            this.onShowFoundAlert();
             return;
         }
 
@@ -127,15 +126,36 @@ class EditTemplate extends React.Component {
         event.preventDefault();
 
         const response = await backend.put_template(JSON.stringify(this.state));
-
         if (response.data.statusCode === 200) {
-            alert("template saved successfully!");
+            this.onShowSuccessAlert();
         } else {
-            alert("template was not saved because an error occurred");
+            this.onShowErrorAlert();
         }
-
-        this.setState({ isTemplate: false, redirect: true });
     };
+
+    onShowSuccessAlert = () => {
+        this.setState({ success: true }, () => {
+            window.setTimeout(() => {
+                this.setState({ success: false, redirect: true })
+            }, 2000);
+        });
+    }
+
+    onShowFoundAlert = () => {
+        this.setState({ found: true }, () => {
+            window.setTimeout(() => {
+                this.setState({ found: false })
+            }, 2500);
+        });
+    }
+
+    onShowErrorAlert = () => {
+        this.setState({ error: true }, () => {
+            window.setTimeout(() => {
+                this.setState({ error: false })
+            }, 3000);
+        });
+    }
 
     render() {
         const { 
@@ -153,7 +173,10 @@ class EditTemplate extends React.Component {
             epaRegNum,
             epaEstNum,
             isTemplate, 
-            redirect
+            redirect, 
+            success,
+            error,
+            found
         } = this.state;
 
         if (redirect) {
@@ -163,6 +186,9 @@ class EditTemplate extends React.Component {
         return (
         <Container>
             <Row className='justify-content-center align-self-center'>
+            <Alert variant="success" hidden={!success} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template Saved!</Alert>
+            <Alert variant="danger" hidden={!error} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template was not saved due to an error</Alert>
+            <Alert variant="secondary" hidden={!found} className="fade-out position-absolute top-50 start-50 w-50 h-10">No template found</Alert>
                 {isTemplate ? (
                     <Form className="templateForm" onSubmit={this.handleSubmit}>
                         <div className='d-flex justify-content-center'>
