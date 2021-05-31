@@ -27,8 +27,9 @@ class SearchForm extends React.Component {
       search: false,
       document: "",
       showModal: false,
-      alert: false,
-      submitted: false,
+      searchAlert: false,
+      submitAlert: false,
+      deleteAlert: false,
       index: -1,
     };
 
@@ -36,7 +37,8 @@ class SearchForm extends React.Component {
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleAlert = this.handleAlert.bind(this);
+    this.handleSearchAlert = this.handleSearchAlert.bind(this);
+    this.handleDeleteAlert = this.handleDeleteAlert.bind(this);
     this.displayAlert = this.displayAlert.bind(this);
     this.result = null;
   }
@@ -63,7 +65,7 @@ class SearchForm extends React.Component {
       !output.productName &&
       !output.location
     ) {
-      this.handleAlert(true);
+      this.handleSearchAlert(true);
     }
     if (output.startDate) {
       output.startDate = JSON.stringify(output.startDate).slice(1, 11);
@@ -106,7 +108,7 @@ class SearchForm extends React.Component {
       !search.productName &&
       !search.location
     ) {
-      this.handleAlert(true);
+      this.handleSearchAlert(true);
     }
     if (
       search.startDate &&
@@ -225,8 +227,8 @@ class SearchForm extends React.Component {
           <div className="d-flex justify-content-center">
             <Button
               onClick={() => {
-                this.handleAlert(false);
-                this.handleSuccessAlert(false);
+                this.handleSearchAlert(false);
+                this.handleSubmitAlert(false);
               }}
               variant={outline}
             >
@@ -280,20 +282,31 @@ class SearchForm extends React.Component {
     this.setState({ showModal: true, index: index });
   };
 
-  handleAlert = (status) => {
-    this.setState({ alert: status });
+  handleSearchAlert = (status, statusCode) => {
+    this.setState({ searchAlert: status });
   };
 
-  handleSuccessAlert = (status) => {
-    this.setState({ submitted: status });
+  handleSubmitAlert = (status) => {
+    this.setState({ submitAlert: status });
+  };
+
+  handleDeleteAlert = (status) => {
+    this.setState({ deleteAlert: status });
   };
 
   render() {
-    const { document, showModal, index, alert, submitted } = this.state;
+    const {
+      document,
+      showModal,
+      index,
+      searchAlert,
+      submitAlert,
+      deleteAlert,
+    } = this.state;
     return (
       <>
         <Container className="alertContainer">
-          {alert
+          {searchAlert
             ? this.displayAlert(
                 "warning",
                 "",
@@ -301,11 +314,19 @@ class SearchForm extends React.Component {
                 "outline-warning"
               )
             : ""}
-          {submitted
+          {submitAlert
             ? this.displayAlert(
                 "success",
                 "",
-                "Successfully Submitted Your Edited Form",
+                "Successfully Edited Your Form",
+                "outline-success"
+              )
+            : ""}
+          {deleteAlert
+            ? this.displayAlert(
+                "success",
+                "",
+                "Successfully Delete Your Form",
                 "outline-success"
               )
             : ""}
@@ -384,8 +405,8 @@ class SearchForm extends React.Component {
                   <Modalview
                     formData={document.Items[index]}
                     handleModal2={this.handleModal.bind(this)}
-                    handleSuccessAlert={this.handleSuccessAlert.bind(this)}
-                    //displaySuccess={this.displayAlert.bind(this)}
+                    handleSubmitAlert={this.handleSubmitAlert.bind(this)}
+                    handleDeleteAlert={this.handleDeleteAlert.bind(this)}
                     isOpen={showModal}
                   ></Modalview>
                 ) : (

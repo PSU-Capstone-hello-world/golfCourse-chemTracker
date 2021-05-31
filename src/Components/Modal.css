@@ -15,6 +15,10 @@
   margin-top: 10em;
 }
 
+.deleteModal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .alertContainer {
   margin-left: -20px;
 }

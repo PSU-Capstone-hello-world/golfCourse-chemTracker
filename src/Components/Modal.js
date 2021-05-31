@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Alert from "react-bootstrap/Alert";
-import { Container, Modal } from "react-bootstrap";
+//import Alert from "react-bootstrap/Alert";
+import { Modal } from "react-bootstrap";
 import "./AddForm.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,7 +26,7 @@ class Modalview extends React.Component {
       isOpen: props.isOpen,
       isEdit: false,
       formData: props.formData,
-      //alert: false,
+      deleteModal: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -68,14 +68,15 @@ class Modalview extends React.Component {
       return false;
     }
 
-    console.log("form", formData);
+    //console.log("form", formData);
     // Copy the state, so we can format the individual fields before sending to backend
     let output = JSON.parse(JSON.stringify(formData));
-    console.log("output", output);
-    console.log("date", output.date);
+    //console.log("output", output);
+    //console.log("date", output.date);
     // Format Dates
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
+    console.log("date", output.date);
     if (output.location === "Other") {
       output.location = output.locOtherVal;
     }
@@ -87,13 +88,17 @@ class Modalview extends React.Component {
     //console.log("output", output);
 
     let backend = new Backend();
-    //let response =
-    await backend.put(output);
-
-    //console.log(response);
+    let response = await backend.put(output);
+    //console.log("reponse", response);
+    //console.log("status code", response.ResponseMetadata.HTTPStatusCode);
 
     this.props.handleModal2(false);
-    this.props.handleSuccessAlert(true);
+    if (response.ResponseMetadata.HTTPStatusCode === 200) {
+      this.props.handleSubmitAlert(true, true);
+    } else {
+      this.props.handleSubmitAlert(true, false);
+    }
+    //this.props.handleSubmitAlert(true);
     //event.target.reset();
     return true;
   }
@@ -103,22 +108,66 @@ class Modalview extends React.Component {
     this.props.handleModal2(false);
     //this.setState({ isOpen: false });
     formData.date = JSON.stringify(formData.date).slice(1, 11);
+    //console.log(formData.date);
     formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
+    //console.log(formData.sigDate);
   };
   editMode = () => this.setState({ isEdit: true });
+  handleDeleteModal = (status) => this.setState({ deleteModal: status });
+
   async deleteForm() {
     const { formData } = this.state;
+    formData.date = null;
+    formData.sigDate = null;
+    //formData.date = JSON.stringify(formData.date).slice(1, 11);
+    //console.log(formData.date);
+    //formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
+    //console.log(formData.sigDate);
     let backend = new Backend();
     await backend.delete(formData.id);
+    this.handleDeleteModal(false);
+    this.props.handleDeleteAlert(true);
     this.props.handleModal2(false);
   }
+
   render() {
-    const { formData, isEdit } = this.state;
+    const { formData, isEdit, deleteModal } = this.state;
     //console.log("form v1", formData);
     //console.log(formData.formulation);
 
     return (
       <>
+        <Modal
+          className="deleteModal justify-content-center"
+          show={deleteModal}
+        >
+          <Modal.Header
+            closeButton
+            onClick={() => this.handleDeleteModal(false)}
+          >
+            <Modal.Title>Are You Sure?</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            <p>
+              Click Delete to Verify You Want To Delete This Form. Otherwise
+              Click Close To Go Back To the Modal
+            </p>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => this.handleDeleteModal(false)}
+            >
+              Close
+            </Button>
+            <Button variant="danger" onClick={() => this.deleteForm()}>
+              Delete
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <Modal
           className="myModal"
           size="lg"
@@ -935,7 +984,10 @@ class Modalview extends React.Component {
                   <Button variant="primary" onClick={this.editMode}>
                     Make Edits
                   </Button>
-                  <Button variant="danger" onClick={this.closeModal}>
+                  <Button
+                    variant="danger"
+                    onClick={() => this.handleDeleteModal(true)}
+                  >
                     Delete This Form
                   </Button>
                 </Modal.Footer>
