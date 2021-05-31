@@ -7,6 +7,12 @@ import "./AddForm.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Backend from "../model/backend";
+import {
+  KeyboardTimePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
 
 // Resources:
 //   React Forms --> https://reactjs.org/docs/forms.html
@@ -34,10 +40,6 @@ class AddForm extends React.Component {
       epaRegNum: "",
       epaEstNum: "",
       location: "",
-      // locGreens: false,
-      // locTees: false,
-      // locFairways: false,
-      // locOther: false,
       locOtherVal: "",
       target: "",
 
@@ -62,10 +64,10 @@ class AddForm extends React.Component {
       temp: "",
       humidity: "",
       wind: "",
-      date: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
+      date: new Date(today.getTime()),
       purs: "",
-      timeStart: "",
-      timeEnd: "",
+      timeStart: new Date("2000-01-01T12:00:00"),
+      timeEnd: new Date("2000-01-01T12:00:00"),
       protectiveLong: false,
       protectiveShoes: false,
       protectiveBoots: false,
@@ -81,13 +83,15 @@ class AddForm extends React.Component {
       lbsP2O5: "",
       lbsK2O: "",
       signature: "",
-      sigDate: new Date(today.getTime() - today.getTimezoneOffset() * 60000),
+      sigDate: new Date(today.getTime()),
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleSigDate = this.handleSigDate.bind(this);
+    this.handleStartTime = this.handleStartTime.bind(this);
+    this.handleEndTime = this.handleEndTime.bind(this);
   }
 
   handleInputChange(event) {
@@ -127,6 +131,18 @@ class AddForm extends React.Component {
     }
   }
 
+  handleStartTime(time) {
+    this.setState({
+      timeStart: time,
+    });
+  }
+
+  handleEndTime(time) {
+    this.setState({
+      timeEnd: time,
+    });
+  }
+
   async handleSubmit(event) {
     event.preventDefault();
     if (
@@ -146,6 +162,12 @@ class AddForm extends React.Component {
     // Format Dates
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
+
+    // Format Times
+    output.timeStart = new Date(output.timeStart).toTimeString().slice(0, 5);
+    output.timeEnd = new Date(output.timeEnd).toTimeString().slice(0, 5);
+
+    // Format Other Location
     if (output.location === "Other") {
       output.location = output.locOtherVal;
     }
@@ -638,25 +660,37 @@ class AddForm extends React.Component {
         <Row>
           <Col>
             <Form.Group controlId="timeStart">
-              <Form.Label>Start Time</Form.Label>
-              <Form.Control
-                type="text"
-                name="timeStart"
-                placeholder="Start Time"
-                onChange={this.handleInputChange}
-              />
+              <Form.Label>
+                Start Time <span className="required">(required)</span>
+              </Form.Label>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardTimePicker
+                  className="time-picker"
+                  margin="normal"
+                  name="timeStart"
+                  value={this.state.timeStart}
+                  required={true}
+                  onChange={this.handleStartTime}
+                />
+              </MuiPickersUtilsProvider>
             </Form.Group>
           </Col>
 
           <Col>
             <Form.Group controlId="timeEnd">
-              <Form.Label>End Time</Form.Label>
-              <Form.Control
-                type="text"
-                name="timeEnd"
-                placeholder="End Time"
-                onChange={this.handleInputChange}
-              />
+              <Form.Label>
+                End Time <span className="required">(required)</span>
+              </Form.Label>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardTimePicker
+                  className="time-picker"
+                  margin="normal"
+                  name="timeEnd"
+                  value={this.state.timeEnd}
+                  required={true}
+                  onChange={this.handleEndTime}
+                />
+              </MuiPickersUtilsProvider>
             </Form.Group>
           </Col>
         </Row>
