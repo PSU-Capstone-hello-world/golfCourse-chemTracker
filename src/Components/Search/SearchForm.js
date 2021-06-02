@@ -42,7 +42,6 @@ class SearchForm extends React.Component {
       !output.productName &&
       !output.location
     ) {
-      this.onEmptySearchAlert();
     }
     if (output.startDate) {
       output.startDate = JSON.stringify(output.startDate).slice(1, 11);

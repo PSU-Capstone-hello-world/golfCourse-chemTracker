@@ -29,16 +29,3 @@
 .productName {
   width: 1em;
 }
-
-.alert {
-  height: fit-content;
-  margin-top: 10em;
-}
-
-.alertContainer {
-  margin-left: -20px;
-}
-
-.alert-container {
-  z-index: 10;
-}
