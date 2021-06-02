@@ -1,8 +1,9 @@
 import React from "react";
-import { Form, Button, Row, Col, Container } from "react-bootstrap";
+import { Form, Button, Row, Col, Container, Alert } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import Backend from "../model/backend";
 import { KeyboardTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { Redirect } from "react-router-dom";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import "./AddForm.css";
@@ -78,6 +79,11 @@ class AddForm extends React.Component {
       lbsK2O: "",
       signature: "",
       sigDate: new Date(today.getTime()),
+      disabled: false, 
+      success: false, 
+      error: false,
+      missingRequiredField: false,
+      redirect: false
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -147,44 +153,60 @@ class AddForm extends React.Component {
         this.state.location === "Other"
       )
     ) {
-      alert("Location is required");
-      return false;
+      this.setState({ missingRequiredField: true, disabled: true })
+    } else {
+      // Copy the state, so we can format the individual fields before sending to backend
+      let output = JSON.parse(JSON.stringify(this.state));
+
+      // Format Dates
+      output.date = JSON.stringify(output.date).slice(1, 11);
+      output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
+
+      // Format Times
+      output.timeStart = new Date(output.timeStart).toTimeString().slice(0, 5);
+      output.timeEnd = new Date(output.timeEnd).toTimeString().slice(0, 5);
+
+      // Format Other Location
+      if (output.location === "Other") {
+        output.location = output.locOtherVal;
+      }
+
+      // Logging the output, this will go to backend later
+      console.log(JSON.stringify(output));
+      output = JSON.stringify(output);
+
+      let backend = new Backend();
+      let response = await backend.put(output);
+
+      if (response.ResponseMetadata.HTTPStatusCode === 200) {
+        this.setState({ success: true, disabled: true })
+        // event.target.reset();
+      } else {
+        this.setState({ error: true, disabled: true })
+      }
     }
-    // Copy the state, so we can format the individual fields before sending to backend
-    let output = JSON.parse(JSON.stringify(this.state));
-
-    // Format Dates
-    output.date = JSON.stringify(output.date).slice(1, 11);
-    output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
-
-    // Format Times
-    output.timeStart = new Date(output.timeStart).toTimeString().slice(0, 5);
-    output.timeEnd = new Date(output.timeEnd).toTimeString().slice(0, 5);
-
-    // Format Other Location
-    if (output.location === "Other") {
-      output.location = output.locOtherVal;
-    }
-
-    // Logging the output, this will go to backend later
-    console.log(JSON.stringify(output));
-    output = JSON.stringify(output);
-
-    let backend = new Backend();
-    let response = await backend.put(output);
-
-    console.log(response);
-    alert("Your form has been submitted");
-    event.target.reset();
-    return true;
   }
 
   render() {
+    const { success, error, disabled, missingRequiredField, redirect } = this.state;
+
+    if (redirect) {
+        return <Redirect to="/FormHome" />
+    }
+
     return (
       <Container>
         <Row>
           <Form className="new-form" onSubmit={this.handleSubmit}>
-            <h1>Add Form</h1>
+          <div className="d-flex justify-content-center fixed-top">
+            <Alert variant="success" hidden={!success} dismissible onClose={() => this.setState({ success: false, redirect: true })} className="fade-out w-50 h-10">Form Saved!</Alert>
+          </div>
+          <div className="d-flex justify-content-center fixed-top">
+            <Alert variant="danger" hidden={!error} dismissible onClose={() => this.setState({ error: false, redirect: true })} className="fade-out w-50 h-10">Form could not be saved due to an error</Alert>
+          </div>
+          <div className="d-flex justify-content-center fixed-top">
+            <Alert variant="secondary" hidden={!missingRequiredField} dismissible onClose={() => this.setState({ missingRequiredField: false, disabled: false })} className="fade-out w-50 h-10">Please fill out all required fields</Alert>
+          </div>
             <Row>
               <Col>
                 <Form.Group controlId="productName">
@@ -192,8 +214,9 @@ class AddForm extends React.Component {
                     Product Name <span className="required">(required)</span>
                   </Form.Label>
                   <Form.Control
-                    required
+                    disabled={disabled}
                     type="text"
+                    required
                     name="productName"
                     placeholder="Product Name"
                     onChange={this.handleInputChange}
@@ -206,6 +229,7 @@ class AddForm extends React.Component {
                   <Form.Label>Supplier</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="supplier"
                     placeholder="Supplier"
                     onChange={this.handleInputChange}
@@ -223,12 +247,14 @@ class AddForm extends React.Component {
                 label="Flowable"
                 type="checkbox"
                 checked={this.state.formulationFlow}
+                disabled={disabled}
                 onChange={this.handleInputChange}
               ></Form.Check>
 
               <Form.Check
                 inline
                 name="formulationGran"
+                disabled={disabled}
                 label="Granular"
                 type="checkbox"
                 checked={this.state.formulationGran}
@@ -241,6 +267,7 @@ class AddForm extends React.Component {
                 label="Wettable Powder"
                 type="checkbox"
                 checked={this.state.formulationWet}
+                disabled={disabled}
                 onChange={this.handleInputChange}
               ></Form.Check>
 
@@ -249,6 +276,7 @@ class AddForm extends React.Component {
                 name="formulationEmul"
                 label="Emulsified Concrete"
                 type="checkbox"
+                disabled={disabled}
                 checked={this.state.formulationEmul}
                 onChange={this.handleInputChange}
               ></Form.Check>
@@ -257,6 +285,7 @@ class AddForm extends React.Component {
                 inline
                 name="formulationOther"
                 label="Other"
+                disabled={disabled}
                 type="checkbox"
                 checked={this.state.formulationOther}
                 onChange={this.handleInputChange}
@@ -265,6 +294,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="formulationOtherVal"
+                disabled={disabled}
                 placeholder="Other Formulation"
                 hidden={!this.state.formulationOther}
                 onChange={this.handleInputChange}
@@ -277,6 +307,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="sigWordCaution"
+                disabled={disabled}
                 label="Caution"
                 type="checkbox"
                 checked={this.state.sigWordCaution}
@@ -286,6 +317,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="sigWordWarning"
+                disabled={disabled}
                 label="Warning"
                 type="checkbox"
                 checked={this.state.sigWordWarning}
@@ -295,6 +327,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="sigWordDanger"
+                disabled={disabled}
                 label="Danger"
                 type="checkbox"
                 checked={this.state.sigWordDanger}
@@ -309,6 +342,7 @@ class AddForm extends React.Component {
                   <Form.Control
                     type="text"
                     name="epaRegNum"
+                    disabled={disabled}
                     placeholder="EPA Registration #"
                     onChange={this.handleInputChange}
                   />
@@ -319,6 +353,7 @@ class AddForm extends React.Component {
                 <Form.Group controlId="epaEstNum">
                   <Form.Label>EPA Est. #</Form.Label>
                   <Form.Control
+                    disabled={disabled}
                     type="text"
                     name="epaEstNum"
                     placeholder="EPA Est. #"
@@ -336,6 +371,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="location"
+                disabled={disabled}
                 label="Greens"
                 type="radio"
                 value="Greens"
@@ -346,6 +382,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="location"
+                disabled={disabled}
                 label="Tees"
                 type="radio"
                 value="Tees"
@@ -358,6 +395,7 @@ class AddForm extends React.Component {
                 name="location"
                 label="Fairways"
                 type="radio"
+                disabled={disabled}
                 value="Fairways"
                 checked={this.state.location === "Fairways"}
                 onChange={this.handleInputChange}
@@ -366,6 +404,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="location"
+                disabled={disabled}
                 label="Other"
                 type="radio"
                 value="Other"
@@ -378,6 +417,7 @@ class AddForm extends React.Component {
                 name="locOtherVal"
                 placeholder="Other Location"
                 hidden={this.state.location === "Other" ? false : true}
+                disabled={disabled}
                 onChange={this.handleInputChange}
               />
             </Form.Group>
@@ -387,6 +427,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="target"
+                disabled={disabled}
                 placeholder="Target"
                 onChange={this.handleInputChange}
               />
@@ -401,6 +442,7 @@ class AddForm extends React.Component {
                   <Form.Control
                     type="text"
                     name="vehicle"
+                    disabled={disabled}
                     placeholder="Vehicle"
                     onChange={this.handleInputChange}
                   />
@@ -412,6 +454,7 @@ class AddForm extends React.Component {
                   <Form.Label>Gear</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="gear"
                     placeholder="Gear"
                     onChange={this.handleInputChange}
@@ -424,6 +467,7 @@ class AddForm extends React.Component {
                   <Form.Label>RPM</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="rpm"
                     placeholder="RPM"
                     onChange={this.handleInputChange}
@@ -437,6 +481,7 @@ class AddForm extends React.Component {
                   <Form.Control
                     type="text"
                     name="mph"
+                    disabled={disabled}
                     placeholder="MPH"
                     onChange={this.handleInputChange}
                   />
@@ -450,6 +495,7 @@ class AddForm extends React.Component {
                   <Form.Label>Sprayer/Spreader</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="sprayer"
                     placeholder="Sprayer/Spreader"
                     onChange={this.handleInputChange}
@@ -463,6 +509,7 @@ class AddForm extends React.Component {
                   <Form.Control
                     type="text"
                     name="nozzle"
+                    disabled={disabled}
                     placeholder="Nozzles/Setting"
                     onChange={this.handleInputChange}
                   />
@@ -474,6 +521,7 @@ class AddForm extends React.Component {
                   <Form.Label>Pressure Number</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="pressure"
                     placeholder="Pressure Number"
                     onChange={this.handleInputChange}
@@ -489,6 +537,7 @@ class AddForm extends React.Component {
                   <Form.Label>Tank Mix</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="tankAmt"
                     placeholder="Amount of Product"
                     onChange={this.handleInputChange}
@@ -501,6 +550,7 @@ class AddForm extends React.Component {
                   <Form.Control
                     type="text"
                     name="tankWater"
+                    disabled={disabled}
                     placeholder="Gallons of Water"
                     onChange={this.handleInputChange}
                   />
@@ -513,6 +563,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="adjuvant"
+                disabled={disabled}
                 placeholder="Adjuvant/Dye"
                 onChange={this.handleInputChange}
               />
@@ -523,6 +574,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="totalApplied"
+                disabled={disabled}
                 placeholder="Total Amount of Product Applied"
                 onChange={this.handleInputChange}
               />
@@ -534,6 +586,7 @@ class AddForm extends React.Component {
                 <Form.Group controlId="appRateOz">
                   <Form.Label>Application Rate (oz. / lbs.)</Form.Label>
                   <Form.Control
+                    disabled={disabled}
                     type="text"
                     name="appRateOz"
                     placeholder="Application Rate (oz. / lbs.)"
@@ -547,6 +600,7 @@ class AddForm extends React.Component {
                   <Form.Label>Application Rate (gal. / lbs.) </Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="appRateLbs"
                     placeholder="Application Rate (gal. / lbs.)"
                     onChange={this.handleInputChange}
@@ -561,6 +615,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="wateredIn"
+                disabled={disabled}
                 label="Yes"
                 type="radio"
                 value="Yes"
@@ -572,6 +627,7 @@ class AddForm extends React.Component {
                 inline
                 name="wateredIn"
                 label="No"
+                disabled={disabled}
                 type="radio"
                 value="No"
                 checked={this.state.wateredIn === "No"}
@@ -584,6 +640,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="wateredMin"
+                disabled={disabled}
                 placeholder="Minutes Watered"
                 onChange={this.handleInputChange}
               />
@@ -597,6 +654,7 @@ class AddForm extends React.Component {
                   <Form.Label>Temperature</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="temp"
                     placeholder="Temperature"
                     onChange={this.handleInputChange}
@@ -609,6 +667,7 @@ class AddForm extends React.Component {
                   <Form.Label>Humidity</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="humidity"
                     placeholder="Humidity"
                     onChange={this.handleInputChange}
@@ -621,6 +680,7 @@ class AddForm extends React.Component {
                   <Form.Label>Wind</Form.Label>
                   <Form.Control
                     type="text"
+                    disabled={disabled}
                     name="wind"
                     placeholder="Wind"
                     onChange={this.handleInputChange}
@@ -638,6 +698,7 @@ class AddForm extends React.Component {
                 required
                 selected={this.state.date}
                 onChange={this.handleDateChange}
+                disabled={disabled}
                 name="date"
                 dateFormat="MM/dd/yyyy"
               />
@@ -649,6 +710,7 @@ class AddForm extends React.Component {
                 type="text"
                 name="purs"
                 placeholder="PURS"
+                disabled={disabled}
                 onChange={this.handleInputChange}
               />
             </Form.Group>
@@ -665,6 +727,7 @@ class AddForm extends React.Component {
                       margin="normal"
                       name="timeStart"
                       value={this.state.timeStart}
+                      disabled={disabled}
                       required={true}
                       onChange={this.handleStartTime}
                     />
@@ -680,6 +743,7 @@ class AddForm extends React.Component {
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardTimePicker
                       className="time-picker"
+                      disabled={disabled}
                       margin="normal"
                       name="timeEnd"
                       value={this.state.timeEnd}
@@ -696,6 +760,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="protectiveLong"
+                disabled={disabled}
                 label="Long Pants & Shirt"
                 type="checkbox"
                 checked={this.state.protectiveLong}
@@ -705,6 +770,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="protectiveShoes"
+                disabled={disabled}
                 label="Shoes & Socks"
                 type="checkbox"
                 checked={this.state.protectiveShoes}
@@ -715,6 +781,7 @@ class AddForm extends React.Component {
                 inline
                 name="protectiveBoots"
                 label="Rubber Boots"
+                disabled={disabled}
                 type="checkbox"
                 checked={this.state.protectiveBoots}
                 onChange={this.handleInputChange}
@@ -725,6 +792,7 @@ class AddForm extends React.Component {
                 name="protectiveGloves"
                 label="5 mil. Nitrile Gloves"
                 type="checkbox"
+                disabled={disabled}
                 checked={this.state.protectiveGloves}
                 onChange={this.handleInputChange}
               ></Form.Check>
@@ -732,6 +800,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="protectiveHat"
+                disabled={disabled}
                 label="Hard Hat"
                 type="checkbox"
                 checked={this.state.protectiveHat}
@@ -741,6 +810,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="protectiveEye"
+                disabled={disabled}
                 label="Protective Eye Wear"
                 type="checkbox"
                 checked={this.state.protectiveEye}
@@ -753,12 +823,14 @@ class AddForm extends React.Component {
                 label="Other"
                 type="checkbox"
                 checked={this.state.protectiveOther}
+                disabled={disabled}
                 onChange={this.handleInputChange}
               ></Form.Check>
 
               <Form.Control
                 type="text"
                 name="protectiveOtherVal"
+                disabled={disabled}
                 placeholder="Other Protective Equipment"
                 hidden={!this.state.protectiveOther}
                 onChange={this.handleInputChange}
@@ -770,6 +842,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="disposed"
+                disabled={disabled}
                 placeholder="How Was Container Disposed?"
                 onChange={this.handleInputChange}
               />
@@ -780,6 +853,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="cleaned"
+                disabled={disabled}
                 placeholder="How Was Equipment Cleaned"
                 onChange={this.handleInputChange}
               />
@@ -791,6 +865,7 @@ class AddForm extends React.Component {
               <Form.Check
                 inline
                 name="msds"
+                disabled={disabled}
                 label="Yes"
                 type="radio"
                 value="Yes"
@@ -802,6 +877,7 @@ class AddForm extends React.Component {
                 inline
                 name="msds"
                 label="No"
+                disabled={disabled}
                 type="radio"
                 value="No"
                 checked={this.state.msds === "No"}
@@ -813,6 +889,7 @@ class AddForm extends React.Component {
               <Form.Label>Actual lbs of N applied per 1000 sqft.</Form.Label>
               <Form.Control
                 type="text"
+                disabled={disabled}
                 name="lbsN"
                 placeholder="Actual lbs of N applied per 1000 sqft."
                 onChange={this.handleInputChange}
@@ -824,6 +901,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="lbsP2O5"
+                disabled={disabled}
                 placeholder="Actual lbs of P2O5 applied per 1000 sqft."
                 onChange={this.handleInputChange}
               />
@@ -833,6 +911,7 @@ class AddForm extends React.Component {
               <Form.Label>Actual lbs of K2O applied per 1000 sqft.</Form.Label>
               <Form.Control
                 type="text"
+                disabled={disabled}
                 name="lbsK2O"
                 placeholder="Actual lbs of K2O applied per 1000 sqft."
                 onChange={this.handleInputChange}
@@ -848,6 +927,7 @@ class AddForm extends React.Component {
                   <Form.Control
                     required
                     type="text"
+                    disabled={disabled}
                     name="signature"
                     placeholder="Signature"
                     onChange={this.handleInputChange}
@@ -866,6 +946,7 @@ class AddForm extends React.Component {
                     selected={this.state.sigDate}
                     onChange={this.handleSigDate}
                     name="sigDate"
+                    disabled={disabled}
                     dateFormat="MM/dd/yyyy"
                   />
                 </Form.Group>
@@ -874,12 +955,12 @@ class AddForm extends React.Component {
 
             <Row style={{ paddingBottom: "20px" }}>
               <Col>
-                <Button type="reset" variant="secondary" style={{ width: "80px" }}>
+                <Button type="reset" disabled={disabled} variant="secondary" style={{ width: "80px" }}>
                   Reset
                 </Button>
               </Col>
               <Col>
-                <Button type="submit" style={{ width: "80px" }}>
+                <Button type="submit" disabled={disabled} style={{ width: "80px" }}>
                   Submit
                 </Button>
               </Col>
