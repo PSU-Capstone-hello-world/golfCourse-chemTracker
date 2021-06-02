@@ -27,7 +27,8 @@ class EditTemplate extends React.Component {
             redirect: false,
             success: false,
             error: false,
-            found: false
+            notFound: false,
+            disabled: false
         }
     }
 
@@ -39,12 +40,10 @@ class EditTemplate extends React.Component {
 
         const response = await backend.get_template(productName);
         if (response.data.Count === 0) {
-            this.onShowFoundAlert();
-            return;
+            this.setState({ notFound: true, disabled: true })
+        } else {
+            this.populateFormData(response.data.Items[0]);
         }
-
-        console.log(response);
-        this.populateFormData(response.data.Items[0]);
     }
     
     populateFormData = data => {
@@ -127,35 +126,11 @@ class EditTemplate extends React.Component {
 
         const response = await backend.put_template(JSON.stringify(this.state));
         if (response.data.statusCode === 200) {
-            this.onShowSuccessAlert();
+            this.setState({ success: true, disabled: true })
         } else {
-            this.onShowErrorAlert();
+            this.setState({ error: true, disabled: true })
         }
     };
-
-    onShowSuccessAlert = () => {
-        this.setState({ success: true }, () => {
-            window.setTimeout(() => {
-                this.setState({ success: false, redirect: true })
-            }, 2000);
-        });
-    }
-
-    onShowFoundAlert = () => {
-        this.setState({ found: true }, () => {
-            window.setTimeout(() => {
-                this.setState({ found: false })
-            }, 2500);
-        });
-    }
-
-    onShowErrorAlert = () => {
-        this.setState({ error: true }, () => {
-            window.setTimeout(() => {
-                this.setState({ error: false })
-            }, 3000);
-        });
-    }
 
     render() {
         const { 
@@ -176,7 +151,8 @@ class EditTemplate extends React.Component {
             redirect, 
             success,
             error,
-            found
+            notFound, 
+            disabled
         } = this.state;
 
         if (redirect) {
@@ -186,9 +162,9 @@ class EditTemplate extends React.Component {
         return (
         <Container>
             <Row className='justify-content-center align-self-center'>
-            <Alert variant="success" hidden={!success} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template Saved!</Alert>
-            <Alert variant="danger" hidden={!error} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template was not saved due to an error</Alert>
-            <Alert variant="secondary" hidden={!found} className="fade-out position-absolute top-50 start-50 w-50 h-10">No template found</Alert>
+            <Alert variant="success" hidden={!success} dismissible onClose={() => this.setState({ success: false, redirect: true })} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template Saved!</Alert>
+            <Alert variant="danger" hidden={!error} dismissible onClose={() => this.setState({ error: false, redirect: true})} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template was not saved due to an error</Alert>
+            <Alert variant="secondary" hidden={!notFound} dismissible onClose={() => this.setState({ notFound: false, disabled: false })} className="fade-out position-absolute top-50 start-50 w-50 h-10">No template found</Alert>
                 {isTemplate ? (
                     <Form className="templateForm" onSubmit={this.handleSubmit}>
                         <div className='d-flex justify-content-center'>
@@ -200,6 +176,7 @@ class EditTemplate extends React.Component {
                                     <Form.Label>Product Name <span className="required">(Required)</span></Form.Label>
                                     <Form.Control
                                     type="text"
+                                    disabled={disabled}
                                     required
                                     isInvalid={productName ? "" : "true"}
                                     isValid={productName ? "true" : ""}
@@ -215,6 +192,7 @@ class EditTemplate extends React.Component {
                                     <Form.Label>Supplier</Form.Label>
                                     <Form.Control
                                     type="text"
+                                    disabled={disabled}
                                     name="supplier"
                                     value={supplier}
                                     placeholder="Supplier"
@@ -230,6 +208,7 @@ class EditTemplate extends React.Component {
                                     <div className="d-flex justify-content-center">
                                         <Form.Check
                                             name="formulationFlow"
+                                            disabled={disabled}
                                             inline
                                             label="Flowable"
                                             type="checkbox"
@@ -242,6 +221,7 @@ class EditTemplate extends React.Component {
                                             inline
                                             label="Granular"
                                             type="checkbox"
+                                            disabled={disabled}
                                             checked={formulationGran}
                                             className="options"
                                             onChange={this.handleInputChange}
@@ -253,10 +233,12 @@ class EditTemplate extends React.Component {
                                             type="checkbox"
                                             checked={formulationWet}
                                             className="options"
+                                            disabled={disabled}
                                             onChange={this.handleInputChange}
                                         />
                                         <Form.Check
                                             name="formulationEmul"
+                                            disabled={disabled}
                                             inline
                                             checked={formulationEmul}
                                             label="Emulsified Concrete"
@@ -267,6 +249,7 @@ class EditTemplate extends React.Component {
                                         <Form.Check
                                             name="formulationOther"
                                             inline
+                                            disabled={disabled}
                                             label="Other"
                                             checked={formulationOther}
                                             type="checkbox"
@@ -279,6 +262,7 @@ class EditTemplate extends React.Component {
                                         name="formulationOtherVal"
                                         value={formulationOtherVal}
                                         placeholder="Other Formulation"
+                                        disabled={disabled}
                                         hidden={!formulationOther}
                                         onChange={this.handleInputChange}
                                     />
@@ -292,6 +276,7 @@ class EditTemplate extends React.Component {
                                     <div className="d-flex justify-content-center">
                                         <Form.Check
                                             name="signalWordCaution"
+                                            disabled={disabled}
                                             inline
                                             checked={signalWordCaution}
                                             label="Caution"
@@ -306,6 +291,7 @@ class EditTemplate extends React.Component {
                                             label="Warning"
                                             type="checkbox"
                                             className="options"
+                                            disabled={disabled}
                                             onChange={this.handleInputChange}
                                         />
                                         <Form.Check
@@ -315,6 +301,7 @@ class EditTemplate extends React.Component {
                                             label="Danger"
                                             type="checkbox"
                                             className="options"
+                                            disabled={disabled}
                                             onChange={this.handleInputChange}
                                         />
                                     </div>
@@ -329,6 +316,7 @@ class EditTemplate extends React.Component {
                                     type="text"
                                     name="epaRegNum"
                                     value={epaRegNum}
+                                    disabled={disabled}
                                     placeholder="EPA Registration #"
                                     onChange={this.handleInputChange}
                                     />
@@ -341,6 +329,7 @@ class EditTemplate extends React.Component {
                                     value={epaEstNum}
                                     type="text"
                                     name="epaEstNum"
+                                    disabled={disabled}
                                     placeholder="EPA Est. #"
                                     onChange={this.handleInputChange}
                                     />
@@ -350,11 +339,11 @@ class EditTemplate extends React.Component {
                         <Row className="mt-3">
                             <Col>
                                 <a href="/Templates">
-                                    <Button variant='secondary' className='btn-block'>Cancel</Button>
+                                    <Button variant='secondary' disabled={disabled} className='btn-block'>Cancel</Button>
                                 </a>
                             </Col>
                             <Col>
-                                <Button type='submit' variant='primary' className='btn-block'>Save Template</Button>
+                                <Button type='submit' variant='primary' disabled={disabled} className='btn-block'>Save Template</Button>
                             </Col>
                         </Row>
                     </Form>
@@ -366,6 +355,8 @@ class EditTemplate extends React.Component {
                                     <Form.Label>Search Templates</Form.Label>
                                     <Form.Control 
                                         type="text"
+                                        required
+                                        disabled={disabled}
                                         name="productName"
                                         onChange={this.handleInputChange}
                                         placeholder="Product Name"
@@ -376,11 +367,11 @@ class EditTemplate extends React.Component {
                         <Row className="mt-3">
                             <Col>
                                 <a href="/Templates">
-                                    <Button variant='secondary' className='btn-block'>Cancel</Button>
+                                    <Button variant='secondary' disabled={disabled} className='btn-block'>Cancel</Button>
                                 </a>
                             </Col>
                             <Col>
-                                <Button type='submit' variant='primary' className='btn-block'>Search for Template</Button>
+                                <Button type='submit' variant='primary' disabled={disabled} className='btn-block'>Search for Template</Button>
                             </Col>
                         </Row>
                     </Form>
