@@ -11,6 +11,7 @@ export default class AddFromTemplate extends Component {
     super(props);
 
     this.state = {
+      // Columns of the table
       columns: [
         { dataField: "id", text: "Id", hidden: true },
         { dataField: "productName", text: "Product Name", sort: true },
@@ -22,6 +23,8 @@ export default class AddFromTemplate extends Component {
       selectedIndex: null,
       templateIsSelected: false,
       selectedTemplate: null,
+
+      // Row select actions and styles
       selectRow: {
         mode: "radio",
         bgColor: "LightBlue",
@@ -33,11 +36,13 @@ export default class AddFromTemplate extends Component {
     };
   }
 
+  // Get the data for the table when the page loads
   componentDidMount() {
     this.fetchTemplates();
     this.setRowData();
   }
 
+  // Display add form page with props based on selected row
   handleSubmit = (e) => {
     e.preventDefault();
     const { templates, selectedIndex } = this.state;
@@ -49,9 +54,9 @@ export default class AddFromTemplate extends Component {
       selectedTemplate: templates[selectedIndex],
       templateIsSelected: true,
     });
-    console.log(templates[selectedIndex]);
   };
 
+  // Extract the required data from the template and put it into the rowData state
   setRowData = async () => {
     await this.fetchTemplates();
     let rowData = this.state.templates.map(
@@ -104,60 +109,32 @@ export default class AddFromTemplate extends Component {
     }
 
     this.setState({ rowData: rowData });
-
-    // await this.fetchTemplates();
-    // return [
-    //   {
-    //     id: "1",
-    //     productName: "Test Chemical 1",
-    //     supplier: "Test Supplier 1",
-    //     formulation: "Test Formulation 1",
-    //   },
-    //   {
-    //     id: "2",
-    //     productName: "Test Chemical 2",
-    //     supplier: "Test Supplier 2",
-    //     formulation: "Test Formulation 2",
-    //   },
-    //   {
-    //     id: "3",
-    //     productName: "Test Chemical 3",
-    //     supplier: "Test Supplier 3",
-    //     formulation: "Test Formulation 3",
-    //   },
-    // ];
   };
 
+  // Fetches all templates from backend and sets the templates state
   fetchTemplates = async () => {
     const backend = new Backend();
     const response = await backend.get_all_templates();
-    console.log(response);
-    // this.setState({ templates: response.data.Items });
+    // console.log(response);
     this.setState({ templates: response.data.Items });
   };
-
-  //   componentDidMount() {
-  //     this.setState({ templates: this.getTemplates(), showTable: true });
-  //   }
-
-  //   componentDidUpdate() {
-  //     this.setState({ templates: this.getTemplates(), showTable: true });
-  //   }
 
   render() {
     const {
       templates,
       columns,
       selectRow,
-      selectedIndex,
       rowData,
       templateIsSelected,
       selectedTemplate,
     } = this.state;
+
     return (
       <>
+        {/* If we have the templates sved and data for the rows saved */}
         {rowData && templates ? (
           <>
+            {/* If we have selected a template and clicked the add from template button */}
             {templateIsSelected && selectedTemplate !== null ? (
               <AddForm {...selectedTemplate} />
             ) : (
@@ -175,6 +152,7 @@ export default class AddFromTemplate extends Component {
             )}
           </>
         ) : (
+          // While the data is loading
           "Loading..."
         )}
       </>
