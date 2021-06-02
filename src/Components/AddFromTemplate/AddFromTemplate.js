@@ -4,6 +4,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import Button from "react-bootstrap/Button";
 import "./AddFromTemplate.css";
 import Backend from "../../model/backend";
+import AddForm from "../AddForm";
 
 export default class AddFromTemplate extends Component {
   constructor(props) {
@@ -19,12 +20,14 @@ export default class AddFromTemplate extends Component {
       templates: null,
       rowData: null,
       selectedIndex: null,
+      templateIsSelected: false,
+      selectedTemplate: null,
       selectRow: {
         mode: "radio",
         bgColor: "LightBlue",
         clickToSelect: true,
         onSelect: (row, isSelect, rowIndex, e) => {
-          this.setState({ selectedIndex: rowIndex });
+          this.setState({ selectedIndex: row.id });
         },
       },
     };
@@ -34,6 +37,20 @@ export default class AddFromTemplate extends Component {
     this.fetchTemplates();
     this.setRowData();
   }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { templates, selectedIndex } = this.state;
+    if (selectedIndex == null) {
+      alert("Please select a template");
+      return false;
+    }
+    this.setState({
+      selectedTemplate: templates[selectedIndex],
+      templateIsSelected: true,
+    });
+    console.log(templates[selectedIndex]);
+  };
 
   setRowData = async () => {
     await this.fetchTemplates();
@@ -128,24 +145,37 @@ export default class AddFromTemplate extends Component {
   //   }
 
   render() {
-    const { templates, columns, selectRow, selectedIndex, rowData } =
-      this.state;
+    const {
+      templates,
+      columns,
+      selectRow,
+      selectedIndex,
+      rowData,
+      templateIsSelected,
+      selectedTemplate,
+    } = this.state;
     return (
       <>
         {rowData && templates ? (
           <>
-            <BootstrapTable
-              keyField="id"
-              data={rowData}
-              columns={columns}
-              selectRow={selectRow}
-            />
-            <Button type="submit" onSubmit={console.log(selectedIndex)}>
-              Use Selected Template
-            </Button>
+            {templateIsSelected && selectedTemplate !== null ? (
+              <AddForm {...selectedTemplate} />
+            ) : (
+              <>
+                <BootstrapTable
+                  keyField="id"
+                  data={rowData}
+                  columns={columns}
+                  selectRow={selectRow}
+                />
+                <Button onClick={this.handleSubmit}>
+                  Use Selected Template
+                </Button>
+              </>
+            )}
           </>
         ) : (
-          "loading"
+          "Loading..."
         )}
       </>
     );

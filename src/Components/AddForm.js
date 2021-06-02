@@ -21,24 +21,43 @@ import DateFnsUtils from "@date-io/date-fns";
 class AddForm extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
 
     const today = new Date();
     // Everyting from the original Gresham Golf Course Form
     this.state = {
       // Product
-      productName: "",
-      supplier: "",
-      formulationFlow: false,
-      formulationGran: false,
-      formulationWet: false,
-      formulationEmul: false,
-      formulationOther: false,
-      formulationOtherVal: "",
-      sigWordCaution: false,
-      sigWordWarning: false,
-      sigWordDanger: false,
-      epaRegNum: "",
-      epaEstNum: "",
+      productName: this.props.productName ? this.props.productName : "",
+      supplier: this.props.supplier ? this.props.supplier : "",
+      formulationFlow: this.props.formulationFlow
+        ? this.props.formulationFlow
+        : false,
+      formulationGran: this.props.formulationGran
+        ? this.props.formulationGran
+        : false,
+      formulationWet: this.props.formulationWet
+        ? this.props.formulationWet
+        : false,
+      formulationEmul: this.props.formulationEmul
+        ? this.props.formulationEmul
+        : false,
+      formulationOther: this.props.formulationOther
+        ? this.props.formulationOther
+        : false,
+      formulationOtherVal: this.props.formulationOtherVal
+        ? this.props.formulationOtherVal
+        : "",
+      sigWordCaution: this.props.signalWordCaution
+        ? this.props.signalWordCaution
+        : false,
+      sigWordWarning: this.props.signalWordWarning
+        ? this.props.signalWordWarning
+        : false,
+      sigWordDanger: this.props.signalWordDanger
+        ? this.props.signalWordDanger
+        : false,
+      epaRegNum: this.props.epaRegNum ? this.props.epaRegNum : "",
+      epaEstNum: this.props.epaEstNum ? this.props.epaEstNum : "",
       location: "",
       locOtherVal: "",
       target: "",
@@ -98,7 +117,6 @@ class AddForm extends React.Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    console.log(this.value);
 
     this.setState({
       [name]: value,
@@ -186,6 +204,21 @@ class AddForm extends React.Component {
   }
 
   render() {
+    const {
+      epaEstNum,
+      epaRegNum,
+      formulationEmul,
+      formulationFlow,
+      formulationGran,
+      formulationOther,
+      formulationOtherVal,
+      formulationWet,
+      productName,
+      sigWordCaution,
+      sigWordDanger,
+      sigWordWarning,
+      supplier,
+    } = this.state;
     return (
       <Form className="new-form" onSubmit={this.handleSubmit}>
         <h1>Add Form</h1>
@@ -198,6 +231,7 @@ class AddForm extends React.Component {
               <Form.Control
                 required
                 type="text"
+                value={productName}
                 name="productName"
                 placeholder="Product Name"
                 onChange={this.handleInputChange}
@@ -211,6 +245,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="supplier"
+                value={supplier}
                 placeholder="Supplier"
                 onChange={this.handleInputChange}
               />
@@ -226,7 +261,7 @@ class AddForm extends React.Component {
             name="formulationFlow"
             label="Flowable"
             type="checkbox"
-            checked={this.state.formulationFlow}
+            checked={formulationFlow}
             onChange={this.handleInputChange}
           ></Form.Check>
 
@@ -235,7 +270,7 @@ class AddForm extends React.Component {
             name="formulationGran"
             label="Granular"
             type="checkbox"
-            checked={this.state.formulationGran}
+            checked={formulationGran}
             onChange={this.handleInputChange}
           ></Form.Check>
 
@@ -244,7 +279,7 @@ class AddForm extends React.Component {
             name="formulationWet"
             label="Wettable Powder"
             type="checkbox"
-            checked={this.state.formulationWet}
+            checked={formulationWet}
             onChange={this.handleInputChange}
           ></Form.Check>
 
@@ -253,7 +288,7 @@ class AddForm extends React.Component {
             name="formulationEmul"
             label="Emulsified Concrete"
             type="checkbox"
-            checked={this.state.formulationEmul}
+            checked={formulationEmul}
             onChange={this.handleInputChange}
           ></Form.Check>
 
@@ -262,7 +297,7 @@ class AddForm extends React.Component {
             name="formulationOther"
             label="Other"
             type="checkbox"
-            checked={this.state.formulationOther}
+            checked={formulationOther}
             onChange={this.handleInputChange}
           ></Form.Check>
 
@@ -270,7 +305,8 @@ class AddForm extends React.Component {
             type="text"
             name="formulationOtherVal"
             placeholder="Other Formulation"
-            hidden={!this.state.formulationOther}
+            value={formulationOtherVal}
+            hidden={!formulationOther}
             onChange={this.handleInputChange}
           />
         </Form.Group>
@@ -283,7 +319,7 @@ class AddForm extends React.Component {
             name="sigWordCaution"
             label="Caution"
             type="checkbox"
-            checked={this.state.sigWordCaution}
+            checked={sigWordCaution}
             onChange={this.handleInputChange}
           ></Form.Check>
 
@@ -292,7 +328,7 @@ class AddForm extends React.Component {
             name="sigWordWarning"
             label="Warning"
             type="checkbox"
-            checked={this.state.sigWordWarning}
+            checked={sigWordWarning}
             onChange={this.handleInputChange}
           ></Form.Check>
 
@@ -301,7 +337,7 @@ class AddForm extends React.Component {
             name="sigWordDanger"
             label="Danger"
             type="checkbox"
-            checked={this.state.sigWordDanger}
+            checked={sigWordDanger}
             onChange={this.handleInputChange}
           ></Form.Check>
         </Form.Group>
@@ -312,6 +348,7 @@ class AddForm extends React.Component {
               <Form.Label>EPA Registration #</Form.Label>
               <Form.Control
                 type="text"
+                value={epaRegNum}
                 name="epaRegNum"
                 placeholder="EPA Registration #"
                 onChange={this.handleInputChange}
@@ -325,6 +362,7 @@ class AddForm extends React.Component {
               <Form.Control
                 type="text"
                 name="epaEstNum"
+                value={epaEstNum}
                 placeholder="EPA Est. #"
                 onChange={this.handleInputChange}
               />
