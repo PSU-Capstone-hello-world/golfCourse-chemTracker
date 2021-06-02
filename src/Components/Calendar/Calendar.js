@@ -24,7 +24,9 @@ class ChemCalendar extends Component {
       cal_events: [
       ],
       selectedDate: null,
-      selectedView: "month"
+      selectedView: "month",
+      minTime: new Date(),
+      maxTime: new Date()
     };
   }
 
@@ -210,8 +212,9 @@ class ChemCalendar extends Component {
   };
 
   render() {
-    const { cal_events, showModal, document, selectedDate, selectedView } = this.state;
-    console.log(`date is ${selectedDate}`);
+    const { cal_events, showModal, document, selectedDate, selectedView, minTime, maxTime } = this.state;
+    minTime.setHours(7,0,0);
+    maxTime.setHours(22,0,0);
 
     if (showModal) {
       return (
@@ -240,6 +243,8 @@ class ChemCalendar extends Component {
                     week: true, 
                     day: true,
                   }}
+                  min={minTime}
+                  max={maxTime}
                   onDoubleClickEvent={event => this.handleEventClick(event)}
                   eventPropGetter={this.eventStyleGetter}
                   defaultDate={selectedDate ? selectedDate : new Date()}

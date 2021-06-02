@@ -28,3 +28,12 @@
     font-size: x-large;
     font-weight: 500;
 }
+
+.rbc-event-label {
+    display: none !important;
+}
+
+.rbc-current-time-indicator {
+    background-color: #007bff !important;
+    height: 2px !important;
+}
