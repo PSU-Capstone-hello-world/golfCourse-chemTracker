@@ -122,7 +122,7 @@ class Modalview extends React.Component {
             {isEdit ? <p>Edit Modal </p> : <p>Read Only Modal</p>}
           </Modal.Title>
           <Modal.Body>
-            <Form className="new-form" onSubmit={this.handleSubmit}>
+            <Form className="modal-form" onSubmit={this.handleSubmit}>
               <Row>
                 <Col>
                   <Form.Group controlId="productName">
