@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Modal.css";
 import Backend from "../model/backend";
+import { Redirect } from "react-router-dom";
 
 //import Document from "../model/document";
 
@@ -27,6 +28,7 @@ class Modalview extends React.Component {
       isEdit: false,
       formData: props.formData,
       deleteModal: false,
+      redirect: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -114,32 +116,38 @@ class Modalview extends React.Component {
   };
   editMode = () => this.setState({ isEdit: true });
   handleDeleteModal = (status) => this.setState({ deleteModal: status });
+  closeDeleteModal = (e) => {
+    const { formData } = this.state;
+    this.handleDeleteModal(false);
+    formData.date = JSON.stringify(formData.date).slice(1, 11);
+    formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
+  };
 
   async deleteForm() {
     const { formData } = this.state;
-    formData.date = null;
-    formData.sigDate = null;
-    //formData.date = JSON.stringify(formData.date).slice(1, 11);
-    //console.log(formData.date);
-    //formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
+    //formData.date = null;
+    //formData.sigDate = null;
     //console.log(formData.sigDate);
+    formData.date = formData.date.toString();
+    formData.sigDate = formData.sigDate.toString();
     let backend = new Backend();
     await backend.delete(formData.id);
     this.handleDeleteModal(false);
-    this.props.handleDeleteAlert(true);
-    this.props.handleModal2(false);
+    //this.props.handleDeleteAlert(true);
+    //this.props.handleModal2(false);
   }
 
   render() {
     const { formData, isEdit, deleteModal } = this.state;
+
     //console.log("form v1", formData);
     //console.log(formData.formulation);
-
     return (
       <>
         <Modal
           className="deleteModal justify-content-center"
           show={deleteModal}
+          onHide={this.closeDeleteModal}
         >
           <Modal.Header
             closeButton

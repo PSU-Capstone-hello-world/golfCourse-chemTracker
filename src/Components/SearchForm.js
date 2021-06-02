@@ -27,6 +27,7 @@ class SearchForm extends React.Component {
       search: false,
       document: "",
       showModal: false,
+      alert: false,
       searchAlert: false,
       submitAlert: false,
       deleteAlert: false,
@@ -218,6 +219,7 @@ class SearchForm extends React.Component {
   }
 
   displayAlert(variantInput, header, message, outline) {
+    const { alert } = this.state;
     return (
       <Col className="alert-card d-flex justify-content-center">
         <Alert className="alert" show={alert} variant={variantInput}>
@@ -229,6 +231,7 @@ class SearchForm extends React.Component {
               onClick={() => {
                 this.handleSearchAlert(false);
                 this.handleSubmitAlert(false);
+                this.handleDeleteAlert(false);
               }}
               variant={outline}
             >
@@ -283,15 +286,15 @@ class SearchForm extends React.Component {
   };
 
   handleSearchAlert = (status, statusCode) => {
-    this.setState({ searchAlert: status });
+    this.setState({ searchAlert: status, alert: status });
   };
 
   handleSubmitAlert = (status) => {
-    this.setState({ submitAlert: status });
+    this.setState({ submitAlert: status, alert: status });
   };
 
   handleDeleteAlert = (status) => {
-    this.setState({ deleteAlert: status });
+    this.setState({ deleteAlert: status, alert: status });
   };
 
   render() {

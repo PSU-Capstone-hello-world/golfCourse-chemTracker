@@ -15,7 +15,7 @@
   margin-top: 10em;
 }
 
-.deleteModal {
+.deleteModal .submitModal {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
