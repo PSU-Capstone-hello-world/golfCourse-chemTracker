@@ -22,6 +22,10 @@ class ChemCalendar extends Component {
       document: "",
       showModal: false,
       cal_events: [],
+      selectedDate: null,
+      selectedView: "month",
+      minTime: new Date(),
+      maxTime: new Date(),
     };
   }
 
@@ -37,10 +41,13 @@ class ChemCalendar extends Component {
       let temp = {
         productName: response[i].productName,
         location: response[i].location,
-        start: response[i].date,
-        end: response[i].date,
-        allDay: true,
-        title: `Name: ${response[i].productName} | Location: ${response[i].location}`,
+        start: new Date(`${response[i].date} ${response[i].timeStart}`),
+        end: new Date(`${response[i].date} ${response[i].timeEnd}`),
+        // start: response[i].date,
+        // end: response[i].date,
+        // allDay: true,
+        supplier: response[i].supplier,
+        title: `${response[i].productName}`,
       };
 
       events[i] = temp;
@@ -61,6 +68,51 @@ class ChemCalendar extends Component {
         this.populateEvents()
       );
     }
+  }
+
+  eventStyleGetter = (event) => {
+    const eventColor = this.stringToColour(event.productName, event.supplier);
+
+    var style = {
+      backgroundColor: eventColor,
+      borderRadius: "10px",
+      opacity: 0.8,
+      color: "white",
+      border: "0px",
+      display: "block",
+    };
+
+    return {
+      style: style,
+    };
+  };
+
+  stringToColour(str1, str2) {
+    let hash = 0;
+
+    if (str1.length === 0 && str2.length === 0) {
+      return hash;
+    }
+
+    for (let i = 0; i < str1.length; i++) {
+      let chr = str1.charCodeAt(i);
+      hash = (hash << 3) - hash + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+
+    for (let i = 0; i < str2.length; i++) {
+      let chr = str2.charCodeAt(i);
+      hash = (hash << 1) - hash + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+
+    let colour = "#";
+    for (let i = 0; i < 3; i++) {
+      let value = (hash >> (i * 8)) & 0xff;
+      colour += ("00" + value.toString(16)).substr(-2);
+    }
+
+    return colour;
   }
 
   handleEventClick = async (event) => {
@@ -144,33 +196,35 @@ class ChemCalendar extends Component {
   }
 
   handleModal = (isOpen) => {
-    this.setState({ showModal: isOpen });
+    this.setState({ showModal: isOpen }, () => this.setDate());
   };
 
   onChange = (date) => {
-    const { selectedMonth, selectedYear } = this.state;
-    if (
-      date.getMonth() !== selectedMonth &&
-      date.getFullYear() !== selectedYear
-    ) {
+    const { selectedMonth, selectedYear, selectedDate } = this.state;
+    if (selectedDate != date) {
       this.setState(
         {
-          selectedYear: date.getFullYear(),
+          selectedDate: date,
           selectedMonth: date.getMonth() + 1,
+          selectedYear: date.getFullYear(),
         },
         () => this.setDate()
       );
-    } else if (date.getMonth() + 1 !== selectedMonth) {
-      this.setState({ selectedMonth: date.getMonth() + 1 }, () =>
-        this.setDate()
-      );
-    } else if (date.getFullYear() !== selectedYear) {
-      this.setState({ selectedYear: date.getFullYear() }, () => this.setDate());
     }
   };
 
   render() {
-    const { cal_events, showModal, document } = this.state;
+    const {
+      cal_events,
+      showModal,
+      document,
+      selectedDate,
+      selectedView,
+      minTime,
+      maxTime,
+    } = this.state;
+    minTime.setHours(7, 0, 0);
+    maxTime.setHours(22, 0, 0);
 
     if (showModal) {
       return (
@@ -186,24 +240,24 @@ class ChemCalendar extends Component {
       <Container fluid className="calendarContainer">
         <Row>
           <Col>
-            <div style={{ height: 700 }}>
+            <div style={{ height: 1100 }}>
               <Calendar
+                className="m-3"
                 onNavigate={this.onChange}
                 localizer={localizer}
                 events={cal_events}
-                defaultView="month"
+                defaultView={selectedView}
+                onView={(view) => this.setState({ selectedView: view })}
                 views={{
                   month: true,
                   week: true,
                   day: true,
                 }}
+                min={minTime}
+                max={maxTime}
                 onDoubleClickEvent={(event) => this.handleEventClick(event)}
-                // components={{
-                //   onDoubleClickEvent: (props) => {
-                //     // this.handleEventClick()
-                //     alert("helllllllllllllo");
-                //   }
-                // }}
+                eventPropGetter={this.eventStyleGetter}
+                defaultDate={selectedDate ? selectedDate : new Date()}
               />
             </div>
           </Col>
