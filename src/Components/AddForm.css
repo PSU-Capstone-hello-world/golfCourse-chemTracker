@@ -1,6 +1,10 @@
 .new-form {
   width: 90%;
-  margin: auto;
+  border: 1px solid black;
+  margin: 3% auto;
+  padding: 20px 20px;
+  border-radius: 20px;
+  background-color: white;
 }
 
 .form-label {

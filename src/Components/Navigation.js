@@ -4,7 +4,7 @@ import { Route, Switch, Link, BrowserRouter as Router } from "react-router-dom";
 import Home from "./Home";
 import CalendarView from "./Calendar/Calendar";
 import AddForm from "./AddForm";
-import SearchForm from "./SearchForm";
+import SearchForm from "./Search/SearchForm";
 import Templates from "./Templates/Templates";
 import Modalview from "./Modal";
 import CreateTemplate from "./Templates/Create/CreateTemplate";

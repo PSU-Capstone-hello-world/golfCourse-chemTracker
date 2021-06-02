@@ -22,3 +22,9 @@
 .alertContainer {
   margin-left: -20px;
 }
+
+.modal-form {
+  width: 100%;
+  margin: auto;
+  background-color: white;
+}

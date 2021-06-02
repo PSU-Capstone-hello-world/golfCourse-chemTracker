@@ -1,5 +1,10 @@
-.Search-Form {
-  margin-right: 0;
+.search {
+  border: 1px solid black;
+  width: 70%;
+  margin: 3% auto;
+  padding: 20px 20px;
+  border-radius: 20px;
+  background-color: white;
 }
 
 .header {
