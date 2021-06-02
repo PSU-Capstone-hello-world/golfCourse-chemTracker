@@ -22,7 +22,8 @@ class SearchForm extends React.Component {
       document: "",
       showModal: false,
       index: -1,
-      noFormsFound: null
+      noFormsFound: null,
+      emptySearch: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -32,15 +33,17 @@ class SearchForm extends React.Component {
     this.result = null;
   }
 
-  monthDiff(d1, d2) {
-    const diff = Math.abs(d2 - d1);
-    return diff / (1000 * 60 * 60 * 24 * 30);
-  }
-
   async handleSubmit(event) {
     event.preventDefault();
     let output = JSON.parse(JSON.stringify(this.state));
-
+    if (
+      !output.startDate &&
+      !output.endDate &&
+      !output.productName &&
+      !output.location
+    ) {
+      this.onEmptySearchAlert();
+    }
     if (output.startDate) {
       output.startDate = JSON.stringify(output.startDate).slice(1, 11);
     }
@@ -53,7 +56,6 @@ class SearchForm extends React.Component {
 
   async fetchData(search) {
     let backend = new Backend();
-
     let document;
     if (
       search.startDate &&
@@ -121,12 +123,12 @@ class SearchForm extends React.Component {
     ) {
       document = await backend.getLocation(search.location);
     }
-    if (document) console.log("productName", document);
-
     if (document !== undefined) {
       this.setState({ search: true, document: document });
     } else {
-      this.setState({ search: false, noFormsFound: true}, () => this.onShowNoFormsAlert())
+      this.setState({ search: false, noFormsFound: true }, () =>
+        this.onShowNoFormsAlert()
+      );
     }
 
     return document;
@@ -166,16 +168,24 @@ class SearchForm extends React.Component {
     }
   }
 
+  onEmptySearchAlert = () => {
+    this.setState({ emptySearch: true }, () => {
+      window.setTimeout(() => {
+        this.setState({ emptySearch: false });
+      }, 2500);
+    });
+  };
+
   onShowNoFormsAlert = () => {
-      this.setState({ noFormsFound: true }, () => {
-          window.setTimeout(() => {
-              this.setState({ noFormsFound: false })
-          }, 2500);
-      });
-  }
+    this.setState({ noFormsFound: true }, () => {
+      window.setTimeout(() => {
+        this.setState({ noFormsFound: false });
+      }, 2500);
+    });
+  };
 
   handleTable = (returned) => {
-    this.setState({ 
+    this.setState({
       productName: "",
       startDate: null,
       endDate: null,
@@ -184,32 +194,45 @@ class SearchForm extends React.Component {
       document: "",
       showModal: false,
       index: -1,
-      noFormsFound: null
+      noFormsFound: null,
     });
-  }
+  };
 
   render() {
-    const { search, document, noFormsFound } = this.state;
+    const { search, document, noFormsFound, emptySearch } = this.state;
 
     if (search) {
       if (document !== undefined) {
         return (
-          <SearchTable 
+          <SearchTable
             document={document}
             handleTable={this.handleTable.bind(this)}
           />
-        )
-      } 
+        );
+      }
     }
 
     return (
       <Container fluid>
         <div className="d-flex justify-content-center">
-          <Alert variant="secondary" hidden={!noFormsFound} className="fade-out position-absolute top-70 start-50 w-50 h-10">No Forms Found</Alert>
+          <Alert
+            variant="secondary"
+            hidden={!noFormsFound}
+            className="fade-out position-absolute top-70 start-50 w-50 h-10"
+          >
+            No Forms Found
+          </Alert>
+          <Alert
+            variant="warning"
+            hidden={!emptySearch}
+            className="fade-out position-absolute top-70 start-50 w-50 h-10"
+          >
+            Must Search By Atleast One Field
+          </Alert>
         </div>
         <Form className="search" onSubmit={this.handleSubmit}>
-          <div className='d-flex justify-content-center'>
-              <h2>Search Criteria</h2>
+          <div className="d-flex justify-content-center">
+            <h2>Search Criteria</h2>
           </div>
           <Row>
             <Col>
@@ -400,7 +423,6 @@ export default SearchForm;
 //     this.setState({ search: true, document: document });
 //     return document;
 //   }
-
 
 //   handleInputChange(event) {
 //     const target = event.target;

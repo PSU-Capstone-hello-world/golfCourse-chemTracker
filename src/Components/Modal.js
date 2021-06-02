@@ -3,53 +3,41 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-//import Alert from "react-bootstrap/Alert";
 import { Modal } from "react-bootstrap";
+import Alert from "react-bootstrap/Alert";
 import "./AddForm.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Modal.css";
 import Backend from "../model/backend";
-import { Redirect } from "react-router-dom";
-
-//import Document from "../model/document";
-
-// Resources:
-//   React Forms --> https://reactjs.org/docs/forms.html
-//   React Bootstrap Forms --> https://react-bootstrap.github.io/components/forms/
+//import { Redirect } from "react-router-dom";
 class Modalview extends React.Component {
   constructor(props) {
     super(props);
-
-    //const today = new Date();
-    // Everyting from the original Gresham Golf Course Form
     this.state = {
       isOpen: props.isOpen,
       isEdit: false,
       formData: props.formData,
       deleteModal: false,
+      formsubmitted: false,
       redirect: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleSigDate = this.handleSigDate.bind(this);
-    //this.handleAlert = this.handleAlert.bind(this);
   }
 
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    //console.log(value);
-    //console.log(name);
 
     this.setState((prevState) => ({
       formData: { ...prevState.formData, [name]: value },
     }));
   }
-  // Dates from date picker are handled seperatley, they also need a math conversion or else the day can be off by one
-  // A thread about the issue and the workaround were found at: https://github.com/Hacker0x01/react-datepicker/issues/1018
+
   handleDateChange(newDate) {
     this.setState((prevState) => ({
       formData: { ...prevState.formData, date: new Date(newDate.getTime()) },
@@ -69,79 +57,72 @@ class Modalview extends React.Component {
       alert("Location is required");
       return false;
     }
-
-    //console.log("form", formData);
-    // Copy the state, so we can format the individual fields before sending to backend
     let output = JSON.parse(JSON.stringify(formData));
-    //console.log("output", output);
-    //console.log("date", output.date);
-    // Format Dates
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
-    console.log("date", output.date);
+    //console.log(output);
     if (output.location === "Other") {
       output.location = output.locOtherVal;
     }
-
-    // Logging the output, this will go to backend later
-    //console.log(JSON.stringify(output));
-    //console.log("form Data", JSON.stringify(formData.id));
     output = JSON.stringify(output);
-    //console.log("output", output);
-
+    formData.date = JSON.stringify(formData.date).slice(1, 11);
+    formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
+    //console.log(formData);
     let backend = new Backend();
     let response = await backend.put(output);
-    //console.log("reponse", response);
-    //console.log("status code", response.ResponseMetadata.HTTPStatusCode);
-
-    this.props.handleModal2(false);
+    this.onSubmitAlert();
+    //this.closeModal();
+    //this.props.handleModal2(false);
+    /*
     if (response.ResponseMetadata.HTTPStatusCode === 200) {
       this.props.handleSubmitAlert(true, true);
     } else {
       this.props.handleSubmitAlert(true, false);
     }
-    //this.props.handleSubmitAlert(true);
-    //event.target.reset();
+    */
     return true;
   }
   openModal = () => this.setState({ isOpen: true });
-  closeModal = (e) => {
+  closeModal = () => {
     const { formData } = this.state;
-    this.props.handleModal2(false);
-    //this.setState({ isOpen: false });
     formData.date = JSON.stringify(formData.date).slice(1, 11);
-    //console.log(formData.date);
     formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
-    //console.log(formData.sigDate);
+    this.props.handleModal2(false);
   };
-  editMode = () => this.setState({ isEdit: true });
+  editMode = (event) => {
+    event.preventDefault();
+    this.setState({ isEdit: true });
+  };
   handleDeleteModal = (status) => this.setState({ deleteModal: status });
   closeDeleteModal = (e) => {
-    const { formData } = this.state;
+    //const { formData } = this.state;
     this.handleDeleteModal(false);
-    formData.date = JSON.stringify(formData.date).slice(1, 11);
-    formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
+    //formData.date = JSON.stringify(formData.date).slice(1, 11);
+    //formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
   };
 
   async deleteForm() {
     const { formData } = this.state;
-    //formData.date = null;
-    //formData.sigDate = null;
-    //console.log(formData.sigDate);
-    formData.date = formData.date.toString();
-    formData.sigDate = formData.sigDate.toString();
+    formData.date = JSON.stringify(formData.date).slice(1, 11);
+    formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
+    console.log(formData);
     let backend = new Backend();
     await backend.delete(formData.id);
+    //console.log(formData);
     this.handleDeleteModal(false);
-    //this.props.handleDeleteAlert(true);
     //this.props.handleModal2(false);
+    this.closeModal();
   }
+  onSubmitAlert = () => {
+    this.setState({ formsubmitted: true }, () => {
+      window.setTimeout(() => {
+        this.setState({ formsubmitted: false });
+      }, 2500);
+    });
+  };
 
   render() {
-    const { formData, isEdit, deleteModal } = this.state;
-
-    //console.log("form v1", formData);
-    //console.log(formData.formulation);
+    const { formData, isEdit, deleteModal, isOpen, formsubmitted } = this.state;
     return (
       <>
         <Modal
@@ -176,21 +157,30 @@ class Modalview extends React.Component {
           </Modal.Footer>
         </Modal>
 
+        <div className="d-flex justify-content-center">
+          <Alert
+            variant="secondary"
+            hidden={!formsubmitted}
+            className="fade-out position-absolute top-70 start-50 w-50 h-10"
+          >
+            No Forms Found
+          </Alert>
+        </div>
         <Modal
           className="myModal"
           size="lg"
-          show={this.state.isOpen}
+          show={isOpen}
           onHide={this.closeModal}
         >
           <Modal.Header
             closeButton
-            onClick={() => this.handleModalOpen}
+            onClick={() => this.closeModal}
           ></Modal.Header>
           <Modal.Title className="modal-title text-center">
             {isEdit ? <p>Edit Modal </p> : <p>Read Only Modal</p>}
           </Modal.Title>
           <Modal.Body>
-            <Form className="new-form">
+            <Form className="new-form" onSubmit={this.handleSubmit}>
               <Row>
                 <Col>
                   <Form.Group controlId="productName">
@@ -977,7 +967,6 @@ class Modalview extends React.Component {
                   </Button>
                   <Button
                     type="submit"
-                    onClick={this.handleSubmit}
                     style={{ width: "80px" }}
                     variant="primary"
                   >
