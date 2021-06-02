@@ -5,3 +5,26 @@
 .rbc-month-row {
     overflow: visible !important;
 }
+
+.rbc-time-header-cell .rbc-header {
+    padding-bottom: 20px;
+}
+
+.rbc-btn-group > [type=button] {
+    color: white;
+    background-color: #007BFF;
+}
+
+.rbc-btn-group > [type=button]:active {
+    color: white;
+    background-color: #007BFF;
+}
+
+.rbc-toolbar button:hover, .rbc-toolbar button.rbc-active {
+    color: black;
+}
+
+.rbc-toolbar-label {
+    font-size: x-large;
+    font-weight: 500;
+}

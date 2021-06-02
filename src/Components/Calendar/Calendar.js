@@ -37,15 +37,17 @@ class ChemCalendar extends Component {
     let events = [response.length];
 
     for (let i = 0; i < response.length; i++) {
-      let temp = {
-        productName: response[i].productName,
-        location: response[i].location,
-        start: response[i].date,
-        end: response[i].date,
-        allDay: true,
-        supplier: response[i].supplier,
-        title: `${response[i].productName}`
-      };
+        let temp = {
+          productName: response[i].productName,
+          location: response[i].location,
+          start: new Date(`${response[i].date} ${response[i].timeStart}`),
+          end: new Date(`${response[i].date} ${response[i].timeEnd}`),
+          // start: response[i].date,
+          // end: response[i].date,
+          // allDay: true,
+          supplier: response[i].supplier,
+          title: `${response[i].productName}`
+        };
 
       events[i] = temp;
     }
