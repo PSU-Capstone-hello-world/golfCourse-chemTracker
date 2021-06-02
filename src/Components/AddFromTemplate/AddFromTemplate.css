@@ -1,0 +1,19 @@
+.react-bootstrap-table {
+  width: 80%;
+}
+
+.react-bootstrap-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.react-bootstrap-table thead {
+  background-color: #f2f2f2;
+}
+
+.react-bootstrap-table thead th {
+  border-color: black;
+}
+
+.react-bootstrap-table table {
+  border: 2px solid black;
+}

@@ -292,7 +292,6 @@ class Backend {
     } catch (error) {
       console.log("Error");
     }
-
   }
   convertBase64 = (image) => {
     return new Promise((resolve, reject) => {
@@ -329,6 +328,13 @@ class Backend {
       this.options
     );
     console.log(response);
+    return response;
+  }
+  async get_all_templates() {
+    let response = await axios.get(
+      `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template`,
+      this.options
+    );
     return response;
   }
   async delete_tempalte(productName) {
