@@ -6,7 +6,6 @@ class FormHome extends React.Component {
   render() {
     return (
       <Container fluid>
-        <h1>Add New Form</h1>
         <Row>
           <Col>
             <a href="/Add_Form">

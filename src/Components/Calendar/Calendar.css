@@ -1,3 +1,40 @@
 .calendarContainer {
-    background-color: white;
+  background-color: white;
+}
+
+.rbc-month-row {
+  overflow: visible !important;
+}
+
+.rbc-time-header-cell .rbc-header {
+  padding-bottom: 20px;
+}
+
+.rbc-btn-group > [type="button"] {
+  color: white;
+  background-color: #007bff;
+}
+
+.rbc-btn-group > [type="button"]:active {
+  color: white;
+  background-color: #007bff;
+}
+
+.rbc-toolbar button:hover,
+.rbc-toolbar button.rbc-active {
+  color: black;
+}
+
+.rbc-toolbar-label {
+  font-size: x-large;
+  font-weight: 500;
+}
+
+.rbc-event-label {
+  display: none !important;
+}
+
+.rbc-current-time-indicator {
+  background-color: #007bff !important;
+  height: 2px !important;
 }

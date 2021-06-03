@@ -25,6 +25,7 @@ class CreateTemplate extends React.Component {
             redirect: false, 
             success: false,
             error: false,
+            disabled: false
         }
     }
 
@@ -44,26 +45,10 @@ class CreateTemplate extends React.Component {
 
         const response = await backend.put_template(JSON.stringify(this.state));
         if (response.data.statusCode === 200) {
-            this.onShowSuccessAlert();
+            this.setState({ success: true, disabled: true })
         } else {
-            this.onShowErrorAlert();
+            this.setState({ error: true, disabled: true })
         }
-    }
-
-    onShowSuccessAlert = () => {
-        this.setState({ success: true }, () => {
-            window.setTimeout(() => {
-                this.setState({ success: false, redirect: true })
-            }, 2000);
-        });
-    }
-
-    onShowErrorAlert = () => {
-        this.setState({ error: true }, () => {
-            window.setTimeout(() => {
-                this.setState({ error: false })
-            }, 3000);
-        });
     }
 
     render() {
@@ -72,6 +57,7 @@ class CreateTemplate extends React.Component {
             productName, 
             redirect,
             success,
+            disabled,
             error,
         } = this.state;
 
@@ -82,8 +68,8 @@ class CreateTemplate extends React.Component {
         return (
         <Container>
             <Row className='justify-content-center align-self-center'>
-            <Alert variant="success" hidden={!success} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template Saved!</Alert>
-            <Alert variant="danger" hidden={!error} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template was not saved due to an error</Alert>
+            <Alert variant="success" hidden={!success} dismissible onClose={() => this.setState({ success: false, disabled: true, redirect: true})} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template Saved!</Alert>
+            <Alert variant="danger" hidden={!error} dismissible onClose={() => this.setState({ success: false, disabled: true, redirect: true})} className="fade-out position-absolute top-50 start-50 w-50 h-10">Template was not saved due to an error</Alert>
                 <Form className="templateForm" preventDefault onSubmit={this.handleSubmit}>
                     <div className='d-flex justify-content-center'>
                         <h3>Create Template Form</h3>
@@ -93,6 +79,7 @@ class CreateTemplate extends React.Component {
                             <Form.Group hasValidation controlId="productName">
                                 <Form.Label>Product Name<span class="required"> (Required) </span></Form.Label>
                                 <Form.Control
+                                disabled={disabled}
                                 type="text"
                                 required
                                 name="productName"
@@ -107,6 +94,7 @@ class CreateTemplate extends React.Component {
                             <Form.Group controlId="supplier">
                                 <Form.Label>Supplier</Form.Label>
                                 <Form.Control
+                                disabled={disabled}
                                 type="text"
                                 name="supplier"
                                 placeholder="Supplier"
@@ -121,6 +109,7 @@ class CreateTemplate extends React.Component {
                                 <Form.Label className="formulationLabel">Formulation:</Form.Label>
                                 <div className="d-flex justify-content-center">
                                     <Form.Check
+                                        disabled={disabled}
                                         name="formulationFlow"
                                         inline
                                         label="Flowable"
@@ -132,12 +121,14 @@ class CreateTemplate extends React.Component {
                                         name="formulationGran"
                                         inline
                                         label="Granular"
+                                        disabled={disabled}
                                         type="checkbox"
                                         className="options"
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
                                         name="formulationWet"
+                                        disabled={disabled}
                                         inline
                                         label="Wettable Powder"
                                         type="checkbox"
@@ -147,6 +138,7 @@ class CreateTemplate extends React.Component {
                                     <Form.Check
                                         name="formulationEmul"
                                         inline
+                                        disabled={disabled}
                                         label="Emulsified Concrete"
                                         type="checkbox"
                                         className="options"
@@ -157,6 +149,7 @@ class CreateTemplate extends React.Component {
                                         inline
                                         label="Other"
                                         type="checkbox"
+                                        disabled={disabled}
                                         className="options"
                                         onChange={this.handleInputChange}
                                     />
@@ -166,6 +159,7 @@ class CreateTemplate extends React.Component {
                                     name="formulationOtherVal"
                                     placeholder="Other Formulation"
                                     hidden={!formulationOther}
+                                    disabled={disabled}
                                     onChange={this.handleInputChange}
                                 />
                             </Form.Group>
@@ -179,6 +173,7 @@ class CreateTemplate extends React.Component {
                                     <Form.Check
                                         name="signalWordCaution"
                                         inline
+                                        disabled={disabled}
                                         label="Caution"
                                         type="checkbox"
                                         className="options"
@@ -190,10 +185,12 @@ class CreateTemplate extends React.Component {
                                         label="Warning"
                                         type="checkbox"
                                         className="options"
+                                        disabled={disabled}
                                         onChange={this.handleInputChange}
                                     />
                                     <Form.Check
                                         name="signalWordDanger"
+                                        disabled={disabled}
                                         inline
                                         label="Danger"
                                         type="checkbox"
@@ -213,6 +210,7 @@ class CreateTemplate extends React.Component {
                                 name="epaRegNum"
                                 placeholder="EPA Registration #"
                                 onChange={this.handleInputChange}
+                                disabled={disabled}
                                 />
                             </Form.Group>
                         </Col>
@@ -224,6 +222,7 @@ class CreateTemplate extends React.Component {
                                 name="epaEstNum"
                                 placeholder="EPA Est. #"
                                 onChange={this.handleInputChange}
+                                disabled={disabled}
                                 />
                             </Form.Group>
                         </Col>
@@ -231,11 +230,11 @@ class CreateTemplate extends React.Component {
                     <Row className="mt-3">
                         <Col>
                             <a href="/Templates">
-                                <Button variant='secondary' className='btn-block'>Cancel</Button>
+                                <Button variant='secondary'disabled={disabled} className='btn-block'>Cancel</Button>
                             </a>
                         </Col>
                         <Col>
-                            <Button type='submit' variant='primary' className='btn-block'>Create Template</Button>
+                            <Button type='submit' variant='primary' disabled={disabled} className='btn-block'>Create Template</Button>
                         </Col>
                     </Row>
                 </Form>
