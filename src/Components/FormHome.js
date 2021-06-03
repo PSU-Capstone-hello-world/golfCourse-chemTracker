@@ -22,7 +22,7 @@ class FormHome extends React.Component {
             </a>
           </Col>
           <Col>
-            <a href="/Templates">
+            <a href="/AddFromTemplate">
               <Card className="templateCard" style={{ position: "absolute" }}>
                 <Card.Img
                   variant="top"
