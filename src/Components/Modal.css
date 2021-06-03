@@ -1,0 +1,13 @@
+.modal-title {
+  font-size: 2em;
+}
+
+.modal-form {
+  width: 100%;
+  margin: auto;
+  background-color: white;
+}
+
+.modalAlert {
+  z-index: 1060;
+}

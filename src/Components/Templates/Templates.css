@@ -1,14 +1,13 @@
 .templateCard {
-    /* position: relative !important; */
     cursor: pointer;
     border-radius: 20px;
     margin-top: 250px;
     border: 1px solid black;
 }
 
-body {
-    background-color: gainsboro;
-}
+/* body {
+    background-color: #eaeaea
+} */
 
 .card:hover {
     box-shadow: 10px 10px 15px rgba(0,0,0,0.3);
@@ -23,9 +22,27 @@ body {
     background-color: white;
 }
 
-.formulationLabel {
-    width: 15%;
+.alert-success {
+    background-color: #2F8974;
+    color: white;
+    border-radius: 10px;
+    justify-content: center;
 }
+
+.alert-danger {
+    background-color: #910200;
+    color: white;
+    border-radius: 10px;
+    justify-content: center;
+}
+
+.alert-secondary {
+    background-color: #52585e;
+    color: white;
+    border-radius: 10px;
+    justify-content: center;
+}
+
 
 .options {
     font-size: large;
