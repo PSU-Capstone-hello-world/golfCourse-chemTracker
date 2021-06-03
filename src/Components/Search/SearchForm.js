@@ -23,7 +23,9 @@ class SearchForm extends React.Component {
       showModal: false,
       index: -1,
       noFormsFound: null,
+      emptySearch: false,
       disabled: false,
+      deleteAlert: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -42,15 +44,17 @@ class SearchForm extends React.Component {
       !output.productName &&
       !output.location
     ) {
-    }
-    if (output.startDate) {
-      output.startDate = JSON.stringify(output.startDate).slice(1, 11);
-    }
-    if (output.endDate) {
-      output.endDate = JSON.stringify(output.endDate).slice(1, 11);
-    }
+      this.setState({ emptySearch: true, disabled: true });
+    } else {
+      if (output.startDate) {
+        output.startDate = JSON.stringify(output.startDate).slice(1, 11);
+      }
+      if (output.endDate) {
+        output.endDate = JSON.stringify(output.endDate).slice(1, 11);
+      }
 
-    await this.fetchData(output);
+      await this.fetchData(output);
+    }
   }
 
   async fetchData(search) {
@@ -181,8 +185,19 @@ class SearchForm extends React.Component {
     });
   };
 
+  handleDeleteAlert = (status) => {
+    this.setState({ deleteAlert: status, search: false, disabled: true });
+  };
+
   render() {
-    const { search, document, noFormsFound, disabled } = this.state;
+    const {
+      search,
+      document,
+      noFormsFound,
+      emptySearch,
+      disabled,
+      deleteAlert,
+    } = this.state;
 
     if (search) {
       if (document !== undefined) {
@@ -190,6 +205,7 @@ class SearchForm extends React.Component {
           <SearchTable
             document={document}
             handleTable={this.handleTable.bind(this)}
+            handleDeleteAlert={this.handleDeleteAlert.bind(this)}
           />
         );
       }
@@ -208,6 +224,28 @@ class SearchForm extends React.Component {
             className="fade-out position-absolute top-70 start-50 w-50 h-10"
           >
             No Forms Found
+          </Alert>
+          <Alert
+            variant="warning"
+            dismissible
+            onClose={() =>
+              this.setState({ emptySearch: false, disabled: false })
+            }
+            hidden={!emptySearch}
+            className="fade-out position-absolute top-70 start-50 w-50 h-10"
+          >
+            Must Search By At Least One Field
+          </Alert>
+          <Alert
+            variant="danger"
+            dismissible
+            onClose={() =>
+              this.setState({ deleteAlert: false, disabled: false })
+            }
+            hidden={!deleteAlert}
+            className="fade-out position-absolute top-70 start-50 w-50 h-10"
+          >
+            Form Has Been Deleted
           </Alert>
         </div>
         <Form className="search" onSubmit={this.handleSubmit}>

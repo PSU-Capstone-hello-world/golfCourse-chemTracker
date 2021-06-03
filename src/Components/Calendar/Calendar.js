@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Alert } from "react-bootstrap";
 import moment from "moment";
 import Modalview from "../Modal";
 import Backend from "../../model/backend.js";
@@ -26,6 +26,8 @@ class ChemCalendar extends Component {
       selectedView: "month",
       minTime: new Date(),
       maxTime: new Date(),
+      deleteAlert: false,
+      redirectLocation: "",
     };
   }
 
@@ -213,6 +215,12 @@ class ChemCalendar extends Component {
     }
   };
 
+  handleDeleteAlert = (status) => {
+    this.setState({ deleteAlert: status, showModal: false }, () =>
+      this.populateEvents()
+    );
+  };
+
   render() {
     const {
       cal_events,
@@ -222,6 +230,7 @@ class ChemCalendar extends Component {
       selectedView,
       minTime,
       maxTime,
+      deleteAlert,
     } = this.state;
     minTime.setHours(7, 0, 0);
     maxTime.setHours(22, 0, 0);
@@ -231,7 +240,9 @@ class ChemCalendar extends Component {
         <Modalview
           formData={document}
           handleModal2={this.handleModal.bind(this)}
+          handleDeleteAlert={this.handleDeleteAlert.bind(this)}
           isOpen={showModal}
+          redirectLocation="/Calendar"
         />
       );
     }
@@ -239,6 +250,23 @@ class ChemCalendar extends Component {
     return (
       <Container fluid className="calendarContainer">
         <Row>
+          <div
+            //style={deleteAlert ? { display: "flex" } : { display: "none" }}
+            //hidden={!deleteAlert}
+            className="d-flex fixed-top justify-content-center"
+          >
+            <Alert
+              variant="danger"
+              dismissible
+              onClose={() =>
+                this.setState({ deleteAlert: false, disabled: false })
+              }
+              hidden={!deleteAlert}
+              className="fade-out w-50 h-10"
+            >
+              Form Has Been Deleted
+            </Alert>
+          </div>
           <Col>
             <div style={{ height: 1100 }}>
               <Calendar

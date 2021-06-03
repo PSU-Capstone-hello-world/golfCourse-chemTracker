@@ -10,7 +10,13 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Modal.css";
 import Backend from "../model/backend";
-//import { Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  KeyboardTimePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
+import "date-fns";
 class Modalview extends React.Component {
   constructor(props) {
     super(props);
@@ -19,13 +25,18 @@ class Modalview extends React.Component {
       isEdit: false,
       formData: props.formData,
       deleteModal: false,
-      formsubmitted: false,
+      success: false,
+      redirectLocation: this.props.redirectLocation,
       redirect: false,
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.handleSigDate = this.handleSigDate.bind(this);
+    /*
+    this.handleStartTime = this.handleStartTime.bind(this);
+    this.handleEndTime = this.handleEndTime.bind(this);
+    */
   }
 
   handleInputChange(event) {
@@ -50,6 +61,24 @@ class Modalview extends React.Component {
     }));
   }
 
+  // handleStartTime(newDate) {
+  //   this.setState((prevState) => ({
+  //     formData: {
+  //       ...prevState.formData,
+  //       timeStart: newDate,
+  //     },
+  //   }));
+  // }
+
+  // handleEndTime(newDate) {
+  //   this.setState((prevState) => ({
+  //     formData: {
+  //       ...prevState.formData,
+  //       timeEnd: newDate,
+  //     },
+  //   }));
+  // }
+
   async handleSubmit(event) {
     const { formData } = this.state;
     event.preventDefault();
@@ -58,40 +87,43 @@ class Modalview extends React.Component {
       return false;
     }
     let output = JSON.parse(JSON.stringify(formData));
+    // output.timeStart = new Date(output.timeStart).toTimeString().slice(0, 5);
+    // output.timeEnd = new Date(output.timeEnd).toTimeString().slice(0, 5);
     output.date = JSON.stringify(output.date).slice(1, 11);
     output.sigDate = JSON.stringify(output.sigDate).slice(1, 11);
-    //console.log(output);
     if (output.location === "Other") {
       output.location = output.locOtherVal;
     }
     output = JSON.stringify(output);
     formData.date = JSON.stringify(formData.date).slice(1, 11);
     formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
-    //console.log(formData);
     let backend = new Backend();
     let response = await backend.put(output);
     this.onSubmitAlert();
     //this.closeModal();
     //this.props.handleModal2(false);
-    /*
+
     if (response.ResponseMetadata.HTTPStatusCode === 200) {
-      this.props.handleSubmitAlert(true, true);
+      this.setState({ success: true, isEdit: false });
     } else {
-      this.props.handleSubmitAlert(true, false);
     }
-    */
+
     return true;
   }
   openModal = () => this.setState({ isOpen: true });
   closeModal = () => {
     const { formData } = this.state;
+    // formData.timeStart = new Date(formData.timeStart)
+    //   .toTimeString()
+    //   .slice(0, 5);
+    // formData.timeEnd = new Date(formData.timeEnd).toTimeString().slice(0, 5);
     formData.date = JSON.stringify(formData.date).slice(1, 11);
     formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
     this.props.handleModal2(false);
   };
   editMode = (event) => {
     event.preventDefault();
-    this.setState({ isEdit: true });
+    this.setState({ isEdit: true, success: false });
   };
   handleDeleteModal = (status) => this.setState({ deleteModal: status });
   closeDeleteModal = (e) => {
@@ -103,16 +135,20 @@ class Modalview extends React.Component {
 
   async deleteForm() {
     const { formData } = this.state;
+    this.setState({ success: false });
     formData.date = JSON.stringify(formData.date).slice(1, 11);
     formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
     console.log(formData);
     let backend = new Backend();
-    await backend.delete(formData.id);
-    //console.log(formData);
-    this.handleDeleteModal(false);
-    //this.props.handleModal2(false);
-    this.closeModal();
+    let response = await backend.delete(formData.id);
+    if (response.status === 200) {
+      this.props.handleDeleteAlert(true);
+      //this.handleDeleteModal(false);
+      this.setState({ redirect: true });
+      //this.closeModal();
+    }
   }
+
   onSubmitAlert = () => {
     this.setState({ formsubmitted: true }, () => {
       window.setTimeout(() => {
@@ -122,9 +158,31 @@ class Modalview extends React.Component {
   };
 
   render() {
-    const { formData, isEdit, deleteModal, isOpen, formsubmitted } = this.state;
+    const {
+      formData,
+      isEdit,
+      deleteModal,
+      isOpen,
+      success,
+      redirect,
+      redirectLocation,
+    } = this.state;
+    if (redirect) return <Redirect to={redirectLocation} />;
     return (
       <>
+        <div className="modalAlert fixed-top d-flex justify-content-center">
+          <Alert
+            variant="success"
+            dismissible
+            onClose={() =>
+              this.setState({ success: false, isEdit: false }, this.closeModal)
+            }
+            hidden={!success}
+            className="fade-out position-absolute top-70 start-50 w-50 h-10"
+          >
+            Form Has Been Saved
+          </Alert>
+        </div>
         <Modal
           className="deleteModal justify-content-center"
           show={deleteModal}
@@ -157,15 +215,6 @@ class Modalview extends React.Component {
           </Modal.Footer>
         </Modal>
 
-        <div className="d-flex justify-content-center">
-          <Alert
-            variant="secondary"
-            hidden={!formsubmitted}
-            className="fade-out position-absolute top-70 start-50 w-50 h-10"
-          >
-            No Forms Found
-          </Alert>
-        </div>
         <Modal
           className="myModal"
           size="lg"
@@ -734,6 +783,25 @@ class Modalview extends React.Component {
                       value={formData.timeStart}
                       onChange={this.handleInputChange}
                     />
+
+                    {/* <Form.Label>
+                      Start Time <span className="required">(required)</span>
+                    </Form.Label>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardTimePicker
+                        disabled={!isEdit}
+                        type="text"
+                        name="timeStart"
+                        margin="normal"
+                        placeholder="Start Time"
+                        value={
+                          (formData.timeStart = new Date(
+                            `2000-01-01T${formData.timeStart}:00`
+                          ))
+                        }
+                        onChange={this.handleStartTime}
+                      />
+                    </MuiPickersUtilsProvider> */}
                   </Form.Group>
                 </Col>
 
@@ -748,6 +816,25 @@ class Modalview extends React.Component {
                       value={formData.timeEnd}
                       onChange={this.handleInputChange}
                     />
+
+                    {/* <Form.Label>
+                      End Time <span className="required">(required)</span>{" "}
+                    </Form.Label>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardTimePicker
+                        disabled={!isEdit}
+                        type="text"
+                        margin="normal"
+                        name="timeEnd"
+                        placeholder="End Time"
+                        value={
+                          (formData.timeEnd = new Date(
+                            `2000-01-01T${formData.timeEnd}:00`
+                          ))
+                        }
+                        onChange={this.handleEndTime}
+                      />
+                    </MuiPickersUtilsProvider> */}
                   </Form.Group>
                 </Col>
               </Row>

@@ -7,3 +7,7 @@
   margin: auto;
   background-color: white;
 }
+
+.modalAlert {
+  z-index: 1060;
+}

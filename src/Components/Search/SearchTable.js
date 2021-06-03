@@ -14,6 +14,7 @@ class SearchTable extends React.Component {
     this.state = {
       document: props.document,
       showModal: false,
+      //deleteAlert: props.deleteAlert,
       index: -1,
     };
   }
@@ -34,7 +35,9 @@ class SearchTable extends React.Component {
         <Modalview
           formData={document.Items[index]}
           handleModal2={this.handleModal.bind(this)}
+          handleDeleteAlert={this.props.handleDeleteAlert.bind(this)}
           isOpen={showModal}
+          redirectLocation="/Search_Form"
         />
       );
     }
