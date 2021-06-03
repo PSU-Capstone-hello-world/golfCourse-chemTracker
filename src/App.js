@@ -1,10 +1,8 @@
-import Navigation from './Components/Navigation';
-import Home from './Components/Home';
+import Navigation from './Components/Navigation/Navigation';
+import Home from './Components/Home/Home';
 import React, { useState } from "react";
-// import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Login from './Components/Login';
+import Login from './Components/Login/Login';
 import useToken from './useToken';
-// import './App.css';
 
 function App() {
     const { token, setToken } = useToken();

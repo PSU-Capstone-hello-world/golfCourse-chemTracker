@@ -1,16 +1,16 @@
 import React from "react";
 import { Navbar, Nav, Alert } from "react-bootstrap";
 import { Route, Switch, Link, BrowserRouter as Router } from "react-router-dom";
-import Home from "./Home";
-import CalendarView from "./Calendar/Calendar";
-import AddForm from "./AddForm";
-import SearchForm from "./Search/SearchForm";
-import Templates from "./Templates/Templates";
-import Modalview from "./Modal";
-import CreateTemplate from "./Templates/Create/CreateTemplate";
-import EditTemplate from "./Templates/Edit/EditTemplate";
-import FormHome from "./FormHome";
-import AddFromTemplate from "./AddFromTemplate/AddFromTemplate";
+import Home from "../Home/Home";
+import CalendarView from "../Calendar/Calendar";
+import AddForm from "../AddForm/AddForm";
+import SearchForm from "../Search/SearchForm";
+import Templates from "../Templates/Templates";
+import Modalview from "../Modal/Modal";
+import CreateTemplate from "../Templates/Create/CreateTemplate";
+import EditTemplate from "../Templates/Edit/EditTemplate";
+import FormHome from "../AddForm/FormHome";
+import AddFromTemplate from "../AddForm/AddFromTemplate/AddFromTemplate";
 
 function Navigation(props) {
   return (

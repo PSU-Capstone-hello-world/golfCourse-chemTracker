@@ -5,11 +5,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Modal } from "react-bootstrap";
 import Alert from "react-bootstrap/Alert";
-import "./AddForm.css";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import "./Modal.css";
-import Backend from "../model/backend";
+import Backend from "../../model/backend";
 import { Redirect } from "react-router-dom";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -17,6 +14,10 @@ import {
   MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import "date-fns";
+import "../AddForm/AddForm";
+import "./Modal.css";
+import "react-datepicker/dist/react-datepicker.css";
+
 class Modalview extends React.Component {
   constructor(props) {
     super(props);
@@ -120,6 +121,7 @@ class Modalview extends React.Component {
     formData.date = JSON.stringify(formData.date).slice(1, 11);
     formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
     this.props.handleModal2(false);
+    this.props.handleSuccess(false);
   };
   editMode = (event) => {
     event.preventDefault();
@@ -229,7 +231,7 @@ class Modalview extends React.Component {
             {isEdit ? <p>Edit Modal </p> : <p>Read Only Modal</p>}
           </Modal.Title>
           <Modal.Body>
-            <Form className="new-form" onSubmit={this.handleSubmit}>
+            <Form className="modal-form" onSubmit={this.handleSubmit}>
               <Row>
                 <Col>
                   <Form.Group controlId="productName">
