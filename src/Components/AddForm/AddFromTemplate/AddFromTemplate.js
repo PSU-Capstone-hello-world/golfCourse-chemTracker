@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import BootstrapTable from "react-bootstrap-table-next";
 import Button from "react-bootstrap/Button";
-import "./AddFromTemplate.css";
-import Backend from "../../model/backend";
+import Backend from "../../../model/backend";
 import AddForm from "../AddForm";
+import "./AddFromTemplate.css";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 
 export default class AddFromTemplate extends Component {
   constructor(props) {

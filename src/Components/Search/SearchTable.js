@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Row, Button, Container, Table } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import Backend from "../../model/backend.js";
-import Modalview from "../Modal";
+import Modalview from "../Modal/Modal";
 import { Redirect } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import "./SearchForm.css";
@@ -36,6 +36,7 @@ class SearchTable extends React.Component {
           formData={document.Items[index]}
           handleModal2={this.handleModal.bind(this)}
           handleDeleteAlert={this.props.handleDeleteAlert.bind(this)}
+          handleSuccess={this.props.handleSuccess.bind(this)}
           isOpen={showModal}
           redirectLocation="/Search_Form"
         />

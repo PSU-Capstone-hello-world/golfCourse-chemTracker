@@ -1,17 +1,12 @@
-//import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
-//import Col from "react-bootstrap/Col";
-//import Button from "react-bootstrap/Button";
 import React, { useState } from "react";
-import "./home.css";
 import { Container } from "react-bootstrap";
-//import Link from "react-router-dom/Link";
-import HomeCard from "../Components/HomeCard";
-//import { useTheme } from "@material-ui/core";
+import HomeCard from "./HomeCard";
 import { BiCalendar } from "react-icons/bi";
 import { AiFillFileAdd } from "react-icons/ai";
 import { BsSearch } from "react-icons/bs";
 import { GrTemplate } from "react-icons/gr";
+import "./home.css";
 
 function Home(props) {
   const [header] = useState([

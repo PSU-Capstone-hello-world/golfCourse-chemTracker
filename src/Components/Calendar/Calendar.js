@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import { Container, Row, Col, Alert } from "react-bootstrap";
 import moment from "moment";
-import Modalview from "../Modal";
+import Modalview from "../Modal/Modal";
 import Backend from "../../model/backend.js";
 import "./Calendar.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";

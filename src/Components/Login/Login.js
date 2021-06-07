@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {Container, Row, Button, Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import '../Styles/Login.css';
+import './Login.css';
 
 async function loginUser(credentials) {
     const url = `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/names?name=${credentials.username}&details=${credentials.password}`
