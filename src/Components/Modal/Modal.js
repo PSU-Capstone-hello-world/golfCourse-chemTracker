@@ -113,7 +113,7 @@ class Modalview extends React.Component {
   }
   openModal = () => this.setState({ isOpen: true });
   closeModal = () => {
-    const { formData } = this.state;
+    const { formData, redirectLocation } = this.state;
     // formData.timeStart = new Date(formData.timeStart)
     //   .toTimeString()
     //   .slice(0, 5);
@@ -121,7 +121,9 @@ class Modalview extends React.Component {
     formData.date = JSON.stringify(formData.date).slice(1, 11);
     formData.sigDate = JSON.stringify(formData.sigDate).slice(1, 11);
     this.props.handleModal2(false);
-    this.props.handleSuccess(false);
+    if (redirectLocation === "/Search_Form") {
+      this.props.handleSuccess(false);
+    }
   };
   editMode = (event) => {
     event.preventDefault();
