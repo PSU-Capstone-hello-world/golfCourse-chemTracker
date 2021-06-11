@@ -1,8 +1,9 @@
 import axios from "axios";
+import {API_KEY} from './api-key.js';
 class Backend {
   constructor() {
     this.options = {
-      headers: { "X-Api-Key": "RTR6SrTkDj3DnPLawIaDQ7QsMJ3qDZ332u7PMMOs" },
+      headers: { "X-Api-Key": API_KEY },
     };
   }
   async getNameLocation(productName, location) {
@@ -292,7 +293,6 @@ class Backend {
     } catch (error) {
       console.log("Error");
     }
-
   }
   convertBase64 = (image) => {
     return new Promise((resolve, reject) => {
@@ -329,6 +329,13 @@ class Backend {
       this.options
     );
     console.log(response);
+    return response;
+  }
+  async get_all_templates() {
+    let response = await axios.get(
+      `https://c7fjg6xclk.execute-api.us-west-2.amazonaws.com/beta/template`,
+      this.options
+    );
     return response;
   }
   async delete_tempalte(productName) {

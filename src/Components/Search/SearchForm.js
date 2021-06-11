@@ -189,6 +189,10 @@ class SearchForm extends React.Component {
     this.setState({ deleteAlert: status, search: false, disabled: true });
   };
 
+  handleSuccess = (status) => {
+    this.setState({ search: status, disabled: false });
+  };
+
   render() {
     const {
       search,
@@ -206,6 +210,7 @@ class SearchForm extends React.Component {
             document={document}
             handleTable={this.handleTable.bind(this)}
             handleDeleteAlert={this.handleDeleteAlert.bind(this)}
+            handleSuccess={this.handleSuccess.bind(this)}
           />
         );
       }

@@ -1,8 +1,11 @@
 import React from "react";
 import { Form, Button, Row, Col, Container, Alert } from "react-bootstrap";
 import DatePicker from "react-datepicker";
-import Backend from "../model/backend";
-import { KeyboardTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import Backend from "../../model/backend";
+import {
+  KeyboardTimePicker,
+  MuiPickersUtilsProvider,
+} from "@material-ui/pickers";
 import { Redirect } from "react-router-dom";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
@@ -16,24 +19,43 @@ import "react-datepicker/dist/react-datepicker.css";
 class AddForm extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
 
     const today = new Date();
     // Everyting from the original Gresham Golf Course Form
     this.state = {
       // Product
-      productName: "",
-      supplier: "",
-      formulationFlow: false,
-      formulationGran: false,
-      formulationWet: false,
-      formulationEmul: false,
-      formulationOther: false,
-      formulationOtherVal: "",
-      sigWordCaution: false,
-      sigWordWarning: false,
-      sigWordDanger: false,
-      epaRegNum: "",
-      epaEstNum: "",
+      productName: this.props.productName ? this.props.productName : "",
+      supplier: this.props.supplier ? this.props.supplier : "",
+      formulationFlow: this.props.formulationFlow
+        ? this.props.formulationFlow
+        : false,
+      formulationGran: this.props.formulationGran
+        ? this.props.formulationGran
+        : false,
+      formulationWet: this.props.formulationWet
+        ? this.props.formulationWet
+        : false,
+      formulationEmul: this.props.formulationEmul
+        ? this.props.formulationEmul
+        : false,
+      formulationOther: this.props.formulationOther
+        ? this.props.formulationOther
+        : false,
+      formulationOtherVal: this.props.formulationOtherVal
+        ? this.props.formulationOtherVal
+        : "",
+      sigWordCaution: this.props.signalWordCaution
+        ? this.props.signalWordCaution
+        : false,
+      sigWordWarning: this.props.signalWordWarning
+        ? this.props.signalWordWarning
+        : false,
+      sigWordDanger: this.props.signalWordDanger
+        ? this.props.signalWordDanger
+        : false,
+      epaRegNum: this.props.epaRegNum ? this.props.epaRegNum : "",
+      epaEstNum: this.props.epaEstNum ? this.props.epaEstNum : "",
       location: "",
       locOtherVal: "",
       target: "",
@@ -79,11 +101,11 @@ class AddForm extends React.Component {
       lbsK2O: "",
       signature: "",
       sigDate: new Date(today.getTime()),
-      disabled: false, 
-      success: false, 
+      disabled: false,
+      success: false,
       error: false,
       missingRequiredField: false,
-      redirect: false
+      redirect: false,
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -98,7 +120,6 @@ class AddForm extends React.Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    console.log(this.value);
 
     this.setState({
       [name]: value,
@@ -153,7 +174,7 @@ class AddForm extends React.Component {
         this.state.location === "Other"
       )
     ) {
-      this.setState({ missingRequiredField: true, disabled: true })
+      this.setState({ missingRequiredField: true, disabled: true });
     } else {
       // Copy the state, so we can format the individual fields before sending to backend
       let output = JSON.parse(JSON.stringify(this.state));
@@ -179,34 +200,84 @@ class AddForm extends React.Component {
       let response = await backend.put(output);
 
       if (response.ResponseMetadata.HTTPStatusCode === 200) {
-        this.setState({ success: true, disabled: true })
+        this.setState({ success: true, disabled: true });
         // event.target.reset();
       } else {
-        this.setState({ error: true, disabled: true })
+        this.setState({ error: true, disabled: true });
       }
     }
   }
 
   render() {
-    const { success, error, disabled, missingRequiredField, redirect } = this.state;
+    const {
+      success,
+      error,
+      disabled,
+      missingRequiredField,
+      redirect,
+      epaEstNum,
+      epaRegNum,
+      formulationEmul,
+      formulationFlow,
+      formulationGran,
+      formulationOther,
+      formulationOtherVal,
+      formulationWet,
+      productName,
+      sigWordCaution,
+      sigWordDanger,
+      sigWordWarning,
+      supplier,
+    } = this.state;
 
     if (redirect) {
-        return <Redirect to="/FormHome" />
+      return <Redirect to="/FormHome" />;
     }
 
     return (
       <Container>
         <Row>
           <Form className="new-form" onSubmit={this.handleSubmit}>
-          <div className="d-flex justify-content-center fixed-top">
-            <Alert variant="success" hidden={!success} dismissible onClose={() => this.setState({ success: false, redirect: true })} className="fade-out w-50 h-10">Form Saved!</Alert>
-          </div>
-          <div className="d-flex justify-content-center fixed-top">
-            <Alert variant="danger" hidden={!error} dismissible onClose={() => this.setState({ error: false, redirect: true })} className="fade-out w-50 h-10">Form could not be saved due to an error</Alert>
-          </div>
-          <div className="d-flex justify-content-center fixed-top">
-            <Alert variant="secondary" hidden={!missingRequiredField} dismissible onClose={() => this.setState({ missingRequiredField: false, disabled: false })} className="fade-out w-50 h-10">Please fill out all required fields</Alert>
-          </div>
+            <div className="d-flex justify-content-center fixed-top">
+              <Alert
+                variant="success"
+                hidden={!success}
+                dismissible
+                onClose={() =>
+                  this.setState({ success: false, redirect: true })
+                }
+                className="fade-out w-50 h-10"
+              >
+                Form Saved!
+              </Alert>
+            </div>
+            <div className="d-flex justify-content-center fixed-top">
+              <Alert
+                variant="danger"
+                hidden={!error}
+                dismissible
+                onClose={() => this.setState({ error: false, redirect: true })}
+                className="fade-out w-50 h-10"
+              >
+                Form could not be saved due to an error
+              </Alert>
+            </div>
+            <div className="d-flex justify-content-center fixed-top">
+              <Alert
+                variant="secondary"
+                hidden={!missingRequiredField}
+                dismissible
+                onClose={() =>
+                  this.setState({
+                    missingRequiredField: false,
+                    disabled: false,
+                  })
+                }
+                className="fade-out w-50 h-10"
+              >
+                Please fill out all required fields
+              </Alert>
+            </div>
             <Row>
               <Col>
                 <Form.Group controlId="productName">
@@ -218,6 +289,7 @@ class AddForm extends React.Component {
                     type="text"
                     required
                     name="productName"
+                    value={productName}
                     placeholder="Product Name"
                     onChange={this.handleInputChange}
                   />
@@ -231,6 +303,7 @@ class AddForm extends React.Component {
                     type="text"
                     disabled={disabled}
                     name="supplier"
+                    value={supplier}
                     placeholder="Supplier"
                     onChange={this.handleInputChange}
                   />
@@ -246,7 +319,7 @@ class AddForm extends React.Component {
                 name="formulationFlow"
                 label="Flowable"
                 type="checkbox"
-                checked={this.state.formulationFlow}
+                checked={formulationFlow}
                 disabled={disabled}
                 onChange={this.handleInputChange}
               ></Form.Check>
@@ -257,7 +330,7 @@ class AddForm extends React.Component {
                 disabled={disabled}
                 label="Granular"
                 type="checkbox"
-                checked={this.state.formulationGran}
+                checked={formulationGran}
                 onChange={this.handleInputChange}
               ></Form.Check>
 
@@ -266,7 +339,7 @@ class AddForm extends React.Component {
                 name="formulationWet"
                 label="Wettable Powder"
                 type="checkbox"
-                checked={this.state.formulationWet}
+                checked={formulationWet}
                 disabled={disabled}
                 onChange={this.handleInputChange}
               ></Form.Check>
@@ -277,7 +350,7 @@ class AddForm extends React.Component {
                 label="Emulsified Concrete"
                 type="checkbox"
                 disabled={disabled}
-                checked={this.state.formulationEmul}
+                checked={formulationEmul}
                 onChange={this.handleInputChange}
               ></Form.Check>
 
@@ -287,7 +360,7 @@ class AddForm extends React.Component {
                 label="Other"
                 disabled={disabled}
                 type="checkbox"
-                checked={this.state.formulationOther}
+                checked={formulationOther}
                 onChange={this.handleInputChange}
               ></Form.Check>
 
@@ -296,7 +369,8 @@ class AddForm extends React.Component {
                 name="formulationOtherVal"
                 disabled={disabled}
                 placeholder="Other Formulation"
-                hidden={!this.state.formulationOther}
+                hidden={!formulationOther}
+                value={formulationOtherVal}
                 onChange={this.handleInputChange}
               />
             </Form.Group>
@@ -310,7 +384,7 @@ class AddForm extends React.Component {
                 disabled={disabled}
                 label="Caution"
                 type="checkbox"
-                checked={this.state.sigWordCaution}
+                checked={sigWordCaution}
                 onChange={this.handleInputChange}
               ></Form.Check>
 
@@ -320,7 +394,7 @@ class AddForm extends React.Component {
                 disabled={disabled}
                 label="Warning"
                 type="checkbox"
-                checked={this.state.sigWordWarning}
+                checked={sigWordWarning}
                 onChange={this.handleInputChange}
               ></Form.Check>
 
@@ -330,7 +404,7 @@ class AddForm extends React.Component {
                 disabled={disabled}
                 label="Danger"
                 type="checkbox"
-                checked={this.state.sigWordDanger}
+                checked={sigWordDanger}
                 onChange={this.handleInputChange}
               ></Form.Check>
             </Form.Group>
@@ -342,6 +416,7 @@ class AddForm extends React.Component {
                   <Form.Control
                     type="text"
                     name="epaRegNum"
+                    value={epaRegNum}
                     disabled={disabled}
                     placeholder="EPA Registration #"
                     onChange={this.handleInputChange}
@@ -356,6 +431,7 @@ class AddForm extends React.Component {
                     disabled={disabled}
                     type="text"
                     name="epaEstNum"
+                    value={epaEstNum}
                     placeholder="EPA Est. #"
                     onChange={this.handleInputChange}
                   />
@@ -955,12 +1031,21 @@ class AddForm extends React.Component {
 
             <Row style={{ paddingBottom: "20px" }}>
               <Col>
-                <Button type="reset" disabled={disabled} variant="secondary" style={{ width: "80px" }}>
+                <Button
+                  type="reset"
+                  disabled={disabled}
+                  variant="secondary"
+                  style={{ width: "80px" }}
+                >
                   Reset
                 </Button>
               </Col>
               <Col>
-                <Button type="submit" disabled={disabled} style={{ width: "80px" }}>
+                <Button
+                  type="submit"
+                  disabled={disabled}
+                  style={{ width: "80px" }}
+                >
                   Submit
                 </Button>
               </Col>

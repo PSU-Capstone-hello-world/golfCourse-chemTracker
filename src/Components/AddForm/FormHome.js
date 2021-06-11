@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
-import "./Templates/Templates.css";
+import "../Templates/Templates.css";
 
 class FormHome extends React.Component {
   render() {
@@ -22,7 +22,7 @@ class FormHome extends React.Component {
             </a>
           </Col>
           <Col>
-            <a href="/Templates">
+            <a href="/AddFromTemplate">
               <Card className="templateCard" style={{ position: "absolute" }}>
                 <Card.Img
                   variant="top"
