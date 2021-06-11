@@ -1,8 +1,9 @@
 import axios from "axios";
+import {API_KEY} from './api-key.js';
 class Backend {
   constructor() {
     this.options = {
-      headers: { "X-Api-Key": "RTR6SrTkDj3DnPLawIaDQ7QsMJ3qDZ332u7PMMOs" },
+      headers: { "X-Api-Key": API_KEY },
     };
   }
   async getNameLocation(productName, location) {
